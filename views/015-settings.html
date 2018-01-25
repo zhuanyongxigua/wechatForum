@@ -1,0 +1,239 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title></title>
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="../static/js/lib/jquery/jquery-2.1.4.min.js"></script>
+
+    <!-- WeUI -->
+    <link rel="stylesheet" href="../static/weui-master/style/weuix.min.css">
+    <link rel="stylesheet" href="../static/weui-master/style/jquery-weui.min.css">
+    <script type="text/javascript" src="../static/weui-master/jquery-weui.min.js"></script>
+
+    <!-- 引入vue.js-->
+    <script type="text/javascript" src="../static/js/lib/vue.js"></script>
+    <script type="text/javascript" src="../static/js/lib/global.min.js"></script>
+
+    <!-- fileuploader -->
+    <script type="text/javascript" src="../static/js/lib/jquery.ui.widget.js"></script>
+    <script type="text/javascript" src="../static/js/lib/jquery.fileupload.js"></script>
+
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="../static/css/style.css">
+
+    <style>
+        input {
+            width: 77px;
+            height: 77px;
+            opacity: 0;
+            position: absolute;
+            top: 17px;
+            margin-left: -38.5px;
+            left: 50%;
+        }
+    </style>
+
+</head>
+
+<body class="body_in">
+<div id="settings">
+    <div class="usercenter_top">
+        <div class="usercenter_head">
+            <img class="usercenter_head_img" :src="oMyInfo.iconUrl"/>
+        </div>
+        <input id="fileImage" name="file" type="file" accept="image/*" @click="fnCallUploadPlugin">
+
+        <span class="my_top_name" style="font-size: 13px;">点击修改头像</span>
+    </div>
+
+    <div class="settings_li" @click="fnGoToEditPage('username')">
+        <div class="width90_box">
+            <span class="settings_label">昵称</span>
+            <span class="settings_item">
+                    <span v-text="oMyInfo.username"></span>
+            </span>
+        </div>
+    </div>
+
+    <div class="settings_li">
+        <div class="width90_box">
+            <span class="settings_label">性别</span>
+            <span class="settings_item2">
+                <select v-model="oMyInfo.sex" class="settings_select">
+                    <option value="m">男</option>
+                    <option value="f">女</option>
+                </select>
+            </span>
+        </div>
+    </div>
+
+    <div class="settings_li">
+        <div class="width90_box">
+            <span class="settings_label">身份</span>
+            <span class="settings_item2">
+                <select v-model="oMyInfo.typeCode" class="settings_select">
+                    <option v-for="item in aRoleType" :value="item.id" v-text="item.name"></option>
+                </select>
+            </span>
+        </div>
+    </div>
+
+    <div class="settings_li" @click="fnGoToEditPage('introduction')">
+        <div class="width90_box">
+            <span class="settings_label">简要介绍</span>
+            <div class="settings_item">
+                <span v-text="oMyInfo.introduction"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="settings_li" @click="fnGoToInterestPage">
+        <div class="width90_box">
+            <span class="settings_label">个人爱好</span>
+            <span class="settings_item">
+                <span v-text="oMyInfo.hobbyStr"></span>
+            </span>
+        </div>
+    </div>
+
+    <span class="send_btn ripple_box" @click="fnModifySettingInfo">保存</span>
+
+    <div class="rwm">
+        <img src="../static/img/qr.png"/>
+        <div>扫码关注领奖台公众号</div>
+    </div>
+
+    <div class="weui-footer" style="float:left; width:100%;">
+        <p class="weui-footer__text">由天津十壹维度科技提供技术支持</p>
+    </div>
+
+</div>
+
+<script>
+    var settings = new Vue({
+        el: "#settings",
+        data: {
+            oMyInfo: {},
+            aRoleType: []
+        },
+        //加载组件时发出请求
+        created: function () {
+            this.fnGetRoleType();
+        },
+        methods: {
+            fnGetMyInfo: function() {
+                var postData = {};
+                var that = this;
+                var type = 'POST';
+                var url = '/wechat/myInfo';
+
+                function ajaxSuccess(data) {
+                    that.oMyInfo = Object.assign({}, data);
+                }
+                global.ajax(type, postData, url, ajaxSuccess);
+            },
+            fnGetRoleType: function() {
+                var postData = {};
+                var that = this;
+                var type = 'POST';
+                var url = '/dictionary/searchThreshold';
+
+                postData.type = 'UserType';
+
+                function ajaxSuccess(data) {
+                    data.forEach(function(ele) {
+                        that.aRoleType.push(ele)
+                    });
+                    if (localStorage.getItem('oMyInfo')) {
+                        that.oMyInfo = Object.assign({}, JSON.parse(localStorage.getItem('oMyInfo')));
+                        localStorage.removeItem('oMyInfo');
+                    } else {
+                        that.fnGetMyInfo();
+                    }
+                }
+                global.ajax(type, postData, url, ajaxSuccess);
+            },
+            fnModifySettingInfo: function () {
+                var that = this;
+                var type = 'PUT';
+                var url = '/wechat/modifyMyInfo';
+                var postData = {};
+
+                function ajaxSuccess(data) {
+                    if (data.success) {
+                        $.alert("保存成功" + (data.message ? ('，' + data.message) : '') + '!');
+                        that.fnGetMyInfo();
+                    } else {
+                        if (data.message === 'USER_BAN_CODE') {
+                            $.alert('账户禁用，无法操作');
+                            return;
+                        }
+                    }
+                }
+
+                //表单验证
+                if (!this.oMyInfo.username) {
+                    $.alert("昵称不能为空");
+                    return;
+                }
+                if (!this.oMyInfo.introduction || !this.oMyInfo.hobbyStr && !this.oMyInfo.isComplete) {
+                    $.confirm("信息填写完整可以获得积分奖励", function() {
+                        that.aRoleType.forEach(function(ele) {
+                            if (ele.id == that.oMyInfo.typeCode) {
+                                that.oMyInfo.type = ele.name;
+                            }
+                        });
+                        postData = that.oMyInfo;
+                        global.ajax(type, postData, url, ajaxSuccess);
+                    }, function() {
+                        return;
+                    });
+                } else {
+                    this.aRoleType.forEach(function(ele) {
+                        if (ele.id == that.oMyInfo.typeCode) {
+                            that.oMyInfo.type = ele.name;
+                        }
+                    });
+                    postData = this.oMyInfo;
+                    global.ajax(type, postData, url, ajaxSuccess);
+                }
+            },
+            fnCallUploadPlugin: function() {
+                var that = this;
+                $('#fileImage').fileupload({
+                    dataType: 'json',
+                    add: function(e, data) {
+                        data.url = global.baseurl + '/wechat/upload?beforeHead=' + that.oMyInfo.iconUrl;
+                        if (data.files[0].size / 1024 / 1024 <= 10) {
+                            data.submit();
+                        } else {
+                            alert("文件太大");
+                        }
+                    },
+                    done: function(e, data) {
+                        that.oMyInfo.iconUrl = global.baseurl + data.result;
+                    },
+                    fail: function(e, data) {
+                        $.alert('上传失败');
+                    }
+                });
+            },
+            fnGoToEditPage: function(sMode) {
+                localStorage.setItem('oMyInfo', JSON.stringify(this.oMyInfo));
+                window.location.href = '016-edit.html?mode=' + sMode;
+            },
+            fnGoToInterestPage: function() {
+                localStorage.setItem('oMyInfo', JSON.stringify(this.oMyInfo));
+                window.location.href = '017-interest.html';
+            }
+        },
+    })
+</script>
+
+</body>
+</html>

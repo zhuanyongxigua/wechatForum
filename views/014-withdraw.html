@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title></title>
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="../static/js/lib/jquery/jquery-2.1.4.min.js"></script>
+
+    <!-- WeUI -->
+    <link rel="stylesheet" href="../static/weui-master/style/weuix.min.css">
+    <link rel="stylesheet" href="../static/weui-master/style/jquery-weui.min.css">
+    <script type="text/javascript" src="../static/weui-master/jquery-weui.min.js"></script>
+
+    <!-- 引入vue.js-->
+    <script type="text/javascript" src="../static/js/lib/vue.min.js"></script>
+    <script type="text/javascript" src="../static/js/lib/global.min.js"></script>
+
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="../static/css/style.css">
+
+</head>
+
+<body class="body_in">
+<div id="withdraw">
+
+    <input type="number" class="reward_input" placeholder="请输入提现积分数" v-model="credit"/>
+
+    <span class="send_btn ripple_box" @click="fnApplyWithdraw">确认提现</span>
+
+    <div class="withdraw_texts">
+        提现规则：积分大于1000可以提现。每笔提现平台收取1%手续费。
+    </div>
+
+    <div class="rwm">
+        <img src="../static/img/qr.png" />
+        <div>扫码关注领奖台公众号</div>
+    </div>
+
+    <div class="weui-footer" style="float:left; width:100%;">
+        <p class="weui-footer__text">由天津十壹维度科技提供技术支持</p>
+    </div>
+
+</div>
+
+
+<script>
+    var withdraw = new Vue({
+        el: "#withdraw",
+        data: {
+            credit: null
+        },
+        //加载组件时发出请求
+        created: function () {
+//            this.fnApplyWithdraw();
+        },
+        methods: {
+            fnApplyWithdraw: function () {
+                var postData = {};
+                var that = this;
+                var type = 'PUT'; //四种类型  POST查询 PUT新增修改删除
+                var url = '/wechat/addApplyCash';
+
+                if (!this.credit) {
+                    $.alert('请输入提现积分数');
+                    return;
+                }
+
+                postData.credit = this.credit;
+
+                function ajaxSuccess(data) {
+                    if (data.success) {
+                        $.alert("申请提现成功", function() {
+                            history.back();
+                        });
+                    } else {
+                        if (data.message === 'USER_BAN_CODE') {
+                            $.alert('账户禁用，无法操作');
+                            return;
+                        }
+                        $.alert('提现失败');
+                    }
+                }
+                global.ajax(type, postData, url, ajaxSuccess);
+            },
+        },
+    })
+</script>
+
+</body>
+</html>

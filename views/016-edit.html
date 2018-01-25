@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title></title>
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="../static/js/lib/jquery/jquery-2.1.4.min.js"></script>
+
+    <!-- WeUI -->
+    <link rel="stylesheet" href="../static/weui-master/style/weuix.min.css">
+    <link rel="stylesheet" href="../static/weui-master/style/jquery-weui.min.css">
+    <script type="text/javascript" src="../static/weui-master/jquery-weui.min.js"></script>
+
+    <!-- 引入vue.js-->
+    <script type="text/javascript" src="../static/js/lib/vue.js"></script>
+    <script type="text/javascript" src="../static/js/lib/global.min.js"></script>
+
+    <!--图标-->
+    <link rel="stylesheet" href="../static/ionicons-2.0.1/css/ionicons.min.css">
+
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="../static/css/style.css">
+
+</head>
+
+<body class="body_in">
+<div id="edit">
+    <div class="send_top" style="border: 0;">
+        <textarea class="post_textarea" v-model="sContent"></textarea>
+    </div>
+
+    <span class="send_btn ripple_box" @click="fnSaveInfo">确定</span>
+
+    <div class="rwm" style="margin-top:100px;">
+        <img src="../static/img/qr.png"/>
+        <div>扫码关注领奖台公众号</div>
+    </div>
+
+    <div class="weui-footer" style="float:left; width:100%;">
+        <p class="weui-footer__text">由天津十壹维度科技提供技术支持</p>
+    </div>
+
+</div>
+
+<script>
+    var edit = new Vue({
+        el: "#edit",
+        data: {
+            sContent: '',
+            loc: location.href.split('#')[0],
+            oMyInfo: {}
+        },
+        //加载组件时发出请求
+        created: function () {
+            this.fnGetMyInfo();
+        },
+        methods: {
+            fnGetMyInfo: function () {
+                this.oMyInfo = JSON.parse(localStorage.getItem('oMyInfo'));
+                if (global.GetArgsFromHref(this.loc, 'mode') === 'username') {
+                    this.sContent = this.oMyInfo.username;
+                } else {
+                    this.sContent = this.oMyInfo.introduction;
+                }
+            },
+            fnSaveInfo: function() {
+                if (global.GetArgsFromHref(this.loc, 'mode') === 'username') {
+                    this.oMyInfo.username = this.sContent;
+                } else {
+                    this.oMyInfo.introduction = this.sContent;
+                }
+                localStorage.setItem('oMyInfo', JSON.stringify(this.oMyInfo));
+                if (!global.verifyIsNull(this.sContent)) {
+                    $.alert("保存成功", function() {
+                        history.back();
+                    });
+                } else {
+                    $.alert("内容不能为空");
+                }
+
+            }
+        },
+    })
+</script>
+
+</body>
+</html>

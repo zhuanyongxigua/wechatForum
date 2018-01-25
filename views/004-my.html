@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title></title>
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="../static/js/lib/jquery/jquery-2.1.4.min.js"></script>
+
+    <!-- WeUI -->
+    <link rel="stylesheet" href="../static/weui-master/style/weuix.min.css">
+    <link rel="stylesheet" href="../static/weui-master/style/jquery-weui.min.css">
+    <script type="text/javascript" src="../static/weui-master/jquery-weui.min.js"></script>
+
+    <!-- 引入vue.js-->
+    <script type="text/javascript" src="../static/js/lib/vue.min.js"></script>
+    <script type="text/javascript" src="../static/js/lib/global.js"></script>
+
+    <!-- 自定义样式 -->
+    <link rel="stylesheet" href="../static/css/style.css">
+
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+
+</head>
+
+<body class="body_in">
+    <div id="my">
+        <div class="usercenter_top">
+            <div class="usercenter_head">
+                <img class="usercenter_head_img" :src="oMyInfo.iconUrl" />
+            </div>
+
+            <span class="my_top_name" v-cloak>
+            {{oMyInfo.username}}
+            <span class="user_type2" v-text="oMyInfo.type" v-if="oMyInfo.type" v-cloak></span>
+            </span>
+        </div>
+
+
+        <div class="conent_top0_width100">
+
+            <div class="qb_box">
+                <div class="ddfl_brn ripple_box" @click="fnGoToFollowAndFanPage('followList')">
+                    <span class="qb_num" v-text="oMyInfo.attentions"></span>
+                    <span>关注</span>
+                </div>
+                <div class="ddfl_brn ripple_box" @click="fnGoToFollowAndFanPage('fanList')">
+                    <span class="qb_num" v-text="oMyInfo.fans"></span>
+                    <span>粉丝</span>
+                </div>
+                <div class="ddfl_brn">
+                    <span class="qb_num" v-text="oMyInfo.posts"></span>
+                    <span>发帖</span>
+                </div>
+                <div class="ddfl_brn ripple_box" onclick="window.location.href='002-score.html'">
+                    <span class="qb_num" v-text="oMyInfo.credit"></span>
+                    <span>积分</span>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="conent_top0_width100">
+
+            <div class="list_style4 ripple_box" @click="fnGoToPersonalCardListPage(oMyInfo.id)">
+                <div class="width90_box">
+                    <span class="left_text"><i class="icon icon-67 usercenter_icon"></i>空间</span>
+                    <span class="right_text arrow_right"></span>
+                </div>
+            </div>
+
+            <div class="list_style4 ripple_box" onclick="window.location.href='002-score.html'">
+                <div class="width90_box">
+                    <span class="left_text"><i class="icon icon-43 usercenter_icon"></i>钱包</span>
+                    <span class="right_text arrow_right"></span>
+                </div>
+            </div>
+
+            <div class="list_style4 ripple_box" onclick="window.location.href='015-settings.html'">
+                <div class="width90_box">
+                    <span class="left_text"><i class="icon icon-101 usercenter_icon"></i>设置</span>
+                    <span class="right_text arrow_right"></span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="rwm">
+            <img src="../static/img/qr.png" />
+            <div>扫码关注领奖台公众号</div>
+        </div>
+
+        <div class="weui-footer">
+            <p class="weui-footer__text">由天津十壹维度科技提供技术支持</p>
+        </div>
+
+        <div style="height: 50px; float: left; width: 100%;"></div>
+
+        <div class="foot_menu">
+            <span id="column1" class="ripple_box" onclick="window.location.href='001-home.html'">首页</span>
+            <span id="column2" class="ripple_box" onclick="window.location.href='002-score.html'">赚积分</span>
+            <span id="column3" class="ripple_box" onclick="window.location.href='003-send.html'">发帖</span>
+            <span id="column4" class="ripple_box selected">我的</span>
+        </div>
+
+    </div>
+
+
+    <script>
+        var my = new Vue({
+            el: "#my",
+            data: {
+                oMyInfo: {}
+            },
+            //加载组件时发出请求
+            created: function() {
+                this.fnGetMyInfo();
+            },
+            methods: {
+                fnGetMyInfo: function() {
+                    var postData = {};
+                    var that = this;
+                    var type = 'POST';
+                    var url = '/wechat/myInfo';
+
+                    function ajaxSuccess(data) {
+                        that.oMyInfo = Object.assign({}, data);
+                    }
+                    global.ajax(type, postData, url, ajaxSuccess);
+                },
+                fnGoToFollowAndFanPage: function(sCurMode) {
+                    window.location.href='009-followList.html?sCurMode=' + sCurMode
+                },
+                fnGoToPersonalCardListPage: function(id) {
+                    window.location.href = '008-personalCardList.html?id=' + id;
+                }
+            },
+        })
+    </script>
+</body>
+
+</html>
