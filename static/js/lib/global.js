@@ -3,7 +3,7 @@
 */
 
 function GlobalConstructorFunction() {
-    this.baseurl = 'http://192.168.1.111/forum';
+    this.baseurl = './';
 }
 
 GlobalConstructorFunction.prototype.ajax = function(_sAjaxType, _oAjaxPostData, _sAjaxUrl, _fnAjaxSuccess) {
@@ -25,11 +25,10 @@ GlobalConstructorFunction.prototype.ajax = function(_sAjaxType, _oAjaxPostData, 
 使用方法：
 1.将需要延时的img标签加上true-src自定义属性，将图片实际路径填入此处；
 2.调用此函数，为使延时加载有意义，请确保其在其他数据请求之后执行，一般情况下在setTimeout中执行；
-3.如在vue中使用，请在vue的updated钩子下的nextTrick函数中调用，无需使用setTimeout；
-4.由于与photoswipe一块使用时设置a标签的属性有些繁琐，所以在此方法中加入设置父级a标签属性的功能，可以设置的属性只有data-size和data-med-size，
-  如果项目局部需要设置更多属性或有其他需求，建议在项目局部重写，
-  如果需要此功能，需传入参数布尔值true，这样无需再调用auto_data_size函数，
-  不需要则不用传入参数或传入布尔值false。
+3.如在vue中使用，可以在vue的updated钩子下的nextTrick函数中调用，无需使用setTimeout；
+4.由于与photoswipe一块使用时设置a标签的属性有些繁琐，所以在此方法中加入设置父级a标签属性的功能，可以设置的属性只有data-size和data-med-size。
+  如果需要此功能，需传入参数布尔值true，这样无需再调用auto_data_size函数，不需要则不用传入参数或传入布尔值false。
+  如果项目局部需要设置更多属性或有其他需求，建议在项目局部重写。
 5.如需在真正图片显示前的等待效果更好，可以加gif等待提示，路径放在src中，待真正图片加载完成，src会被自动替代，
   也可以使用css的background加等待gif，这时记得在img标签中加alt属性，已确保阻止浏览器默认的坏图片标志闪出。
 */

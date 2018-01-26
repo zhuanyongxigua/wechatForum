@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="../static/weui-master/style/jquery-weui.min.css">
     <script type="text/javascript" src="../static/weui-master/jquery-weui.min.js"></script>
 
-
     <!-- 引入vue.js-->
     <script type="text/javascript" src="../static/js/lib/vue.min.js"></script>
     <script type="text/javascript" src="../static/js/lib/global.min.js"></script>
@@ -143,7 +142,7 @@
     <div class="news" style="background: #ff566b; border: 0px;">
         <div class="width90_box flex_row">
             <input v-model="queryStr" type="text" class="news_searth_input" placeholder="搜索消息"/>
-            <span class="news_searth_btn ripple_box" @click="getSysMsgList">搜索</span>
+            <span class="news_searth_btn ripple_box" @click="getSysMsgList(true)">搜索</span>
         </div>
     </div>
 
@@ -183,11 +182,17 @@
             this.getSysMsgList();
         },
         methods: {
-            getSysMsgList: function () {
+            getSysMsgList: function (bIsSearchButton) {
                 var postData = {};
                 var that = this;
                 var type = 'POST';
                 var url = '/topic/searchTopicsByParm';
+
+                if (bIsSearchButton) {
+                    this.aSysMsgList = [];
+                    this.iCurrentPage = 1;
+                    this.bIsMore = true;
+                }
 
                 postData.pageSize = 9;
                 postData.currentPage = this.iCurrentPage;

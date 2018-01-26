@@ -16,7 +16,7 @@
     <script type="text/javascript" src="../static/weui-master/jquery-weui.min.js"></script>
 
     <!-- 引入vue.js-->
-    <script type="text/javascript" src="../static/js/lib/vue.js"></script>
+    <script type="text/javascript" src="../static/js/lib/vue.min.js"></script>
     <script type="text/javascript" src="../static/js/lib/global.min.js"></script>
 
     <!-- 自定义样式 -->
@@ -79,9 +79,6 @@
 
 <body class="body_in">
 <div id="recharge">
-
-    <!--<input class="reward_input" placeholder="请输入购买积分数"/>-->
-
     <div class="recharge_div">
         <div class="recharge_div_in">
             <div class="recharge_loop_div" v-for="(item, index) in aCreditRule" @click="fnSelectCreditRule(index)"
@@ -90,7 +87,6 @@
                 <span class="recharge_text2" v-text="item.money + '元'"></span>
             </div>
         </div>
-
     </div>
 
     <span class="send_btn ripple_box" @click="fnGetPayInfo">去支付</span>
@@ -113,7 +109,6 @@
         data: {
             aCreditRule: [],
             oCurCreditRule: {},
-            oPayInfo: {}
         },
         created: function () {
             this.fnGetCreditRule();
@@ -152,16 +147,16 @@
 
                 function ajaxSuccess(data) {
                     if (data.success) {
-                        that.oPayInfo = Object.assign({}, data.payInfo);
+                        //微信浏览器BOM对象WeixinJSBridge是否已准备好
                         if (typeof WeixinJSBridge == "undefined") {
                             if (document.addEventListener) {
-                                document.addEventListener('WeixinJSBridgeReady', that.fnWechatPay, false);
+                                document.addEventListener('WeixinJSBridgeReady', that.fnWechatPay.bind(this, data.payInfo), false);
                             } else if (document.attachEvent) {
-                                document.attachEvent('WeixinJSBridgeReady', that.fnWechatPay);
-                                document.attachEvent('onWeixinJSBridgeReady', that.fnWechatPay);
+                                document.attachEvent('WeixinJSBridgeReady', that.fnWechatPay.bind(this, data.payInfo));
+                                document.attachEvent('onWeixinJSBridgeReady', that.fnWechatPay.bind(this, data.payInfo));
                             }
                         } else {
-                            that.fnWechatPay();
+                            that.fnWechatPay(data.payInfo);
                         }
                     } else {
                         if (data.message === 'USER_BAN_CODE') {
@@ -182,8 +177,9 @@
                 this.aCreditRule[sCreditRuleIndex].isSelected = true;
                 this.oCurCreditRule = this.aCreditRule[sCreditRuleIndex];
             },
-            fnWechatPay: function () {
-                WeixinJSBridge.invoke('getBrandWCPayRequest', this.oPayInfo, function (res) {
+            fnWechatPay: function (payInfo) {
+                //微信浏览器BOM对象WeixinJSBridge调用微信支付接口
+                WeixinJSBridge.invoke('getBrandWCPayRequest', payInfo, function (res) {
                     if (res.err_msg == "get_brand_wcpay_request:ok") {
                         $.alert('支付成功', function () {
                             history.back();

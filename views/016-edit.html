@@ -16,7 +16,7 @@
     <script type="text/javascript" src="../static/weui-master/jquery-weui.min.js"></script>
 
     <!-- 引入vue.js-->
-    <script type="text/javascript" src="../static/js/lib/vue.js"></script>
+    <script type="text/javascript" src="../static/js/lib/vue.min.js"></script>
     <script type="text/javascript" src="../static/js/lib/global.min.js"></script>
 
     <!--图标-->
@@ -61,6 +61,7 @@
         methods: {
             fnGetMyInfo: function () {
                 this.oMyInfo = JSON.parse(localStorage.getItem('oMyInfo'));
+                localStorage.removeItem('oMyInfo');
                 if (global.GetArgsFromHref(this.loc, 'mode') === 'username') {
                     this.sContent = this.oMyInfo.username;
                 } else {
@@ -68,20 +69,35 @@
                 }
             },
             fnSaveInfo: function() {
+                var that = this;
+                var type = 'PUT';
+                var url = '/wechat/modifyMyInfo';
                 if (global.GetArgsFromHref(this.loc, 'mode') === 'username') {
                     this.oMyInfo.username = this.sContent;
+                    if (global.verifyIsNull(this.sContent)) {
+                        $.alert("不能为空");
+                        return;
+                    }
                 } else {
                     this.oMyInfo.introduction = this.sContent;
                 }
-                localStorage.setItem('oMyInfo', JSON.stringify(this.oMyInfo));
-                if (!global.verifyIsNull(this.sContent)) {
-                    $.alert("保存成功", function() {
-                        history.back();
-                    });
-                } else {
-                    $.alert("内容不能为空");
+
+                function ajaxSuccess(data) {
+                    if (data.success) {
+                        $.alert("保存成功" + (data.message ? ('，' + data.message) : '') + '!', function() {
+                            history.back();
+                        });
+                    } else {
+                        if (data.message === 'USER_BAN_CODE') {
+                            $.alert('账户禁用，无法操作');
+                            return;
+                        } else {
+                            $.alert('保存失败');
+                        }
+                    }
                 }
 
+                global.ajax(type, this.oMyInfo, url, ajaxSuccess);
             }
         },
     })

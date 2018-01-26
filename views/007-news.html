@@ -263,15 +263,15 @@
                     function ajaxSuccess(data) {
                         if (data.success) {
                             that.fnGetSysMsgDetails();
-                            //防止过快点赞造成服务器产生错误数据
-                            setTimeout(function() {
-                                that.bPreventClickSupport = false;
-                            }, 300);
                         } else {
                             if (data.message === 'USER_BAN_CODE') {
                                 $.alert('账户禁用，无法操作');
                             }
                         }
+                        //防止过快点赞造成服务器产生错误数据
+                        setTimeout(function() {
+                            that.bPreventClickSupport = false;
+                        }, 300);
                     }
                     global.ajax(type, postData, url, ajaxSuccess);
                     this.bPreventClickSupport = true;

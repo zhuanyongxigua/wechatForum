@@ -26,8 +26,8 @@
     <!--photoswipe结束-->
 
     <!-- 引入vue.js-->
-    <script type="text/javascript" src="../static/js/lib/vue.js"></script>
-    <script type="text/javascript" src="../static/js/lib/global.js"></script>
+    <script type="text/javascript" src="../static/js/lib/vue.min.js"></script>
+    <script type="text/javascript" src="../static/js/lib/global.min.js"></script>
 
     <!-- iview -->
     <link rel="stylesheet" href="../static/iview/dist/styles/iview.css">
@@ -419,15 +419,15 @@
                     function ajaxSuccess(data) {
                         if (data.success) {
                             that.fnGetPostDetails();
-                            //防止过快点赞造成服务器产生错误数据
-                            setTimeout(function() {
-                                that.bPreventClickSupport = false;
-                            }, 300);
                         } else {
                             if (data.message === 'USER_BAN_CODE') {
                                 $.alert('账户禁用，无法操作');
                             }
                         }
+                        //防止过快点赞造成服务器产生错误数据
+                        setTimeout(function() {
+                            that.bPreventClickSupport = false;
+                        }, 300);
                     }
                     global.ajax(type, postData, url, ajaxSuccess);
                     this.bPreventClickSupport = true;

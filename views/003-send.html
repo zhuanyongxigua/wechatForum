@@ -17,7 +17,7 @@
 
     <!-- 引入vue.js-->
     <script type="text/javascript" src="../static/js/lib/vue.min.js"></script>
-    <script type="text/javascript" src="../static/js/lib/global.js"></script>
+    <script type="text/javascript" src="../static/js/lib/global.min.js"></script>
 
     <!-- fileuploader -->
     <script type="text/javascript" src="../static/js/lib/jquery.ui.widget.js"></script>
@@ -245,7 +245,7 @@
                     var postData = {};
                     var that = this;
                     var type = 'POST';
-                    var url = '/dictionary/searchThreshold';
+                    var url = 'api/getRoleType';
 
                     postData.type = 'TopicType';
 
@@ -389,7 +389,7 @@
                             if (sCurType === 'image') {
                                 that.aFileImage.forEach(function(ele, index) {
                                     if (ele.id === iCurId) {
-                                        that.aFileImage.splice(index, index + 1);
+                                        that.aFileImage.splice(index, 1);
                                     }
                                 });
                                 localStorage.setItem('aFileImage', JSON.stringify(that['aFileImage']));
@@ -397,7 +397,7 @@
                             if (sCurType === 'video') {
                                 that.aFileVideo.forEach(function(ele, index) {
                                     if (ele.id === iCurId) {
-                                        that.aFileVideo.splice(index, index + 1);
+                                        that.aFileVideo.splice(index, 1);
                                     }
                                 });
                                 localStorage.setItem('aFileVideo', JSON.stringify(that['aFileVideo']));
@@ -494,15 +494,18 @@
                             }
                         },
                         done: function(e, data) {
-                            if (data.result.message === 'USER_BAN_CODE') {
-                                $.alert('账户禁用，无法操作');
-                            }
-                            var oData = JSON.parse(JSON.stringify(data.result));
-                            oData.path = global.baseurl + (oParameters.id === '#fileImage' ? oData.path : oData.path.slice(2));
-                            that[oParameters.localStorageName].push(oData);
-                            localStorage.setItem(oParameters.localStorageName, JSON.stringify(that[oParameters.localStorageName]));
-                            if (global.GetArgsFromHref(that.loc, 'mode')) {
-                                that.aFileModifyNewMedia.push(oData);
+                            if ('path' in data.result) {
+                                if (data.result.path === 'USER_BAN_CODE') {
+                                    $.alert('账户禁用，无法操作');
+                                    return;
+                                }
+                                var oData = JSON.parse(JSON.stringify(data.result));
+                                oData.path = global.baseurl + (oParameters.id === '#fileImage' ? oData.path : oData.path.slice(2));
+                                that[oParameters.localStorageName].push(oData);
+                                localStorage.setItem(oParameters.localStorageName, JSON.stringify(that[oParameters.localStorageName]));
+                                if (global.GetArgsFromHref(that.loc, 'mode')) {
+                                    that.aFileModifyNewMedia.push(oData);
+                                }
                             }
                         }
                     });

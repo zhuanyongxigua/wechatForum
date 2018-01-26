@@ -17,7 +17,7 @@
     <script type="text/javascript" src="../static/weui-master/jquery-weui.min.js"></script>
 
     <!-- 引入vue.js-->
-    <script type="text/javascript" src="../static/js/lib/vue.js"></script>
+    <script type="text/javascript" src="../static/js/lib/vue.min.js"></script>
     <script type="text/javascript" src="../static/js/lib/global.min.js"></script>
 
     <!-- iview -->
@@ -60,11 +60,6 @@
 <body class="body_in">
     <div id="interest">
         <div class="send_top" style="border: 0;">
-            <!--<label for="checkboxSport" class="interest_item">-->
-                <!--<input id="checkboxSport" type="checkbox" class="input_class">-->
-                <!--<span class="input_span"></span>-->
-                <!--运动-->
-            <!--</label>-->
             <Checkbox v-for="item in aHobbyType" v-model="item.status" class="interest_item">{{item.name}}</Checkbox>
         </div>
 
@@ -107,6 +102,7 @@
                         that.aHobbyType.map(function(ele) {return ele.status = false});
                         that.$nextTick(function() {
                             that.oMyInfo = JSON.parse(localStorage.getItem('oMyInfo'));
+                            localStorage.removeItem('oMyInfo');
                             that.oMyInfo.hobby.split('、').forEach(function(ele) {
                                 that.aHobbyType.find(function(element) {return element.id == ele;}).status = true;
                             });
@@ -115,6 +111,9 @@
                     global.ajax(type, postData, url, ajaxSuccess);
                 },
                 fnSaveInfo: function() {
+                    var that = this;
+                    var type = 'PUT';
+                    var url = '/wechat/modifyMyInfo';
                     var aHobbyCode = [];
                     var aHobbyType = [];
                     this.aHobbyType.forEach(function(ele) {
@@ -125,10 +124,23 @@
                     });
                     this.oMyInfo.hobby = aHobbyCode.join('、');
                     this.oMyInfo.hobbyStr = aHobbyType.join('、');
-                    localStorage.setItem('oMyInfo', JSON.stringify(this.oMyInfo));
-                    $.alert("保存成功", function() {
-                        history.back();
-                    });
+
+                    function ajaxSuccess(data) {
+                        if (data.success) {
+                            $.alert("保存成功" + (data.message ? ('，' + data.message) : '') + '!', function() {
+                                history.back();
+                            });
+                        } else {
+                            if (data.message === 'USER_BAN_CODE') {
+                                $.alert('账户禁用，无法操作');
+                                return;
+                            } else {
+                                $.alert('保存失败');
+                            }
+                        }
+                    }
+
+                    global.ajax(type, this.oMyInfo, url, ajaxSuccess);
                 }
             },
         })
