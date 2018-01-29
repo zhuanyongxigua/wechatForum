@@ -3,7 +3,7 @@
 */
 
 function GlobalConstructorFunction() {
-    this.baseurl = './';
+    this.baseurl = 'http://192.168.1.111/forum';
 }
 
 GlobalConstructorFunction.prototype.ajax = function(_sAjaxType, _oAjaxPostData, _sAjaxUrl, _fnAjaxSuccess) {

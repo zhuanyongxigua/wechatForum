@@ -4,8 +4,20 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var browserSync = require("browser-sync").create();
 
 var RouteApi = require('./routes/router.api.js');
+
+browserSync.init({
+    files: ["static/js/lib/*.js", "views/*.html", "static/css/style.css"],
+    server: true,
+    startPath: "views/001-home.html",
+    localOnly: true,
+    port: 8081,
+    notify: false,
+    reloadOnRestart: false,
+    open: false
+});
 
 var app = express();
 
@@ -13,7 +25,7 @@ app.all("*", (req, res, next) => {      //支持跨域调试
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
     res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
-    res.header("X-Powered-By",' 3.2.1')
+    res.header("X-Powered-By",' 3.2.1');
     if(req.method=="OPTIONS") res.send(200);/*让options请求快速返回*/
     else  next();
 });
