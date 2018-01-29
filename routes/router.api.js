@@ -7,9 +7,8 @@ var router = express.Router();
 
 router.get('/', (req, res, next) => {
 
-});
-
-router.post('/getRoleType', (req, res, next) => {
+})
+    .post('/getRoleType', (req, res, next) => {
      res.json([{
          code: null,
          id: 70,
@@ -18,6 +17,11 @@ router.post('/getRoleType', (req, res, next) => {
          status: true,
          type: "TopicType"
      }]);
-});
+})
+    .put('/addUserPost', (req, res, next) => {
+        console.log(req);
+
+    })
+
 
 module.exports = router;

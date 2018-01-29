@@ -263,7 +263,7 @@
                     var postData = {};
                     var that = this;
                     var type = 'PUT';
-                    var url = '/wechat/';
+                    var url = '/api/';
                     var oAudioObj = {};
 
                     //表单验证
@@ -301,7 +301,7 @@
                             postData.tFileVos.push(oAudioObj);
                         }
                     } else {
-                        url = url + 'addUserTopic';
+                        url = url + 'addUserPost';
                         this.aFileImage.forEach(function(ele) {
                             var obj = {};
                             obj.id = ele.id;
