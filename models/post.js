@@ -3,9 +3,11 @@ var Schema = mongoose.Schema;
 
 var PostSchema = new Schema({
     title: String,
-    content: String
+    content: String,
+    type: String,
+    tFileVos: Array
 });
 
 var PostModel = mongoose.model('Post', PostSchema);
 
-module.export = PostModel;
+module.exports = PostModel;

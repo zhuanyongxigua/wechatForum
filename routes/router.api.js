@@ -3,24 +3,42 @@
  */
 
 var express = require('express');
+var PostModel = require('../models/post')
 var router = express.Router();
 
 router.get('/', (req, res, next) => {
 
 })
     .post('/getRoleType', (req, res, next) => {
-     res.json([{
+        res.json([{
          code: null,
          id: 70,
          name: "运动",
          pcode: null,
          status: true,
          type: "TopicType"
-     }]);
-})
+        }]);
+    })
     .put('/addUserPost', (req, res, next) => {
-        console.log(req);
+        var post = new PostModel();
+        post.title = req.body.title;
+        post.content = req.body.content;
+        post.type = req.body.type;
+        post.tFileVos = req.body.tFileVos;
+        // console.log(req);
+        post.save((err, doc) => {
+            res.json({success: true})
+        });
+    })
+    .post('/getPostList', (req, res, next) => {
+        PostModel.find({}, {}, function (err, posts) {
+            if (err) {
+              res.json({ success: false });
+              return;
+            }
 
+            res.json({ success: true, postsList: posts });
+          });
     })
 
 

@@ -21,6 +21,7 @@ browserSync.init({
 });
 
 var app = express();
+app.set('view engine', 'jade');
 
 app.all("*", (req, res, next) => {      //支持跨域调试
     res.header("Access-Control-Allow-Origin", "*");

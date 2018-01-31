@@ -357,8 +357,8 @@
                 } else {
                     this.fnGetPostList(true);
                 }
-                this.fnGetType();
-                this.fnGetSysMsg();
+                // this.fnGetType();
+                // this.fnGetSysMsg();
             },
             methods: {
                 fnGetType: function() {
@@ -382,7 +382,7 @@
                 fnGetPostList: function(bIsSearchButton) {
                     var postData = {};
                     var type = 'POST';
-                    var url = '/wechat/searchTopicsList';
+                    var url = '/api/getPostList';
                     var that = this;
 
                     postData.pageSize = 10;
