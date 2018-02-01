@@ -11,12 +11,12 @@ router.get('/', (req, res, next) => {
 })
     .post('/getRoleType', (req, res, next) => {
         res.json([{
-         code: null,
-         id: 70,
-         name: "运动",
-         pcode: null,
-         status: true,
-         type: "TopicType"
+            code: null,
+            id: 70,
+            name: "运动",
+            pcode: null,
+            status: true,
+            type: "TopicType"
         }]);
     })
     .put('/addUserPost', (req, res, next) => {
@@ -31,15 +31,18 @@ router.get('/', (req, res, next) => {
         });
     })
     .post('/getPostList', (req, res, next) => {
-        PostModel.find({}, {}, function (err, posts) {
-            if (err) {
-              res.json({ success: false });
-              return;
-            }
-
-            res.json({ success: true, postsList: posts });
-          });
+        let fnGetCount = new Promise((resolve, reject) => {
+            PostModel.count({}, (err, c)=> err ? reject(err) : resolve(c))
+        });
+        fnGetCount.then(res => {
+            PostModel.find({}, {}, (err, posts) => {
+                if (err) {
+                    res.json({ success: false });
+                    return;
+                }
+                res.json({ success: true, postsList: posts });
+            });
+        })
     })
-
 
 module.exports = router;
