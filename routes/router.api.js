@@ -34,7 +34,8 @@ router.get('/', (req, res, next) => {
         let fnGetCount = new Promise((resolve, reject) => {
             PostModel.count({}, (err, c)=> err ? reject(err) : resolve(c))
         });
-        fnGetCount.then(res => {
+        fnGetCount.then(resp => {
+            console.log(resp);
             PostModel.find({}, {}, (err, posts) => {
                 if (err) {
                     res.json({ success: false });
