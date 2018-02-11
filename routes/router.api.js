@@ -35,13 +35,19 @@ router.get('/', (req, res, next) => {
             PostModel.count({}, (err, c)=> err ? reject(err) : resolve(c))
         });
         fnGetCount.then(resp => {
-            console.log(resp);
             PostModel.find({}, {}, (err, posts) => {
+                let aPosts = [...posts];
                 if (err) {
                     res.json({ success: false });
                     return;
                 }
-                res.json({ success: true, postsList: posts });
+                console.log(JSON.parse(JSON.stringify(aPosts)));
+                aPosts.map((ele, index) => {
+                    console.log(ele);
+                    ele.id = ele._id
+                });
+                console.log(JSON.parse(JSON.stringify(aPosts)));
+                res.json({ total: resp, rows: aPosts});
             });
         })
     })
