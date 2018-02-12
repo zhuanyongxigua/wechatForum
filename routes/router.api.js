@@ -38,15 +38,14 @@ router.get('/', (req, res, next) => {
             PostModel.find({}, {}, (err, posts) => {
                 let aPosts = [...posts];
                 if (err) {
-                    res.json({ success: false });
+                    res.json({6 success: false });
                     return;
                 }
-                console.log(JSON.parse(JSON.stringify(aPosts)));
                 aPosts.map((ele, index) => {
                     console.log(ele);
-                    ele.id = ele._id
+                    ele._doc.id = ele._id
                 });
-                console.log(JSON.parse(JSON.stringify(aPosts)));
+                console.log(aPosts);
                 res.json({ total: resp, rows: aPosts});
             });
         })
