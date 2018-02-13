@@ -41,7 +41,13 @@ router.get('/', (req, res, next) => {
                     res.json({ success: false });
                     return;
                 }
-                res.json({ success: true, postsList: posts });
+                res.json({
+                    pageNum: 1,
+                    pageSize: 10,
+                    pages: 2,
+                    rows: posts,
+                    total: resp
+                });
             });
         })
     })

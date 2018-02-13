@@ -41,10 +41,10 @@ GlobalConstructorFunction.prototype.fnAllImgDelayLoad = function(_isUseWithPhoto
         if (sTrueSrc) {
             oImg.src = sTrueSrc;
             oImg.onload = function() {
-                var size = oImg.width + 'x' + oImg.height;
                 _oCurImgNode.src = sTrueSrc;
                 _oCurImgNode.isLoaded = true;
                 if (_isUseWithPhotoSwipe && _oCurImgNode.parentNode.tagName === 'A') {
+                    var size = oImg.width + 'x' + oImg.height;
                     _oCurImgNode.parentNode.setAttribute('data-size', size);
                     _oCurImgNode.parentNode.setAttribute('data-med-size', size);
                 }
