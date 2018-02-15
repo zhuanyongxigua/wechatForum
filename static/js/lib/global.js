@@ -3,7 +3,7 @@
 */
 
 function GlobalConstructorFunction() {
-    this.baseurl = 'http://192.168.1.111/forum';
+    this.baseurl = 'http://localhost:3000';
 }
 
 GlobalConstructorFunction.prototype.ajax = function(_sAjaxType, _oAjaxPostData, _sAjaxUrl, _fnAjaxSuccess) {

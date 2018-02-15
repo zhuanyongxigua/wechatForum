@@ -3,7 +3,11 @@
  */
 
 var express = require('express');
-var PostModel = require('../models/post')
+var PostModel = require('../models/post');
+var imagesModel = require('../models/imgUpload');
+var fs = require('fs');
+var multer = require('multer');
+var upload = multer({ dest: 'uploads/' });
 var router = express.Router();
 
 router.get('/', (req, res, next) => {
@@ -30,6 +34,7 @@ router.get('/', (req, res, next) => {
             res.json({success: true})
         });
     })
+
     .post('/getPostList', (req, res, next) => {
         let fnGetCount = new Promise((resolve, reject) => {
             PostModel.count({}, (err, c)=> err ? reject(err) : resolve(c))
@@ -38,17 +43,29 @@ router.get('/', (req, res, next) => {
             PostModel.find({}, {}, (err, posts) => {
                 let aPosts = [...posts];
                 if (err) {
-                    res.json({6 success: false });
+                    res.json({success: false });
                     return;
                 }
                 aPosts.map((ele, index) => {
-                    console.log(ele);
-                    ele._doc.id = ele._id
+                    ele._doc.id = ele.id
                 });
-                console.log(aPosts);
                 res.json({ total: resp, rows: aPosts});
             });
         })
+    })
+    .post('/uploadImage', upload.array('file', 12), (req, res, next) => {
+        var imgUpload = new imagesModel();
+        imgUpload.img.data = fs.readFileSync(req.files[0].path)
+        imgUpload.img.contentType = req.files[0].mimetype;
+        imgUpload.save((err, doc) => {
+            if (err) {
+                console.log(err);
+                return
+            }
+            console.log(doc);
+            res.json({success: true});
+
+        });
     })
 
 module.exports = router;

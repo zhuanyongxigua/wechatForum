@@ -55,9 +55,9 @@
         <div class="send_top">
             <div>
                 <select v-model="oFormInfo.typeCode" class="post_title_input" style="padding-left: 0px;">
-                <option value="">请选择类别</option>
-                <option v-for="item in aType" :value="item.id" v-text="item.name"></option>
-            </select>
+                    <option value="">请选择类别</option>
+                    <option v-for="item in aType" :value="item.id" v-text="item.name"></option>
+                </select>
             </div>
             <input v-model="oFormInfo.title" class="post_title_input" placeholder="请输入标题" />
             <textarea v-model="oFormInfo.content" class="post_textarea" placeholder="请输入内容"></textarea>
@@ -88,13 +88,13 @@
             <div class="medias_tab_btns">
                 <span class="medias_tab_btn" @click="fnChangeTab(1)" :class="{selected:tab[1]}">
                 <i class="ion-android-image"></i>
-            </span>
+            <!-- </span>
                 <span class="medias_tab_btn" @click="fnChangeTab(2)" :class="{selected:tab[2]}">
                 <i class="ion-ios-film"></i>
             </span>
                 <span class="medias_tab_btn" @click="fnChangeTab(3)" :class="{selected:tab[3]}">
                 <i class="ion-ios-mic"></i>
-            </span>
+            </span> -->
             </div>
 
             <div class="post_medias">
@@ -121,15 +121,6 @@
         </div>
 
         <span class="send_btn ripple_box" @click="fnPublishPost">确认发送</span>
-
-        <div class="rwm">
-            <img src="../static/img/qr.png" />
-            <div>扫码关注领奖台公众号</div>
-        </div>
-
-        <div class="weui-footer" style="float:left; width:100%;">
-            <p class="weui-footer__text">由天津十壹维度科技提供技术支持</p>
-        </div>
 
         <div style="height: 50px; width: 100%; float: left;"></div>
         <div class="foot_menu">
@@ -234,7 +225,8 @@
                                     'startRecord',
                                     'stopRecord',
                                     'playVoice',
-                                    'uploadVoice'
+                                    'uploadVoice',
+                                    'chooseImage'
                                 ]
                             });
                         }
@@ -510,11 +502,22 @@
                         }
                     });
                 },
+                fnWechatChooseImg: function() {
+                    wx.chooseImage({
+                        count: 1, // 默认9
+                        sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+                        sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+                        success: function (res) {
+                            console.log('chooseSuccess');
+                            var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+                        }
+                    });
+                }
             },
             mounted: function() {
                 this.fnCallUploadPlugin({
                     id: '#fileImage',
-                    url: global.baseurl + '/wechat/uploadMgFile',
+                    url: global.baseurl + '/api/uploadImage',
                     localStorageName: 'aFileImage'
                 });
                 this.fnCallUploadPlugin({

@@ -5,6 +5,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var browserSync = require("browser-sync").create();
+var bytes = require('bytes');
+var connectBusboy = require('connect-busboy');
 require('./models/init');
 
 var RouteApi = require('./routes/router.api.js');
@@ -23,7 +25,6 @@ browserSync.init({
 var app = express();
 app.set('view engine', 'jade');
 
-console.log('hahaha');
 app.all("*", (req, res, next) => {      //支持跨域调试
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
@@ -41,6 +42,12 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 app.use(cookieParser());
+// console.log(multer);
+// app.use(multer({ dest: './uploads/',
+//  rename: function (fieldname, filename) {
+//    return filename;
+//  },
+// }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // app.use('/', (req, res, next) => {
@@ -56,7 +63,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 //     });
 // });
 app.use('/static', express.static(path.join(__dirname, 'static')));
-app.use('/views', express.static('views'));
+app.use('/views', express.static(path.join(__dirname, 'views')));
+
+app.use(
+  connectBusboy({
+    limits: {
+      fileSize: 10 * 1024 * 1024
+    }
+  })
+);
+
 app.use('/api', RouteApi);
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
