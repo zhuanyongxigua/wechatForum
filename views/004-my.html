@@ -33,7 +33,7 @@
 <body class="body_in">
     <div id="my">
         <div class="usercenter_top">
-            <div class="usercenter_head">
+            <div class="usercenter_head" @click="fnLoginWithGithub">
                 <img class="usercenter_head_img" :src="oMyInfo.iconUrl" />
             </div>
 
@@ -113,9 +113,12 @@
             },
             //加载组件时发出请求
             created: function() {
-                this.fnGetMyInfo();
+                // this.fnGetMyInfo();
             },
             methods: {
+                fnLoginWithGithub: function() {
+                    window.location.href = 'http://011ee2cd.ngrok.io/api/auth/github';
+                },
                 fnGetMyInfo: function() {
                     var postData = {};
                     var that = this;

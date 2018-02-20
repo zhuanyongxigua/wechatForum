@@ -16,7 +16,7 @@
     <script type="text/javascript" src="../static/weui-master/jquery-weui.min.js"></script>
 
     <!-- 引入vue.js-->
-    <script type="text/javascript" src="../static/js/lib/vue.min.js"></script>
+    <script type="text/javascript" src="../static/js/lib/vue.js"></script>
     <script type="text/javascript" src="../static/js/lib/global.min.js"></script>
 
     <!--图标-->
@@ -209,9 +209,9 @@
                     <li>
                         <div class="searth_box" v-show="tab[1]">
                             <div class="searth_box_in">
-                                <select v-model="oQueryInfo.typeCode" class="form-control options">
-                                <option v-for="item in aType" :value="item.id" v-text="item.name"></option>
-                            </select>
+                                <select v-model="oQueryInfo.typeCode" class="form-control options" @change="fnGetPostList(true)">
+                                    <option v-for="item in aType" :value="item.id" v-text="item.name"></option>
+                                </select>
                                 <input v-model="oQueryInfo.queryStr" type="text" class="searth_input" placeholder="搜索标题" />
                                 <span class="searth_btn" @click="fnGetPostList(true)">搜索</span>
                             </div>
@@ -357,14 +357,14 @@
                 } else {
                     this.fnGetPostList(true);
                 }
-                // this.fnGetType();
+                this.fnGetType();
                 // this.fnGetSysMsg();
             },
             methods: {
                 fnGetType: function() {
                     var postData = {};
                     var type = 'POST';
-                    var url = '/dictionary/searchThreshold';
+                    var url = '/api/getRoleType';
                     var that = this;
 
                     postData.type = 'TopicType';
@@ -409,7 +409,7 @@
                                 if (ele.tFileVos) {
                                     ele.tFileVos.forEach(function(element) {
                                         if (element.type === 1) {
-                                            element.path = global.baseurl + element.path;
+                                            element.path = global.baseurl + '/api/getImage/' + element.path;
                                             ele.aFileImage.push(element);
                                         } else if (element.type === 2) {
                                             element.path = global.baseurl + element.path.slice(2);

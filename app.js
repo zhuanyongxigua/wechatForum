@@ -7,9 +7,14 @@ var bodyParser = require('body-parser');
 var browserSync = require("browser-sync").create();
 var bytes = require('bytes');
 var connectBusboy = require('connect-busboy');
+var session = require('express-session');
+var passport = require('passport');
+var GitHubStrategy = require('passport-github').Strategy;
+
 require('./models/init');
 
 var RouteApi = require('./routes/router.api.js');
+var UserModel = require('./models/user')
 
 browserSync.init({
     files: ["static/js/lib/*.js", "views/*.html", "static/css/style.css"],
@@ -41,27 +46,56 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
 }));
+app.use(session({secret: '12345-67890-09876-54321'}));
 app.use(cookieParser());
-// console.log(multer);
-// app.use(multer({ dest: './uploads/',
-//  rename: function (fieldname, filename) {
-//    return filename;
-//  },
-// }));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new GitHubStrategy({
+    signinValid: true,
+    clientID: "cf8770d617d9298696c1",
+    clientSecret: "db99f0e1491b0c1a27b59ada475521e18b469a12",
+    callbackURL: "http://011ee2cd.ngrok.io/api/auth/github/callback"
+  },
+  function(accessToken, refreshToken, profile, cb) {
+      console.log("strategyCallback");
+      console.log(accessToken);
+      console.log(refreshToken);
+      console.log(profile);
+      UserModel.findOne({ githubId: profile.id }, function(err, user) {
+        if(err) {
+          console.log(err); // handle errors!
+        }
+        if (!err && user !== null) {
+          cb(null, user);
+        } else {
+          user = new UserModel({
+            githubId: profile.id
+          });
+          user.OauthId = profile.id;
+          user.OauthToken = accessToken;
+          user.save(function(err) {
+            if(err) {
+              console.log(err); // handle errors!
+            } else {
+              console.log("saving user ...");
+              cb(null, user);
+            }
+          });
+        }
+      });
+  }
+));
+passport.serializeUser(function(user, done) {
+    console.log(user);
+    done(null, user);
+});
+
+passport.deserializeUser(function(user, done) {
+    done(null, user);
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use('/', (req, res, next) => {
-//     var option = {
-//         root: __dirname + '/views/',
-//     }
-//     res.sendFile('001-home.html', option, (err) => {
-//         if (err) {
-//             next(err);
-//         } else {
-//             console.log('sent:');
-//         }
-//     });
-// });
 app.use('/static', express.static(path.join(__dirname, 'static')));
 app.use('/views', express.static(path.join(__dirname, 'views')));
 

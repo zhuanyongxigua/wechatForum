@@ -5,6 +5,7 @@ var PostSchema = new Schema({
     title: String,
     content: String,
     type: String,
+    typeCode: Number,
     tFileVos: Array
 });
 
