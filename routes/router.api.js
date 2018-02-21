@@ -14,7 +14,12 @@ var UserModel = require('../models/user');
 var Verify = require('../middleware/verify');
 var router = express.Router();
 
-
+const opts = {
+  path: '/',
+  maxAge: 1000 * 60 * 60 * 24 * 30,
+  signed: true,
+  httpOnly: true
+};
 
 router.get('/', (req, res, next) => {
 
@@ -152,11 +157,9 @@ router.get('/', (req, res, next) => {
                     });
                 }
                 var token = Verify.getToken(user);
-                res.status(200).json({
-                    status: 'Login successful!',
-                    success: true,
-                    token: token
-                });
+                console.log(req);
+                res.cookie("configauthCookieName", token, opts);
+                res.redirect("/views/001-home.html");
             });
         })(req,res,next);
     });

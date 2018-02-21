@@ -1,7 +1,7 @@
 var jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
 
 exports.getToken = function (user) {
-    return jwt.sign(user, '12345-67890-09876-54321', {
+    return jwt.sign(user.toJSON(), '12345-67890-09876-54321', {
         expiresIn: 3600
     });
 };

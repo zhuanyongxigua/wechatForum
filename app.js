@@ -47,14 +47,14 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 app.use(session({secret: '12345-67890-09876-54321'}));
-app.use(cookieParser());
+app.use(cookieParser('12345-67890-09876-54321'));
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new GitHubStrategy({
     signinValid: true,
     clientID: "cf8770d617d9298696c1",
     clientSecret: "db99f0e1491b0c1a27b59ada475521e18b469a12",
-    callbackURL: "http://011ee2cd.ngrok.io/api/auth/github/callback"
+    callbackURL: "http://55594ac7.ngrok.io/api/auth/github/callback"
   },
   function(accessToken, refreshToken, profile, cb) {
       console.log("strategyCallback");
