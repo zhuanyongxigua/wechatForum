@@ -8,12 +8,15 @@ exports.getToken = function (user) {
 
 exports.verifyOrdinaryUser = function (req, res, next) {
     // check header or url parameters or post parameters for token
-    var token = req.body.token || req.query.token || req.headers['x-access-token'];
+    const token =
+        req.headers['x-access-token'] ||
+        req.signedCookies['configauthCookieName'] ||
+        '';
 
     // decode token
     if (token) {
         // verifies secret and checks exp
-        jwt.verify(token, config.secretKey, function (err, decoded) {
+        jwt.verify(token, '12345-67890-09876-54321', function (err, decoded) {
             if (err) {
                 var err = new Error('You are not authenticated!');
                 err.status = 401;

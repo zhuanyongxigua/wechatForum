@@ -54,7 +54,7 @@ passport.use(new GitHubStrategy({
     signinValid: true,
     clientID: "cf8770d617d9298696c1",
     clientSecret: "db99f0e1491b0c1a27b59ada475521e18b469a12",
-    callbackURL: "http://55594ac7.ngrok.io/api/auth/github/callback"
+    callbackURL: "http://localhost:3000/api/auth/github/callback"
   },
   function(accessToken, refreshToken, profile, cb) {
       console.log("strategyCallback");

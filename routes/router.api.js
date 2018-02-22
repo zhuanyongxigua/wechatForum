@@ -65,7 +65,7 @@ router.get('/', (req, res, next) => {
         });
     })
 
-    .post('/getPostList', (req, res, next) => {
+    .post('/getPostList', Verify.verifyOrdinaryUser, (req, res, next) => {
         console.log(req);
         let fnGetCount = new Promise((resolve, reject) => {
             PostModel.count({}, (err, c)=> err ? reject(err) : resolve(c))
