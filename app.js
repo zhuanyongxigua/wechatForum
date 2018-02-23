@@ -4,7 +4,6 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var browserSync = require("browser-sync").create();
 var bytes = require('bytes');
 var connectBusboy = require('connect-busboy');
 var session = require('express-session');
@@ -15,17 +14,6 @@ require('./models/init');
 
 var RouteApi = require('./routes/router.api.js');
 var UserModel = require('./models/user')
-
-browserSync.init({
-    files: ["static/js/lib/*.js", "views/*.html", "static/css/style.css"],
-    server: true,
-    startPath: "views/001-home.html",
-    localOnly: true,
-    port: 8081,
-    notify: false,
-    reloadOnRestart: false,
-    open: false
-});
 
 var app = express();
 app.set('view engine', 'jade');
@@ -97,7 +85,6 @@ passport.deserializeUser(function(user, done) {
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/static', express.static(path.join(__dirname, 'static')));
-app.use('/views', express.static(path.join(__dirname, 'views')));
 
 app.use(
   connectBusboy({
