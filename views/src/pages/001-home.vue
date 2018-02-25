@@ -1,4 +1,4 @@
-<style type="text/css">
+<style type="text/css" scoped>
     #wrapper {
         position: absolute;
         z-index: 1;
@@ -67,12 +67,12 @@
     }
 
     .card_img {
-        background: url("../../static/img/imgLoading.gif") no-repeat center;
+        background: url("../static/img/imgLoading.gif") no-repeat center;
         background-size: 30px 30px;
     }
 
     .head_icon_img {
-        background: url("../../static/img/imgLoading.gif") no-repeat center;
+        background: url("../static/img/imgLoading.gif") no-repeat center;
         background-size: 10px 10px;
     }
 </style>
@@ -80,7 +80,7 @@
 <template class="body_in">
     <div id="home">
         <div class="share_box" :class="{show:clickShare}" @click="clickShare = false">
-            <img class="share" src="" true-src="../../static/img/share.png">
+            <img class="share" src="" true-src="../static/img/share.png">
             <div class="shade"></div>
         </div>
 
@@ -157,7 +157,7 @@
                                         </a>
                                     </div>
                                     <div class="demo-gallery" v-if="item.aFileVideo.length">
-                                        <img v-for="videoItem in item.aFileVideo" class="card_img" src="../../static/img/video_player.jpg" alt="" />
+                                        <img v-for="videoItem in item.aFileVideo" class="card_img" src="../static/img/video_player.jpg" alt="" />
                                     </div>
                                     <div class="demo-gallery" v-if="item.oFileAudio.path">
                                         <audio :src="item.oFileAudio.path" controls></audio>
@@ -218,48 +218,48 @@
 </template>
 
 <script type="text/ecmascript-6">
-// import global
-var myScroll, pullUpFlag;
+    import {global} from '../static/js/lib/global'
+    import {initPhotoSwipeFromDOM} from '../static/js/lib/PhotoSwipeDemo'
+// var myScroll, pullUpFlag;
+//
+// function loaded() {
+//     myScroll = new IScroll('#wrapper', {
+//         probeType: 3,
+//         scrollbars: true,
+//         shrinkScrollbars: 'scale',
+//         interactiveScrollbars: true,
+//         startX: 0,
+//         startY: 0,
+//     });
+//     myScroll.on('scroll', function() {
+//         if (this.y < (this.maxScrollY - 40)) { //判断上拉是否到底且超过一段距离，如超过则说明需要获取更多消息
+//             if (home.bIsMore) {
+//                 pullUpFlag = 1;
+//             }
+//         }
+//     });
+//
+//     myScroll.on('scrollEnd', function() {
+//         if (pullUpFlag == 1) {
+//             if (home.bIsMore) {
+//                 pullUpFlag = 0;
+//                 setTimeout(function() {
+//                     home.iCurrentPage++;
+//                     home.fnGetPostList();
+//                 }, 500)
+//             }
+//         }
+//     });
+// }
+//
+    document.addEventListener('touchmove', function(e) {
+        e.preventDefault();
+    }, global.isPassive() ? {
+        capture: false,
+        passive: false
+    } : false);
 
-function loaded() {
-    myScroll = new IScroll('#wrapper', {
-        probeType: 3,
-        scrollbars: true,
-        shrinkScrollbars: 'scale',
-        interactiveScrollbars: true,
-        startX: 0,
-        startY: 0,
-    });
-    myScroll.on('scroll', function() {
-        if (this.y < (this.maxScrollY - 40)) { //判断上拉是否到底且超过一段距离，如超过则说明需要获取更多消息
-            if (home.bIsMore) {
-                pullUpFlag = 1;
-            }
-        }
-    });
-
-    myScroll.on('scrollEnd', function() {
-        if (pullUpFlag == 1) {
-            if (home.bIsMore) {
-                pullUpFlag = 0;
-                setTimeout(function() {
-                    home.iCurrentPage++;
-                    home.fnGetPostList();
-                }, 500)
-            }
-        }
-    });
-}
-
-document.addEventListener('touchmove', function(e) {
-    e.preventDefault();
-}, global.isPassive() ? {
-    capture: false,
-    passive: false
-} : false);
-
-    export default {
-        el: "#home",
+    export default{
         data () {
             return {
                 tab: {
@@ -329,7 +329,7 @@ document.addEventListener('touchmove', function(e) {
                     });
                     that.aType = aData;
                 }
-                global.ajax(type, postData, url, ajaxSuccess);
+                global.ajaxNative(type, postData, url, ajaxSuccess);
             },
             fnGetPostList: function(bIsSearchButton) {
                 var postData = {};
@@ -395,7 +395,7 @@ document.addEventListener('touchmove', function(e) {
 
 
                 }
-                global.ajax(type, postData, url, ajaxSuccess);
+                global.ajaxNative(type, postData, url, ajaxSuccess);
             },
             fnGetSysMsg: function() {
                 var postData = {};
@@ -424,7 +424,7 @@ document.addEventListener('touchmove', function(e) {
                         });
                     });
                 }
-                global.ajax(type, postData, url, ajaxSuccess);
+                global.ajaxNative(type, postData, url, ajaxSuccess);
             },
             fnChangeTab: function(index) {
                 for (var ele in this.tab) this.tab[ele] = false;
@@ -471,10 +471,10 @@ document.addEventListener('touchmove', function(e) {
         updated: function() {
             //每次上传新图片后，调整图片高度，使其与宽度相同。
             this.$nextTick(function() {
-                var w = $(window).get(0).innerWidth;
+                // var w = $(window).get(0).innerWidth;
                 //图片的宽度是通过CSS设置的
-                $('.card_img').css('height', w * 0.92 * 0.303333);
-                $('.card_talk_img').css('height', (w * 0.92 - 62) * 0.303333);
+                // $('.card_img').css('height', w * 0.92 * 0.303333);
+                // $('.card_talk_img').css('height', (w * 0.92 - 62) * 0.303333);
                 global.fnAllImgDelayLoad(true);
                 initPhotoSwipeFromDOM('demo-gallery');
             });

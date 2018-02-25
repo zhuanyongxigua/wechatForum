@@ -20,6 +20,59 @@ GlobalConstructorFunction.prototype.ajax = function(_sAjaxType, _oAjaxPostData, 
 }
 
 /*
+2018.02.24，于鑫
+原生的实现，无jQuer依赖，兼容IE6及以上
+*/
+GlobalConstructorFunction.prototype.ajaxNative = function(_sAjaxType, _oAjaxPostData, _sAjaxUrl, _fnAjaxSuccess) {
+    var _xhr = this.fnCreateXHR();
+    _xhr.open(_sAjaxType, this.baseurl + _sAjaxUrl, true);
+    if (_sAjaxType !== "GET" && _sAjaxType !== "get") {
+        _xhr.setRequestHeader("Content-type","application/json");
+    }
+
+    _xhr.onreadystatechange = function(){
+      if (_xhr.readyState === 4 && /^2\d{2}$/.test(_xhr.status)){
+          _fnAjaxSuccess(JSON.parse(_xhr.responseText));
+      }
+    }
+    _xhr.send(JSON.stringify(_oAjaxPostData) || null);
+}
+
+/*
+2018.02.24，于鑫
+懒加载判断浏览器对ajax的兼容性，兼容IE6及以上，以下不行
+*/
+GlobalConstructorFunction.prototype.fnCreateXHR = function(_sAjaxType, _oAjaxPostData, _sAjaxUrl, _fnAjaxSuccess) {
+    var flag = false,
+        xhr = null,
+        ary = [function () {
+          return new XMLHttpRequest;
+          }, function () {
+              return new ActiveXObject("Microsoft.XMLHTTP");
+          }, function () {
+              return new ActiveXObject("Msxml2.XMLHTTP");
+          }, function () {
+              return new ActiveXObject("Msxml3.XMLHTTP");
+        }];
+    for (var i = 0, len = ary.length; i < len; i++) {
+        var temp = ary[i];
+        try {
+            xhr = temp();
+            this.prototype.fnCreateXHR = temp;
+            console.log(this.fnCreateXHR);
+            flag = true;
+            break;
+        } catch (e) {
+
+        }
+    }
+    if (!flag) {
+        throw new Error("不支持ajax哦亲！您使用的可能是传说中的浏览器");
+    }
+    return xhr;
+}
+
+/*
 2018.01.20，于鑫
 图片的延时加载方法
 使用方法：
@@ -61,7 +114,7 @@ GlobalConstructorFunction.prototype.fnAllImgDelayLoad = function(_isUseWithPhoto
 
 GlobalConstructorFunction.prototype.rippleFunction = function(_rippleFunctionEvent) {
     var target = _rippleFunctionEvent.target;
-    if ($(target).hasClass("ripple_box")) {} else return false;
+    if(target.className.indexOf("ripple_box") !== -1) {} else return false;
     var rect = target.getBoundingClientRect();
     var ripple = target.querySelector('.ripple');
     if (!ripple) {
@@ -264,9 +317,21 @@ GlobalConstructorFunction.prototype.unsuccessfulAlert = function(id, alertText, 
 
 var global = new GlobalConstructorFunction;
 
-$(document).ready(function() {
-    global.preventPullDown();
-    global.auto_data_size();
-});
+document.ready = function() {
+    // global.preventPullDown();
+    // global.auto_data_size();
+};
 
 document.addEventListener('click', global.rippleFunction, false);
+
+
+/*
+2018.02.25，于鑫
+es6的import引入方式，如果在html的script标签中使用，需要将此代码注释掉，否则会报错。
+*/
+export {global}
+/*
+2018.02.25，于鑫
+commonJS的require引入方式，如果在html的script标签中使用，需要将此代码注释掉，否则会报错。
+*/
+// exports = global;

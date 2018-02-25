@@ -5,12 +5,16 @@
 </template>
 
 <script>
+// require("./static/css/style.css");
+
 export default {
   name: 'App'
 }
 </script>
 
 <style>
+/* @import url('./static/css/style.css') */
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
