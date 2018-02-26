@@ -67,12 +67,12 @@
     }
 
     .card_img {
-        background: url("../static/img/imgLoading.gif") no-repeat center;
+        background: url("../../static/img/imgLoading.gif") no-repeat center;
         background-size: 30px 30px;
     }
 
     .head_icon_img {
-        background: url("../static/img/imgLoading.gif") no-repeat center;
+        background: url("../../static/img/imgLoading.gif") no-repeat center;
         background-size: 10px 10px;
     }
 </style>
@@ -80,7 +80,7 @@
 <template class="body_in">
     <div id="home">
         <div class="share_box" :class="{show:clickShare}" @click="clickShare = false">
-            <img class="share" src="" true-src="../static/img/share.png">
+            <img class="share" src="" true-src="../../static/img/share.png">
             <div class="shade"></div>
         </div>
 
@@ -157,7 +157,7 @@
                                         </a>
                                     </div>
                                     <div class="demo-gallery" v-if="item.aFileVideo.length">
-                                        <img v-for="videoItem in item.aFileVideo" class="card_img" src="../static/img/video_player.jpg" alt="" />
+                                        <img v-for="videoItem in item.aFileVideo" class="card_img" src="../../static/img/video_player.jpg" alt="" />
                                     </div>
                                     <div class="demo-gallery" v-if="item.oFileAudio.path">
                                         <audio :src="item.oFileAudio.path" controls></audio>
@@ -218,8 +218,8 @@
 </template>
 
 <script type="text/ecmascript-6">
-    import {global} from '../static/js/lib/global'
-    import {initPhotoSwipeFromDOM} from '../static/js/lib/PhotoSwipeDemo'
+    import {global} from '../../static/js/lib/global'
+    import {initPhotoSwipeFromDOM} from '../../static/js/lib/PhotoSwipeDemo'
 // var myScroll, pullUpFlag;
 //
 // function loaded() {
