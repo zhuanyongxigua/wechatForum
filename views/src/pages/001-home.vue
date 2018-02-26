@@ -220,44 +220,7 @@
 <script type="text/ecmascript-6">
     import {global} from '../../static/js/lib/global'
     import {initPhotoSwipeFromDOM} from '../../static/js/lib/PhotoSwipeDemo'
-// var myScroll, pullUpFlag;
-//
-// function loaded() {
-//     myScroll = new IScroll('#wrapper', {
-//         probeType: 3,
-//         scrollbars: true,
-//         shrinkScrollbars: 'scale',
-//         interactiveScrollbars: true,
-//         startX: 0,
-//         startY: 0,
-//     });
-//     myScroll.on('scroll', function() {
-//         if (this.y < (this.maxScrollY - 40)) { //判断上拉是否到底且超过一段距离，如超过则说明需要获取更多消息
-//             if (home.bIsMore) {
-//                 pullUpFlag = 1;
-//             }
-//         }
-//     });
-//
-//     myScroll.on('scrollEnd', function() {
-//         if (pullUpFlag == 1) {
-//             if (home.bIsMore) {
-//                 pullUpFlag = 0;
-//                 setTimeout(function() {
-//                     home.iCurrentPage++;
-//                     home.fnGetPostList();
-//                 }, 500)
-//             }
-//         }
-//     });
-// }
-//
-    document.addEventListener('touchmove', function(e) {
-        e.preventDefault();
-    }, global.isPassive() ? {
-        capture: false,
-        passive: false
-    } : false);
+    import IScroll from 'iscroll'
 
     export default{
         data () {
@@ -279,11 +242,19 @@
                 aType: [],
                 aPostList: [],
                 aSysMsg: [],
-                sCurPostId: ''
+                sCurPostId: '',
+                pullUpFlag: null,
+                myScroll: null
             }
         } ,
         //加载组件时发出请求
         created: function() {
+            document.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+            }, global.isPassive() ? {
+                capture: false,
+                passive: false
+            } : false);
             //确保tab不会因为页面刷新而重置
             if (localStorage.getItem('oHomeTabInfo')) {
                 this.tab = JSON.parse(localStorage.getItem('oHomeTabInfo')).tab;
@@ -381,14 +352,14 @@
                     }
 
                     that.$nextTick(function() {
-                        if (myScroll != undefined) {
+                        if (that.myScroll != undefined) {
                             setTimeout(function() {
-                                myScroll.refresh();
+                                that.myScroll.refresh();
                             }, 100);
                         } else {
-                            loaded();
+                            this.fnLoadIscroll();
                             setTimeout(function() {
-                                myScroll.refresh();
+                                that.myScroll.refresh();
                             }, 100);
                         }
                     })
@@ -426,6 +397,36 @@
                 }
                 global.ajaxNative(type, postData, url, ajaxSuccess);
             },
+            fnLoadIscroll: function() {
+                let that = this;
+                this.myScroll = new IScroll('#wrapper', {
+                    probeType: 3,
+                    scrollbars: true,
+                    shrinkScrollbars: 'scale',
+                    interactiveScrollbars: true,
+                    startX: 0,
+                    startY: 0,
+                });
+                this.myScroll.on('scroll', function() {
+                    if (this.y < (this.maxScrollY - 40)) { //判断上拉是否到底且超过一段距离，如超过则说明需要获取更多消息
+                        if (that.bIsMore) {
+                            that.pullUpFlag = 1;
+                        }
+                    }
+                });
+
+                this.myScroll.on('scrollEnd', function() {
+                    if (that.pullUpFlag == 1) {
+                        if (that.bIsMore) {
+                            that.pullUpFlag = 0;
+                            setTimeout(function() {
+                                that.iCurrentPage++;
+                                that.fnGetPostList();
+                            }, 500)
+                        }
+                    }
+                });
+            },
             fnChangeTab: function(index) {
                 for (var ele in this.tab) this.tab[ele] = false;
                 this.tab[index] = true;
@@ -460,10 +461,10 @@
             //进入帖子详情页后后退，回到原来阅览位置，赋值部分在created钩子下
             this.$nextTick(function() {
                 if (this.sCurPostId) {
-                    loaded();
+                    this.fnLoadIscroll();
                     setTimeout(function() {
-                        myScroll.refresh();
-                        myScroll.scrollToElement(document.getElementById(home.sCurPostId), 0, 0, -100);
+                        this.myScroll.refresh();
+                        this.myScroll.scrollToElement(document.getElementById(home.sCurPostId), 0, 0, -100);
                     }, 100);
                 }
             })
