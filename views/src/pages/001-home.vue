@@ -287,21 +287,20 @@
             fnGetType() {
                 axios.post('/api/getRoleType', {type: 'TopicType'})
                     .then(res => {
-                        var aData = JSON.parse(JSON.stringify(data));
+                        console.log(res);
+                        var aData = JSON.parse(JSON.stringify(res.data));
                         aData.unshift({
                             id: '',
                             name: '全部'
                         });
-                        that.aType = aData;
+                        this.aType = aData;
                     })
                     .catch(err => {
-
+                        console.log(err);
                     })
             },
             fnGetPostList(bIsSearchButton) {
                 var postData = {};
-                var type = 'POST';
-                var url = '/api/getPostList';
 
                 postData.pageSize = 10;
                 if (bIsSearchButton) {
@@ -316,75 +315,77 @@
                 postData.param = {};
                 postData.param.topicVo = this.oQueryInfo;
 
-                global.ajaxNative(type, postData, url, (data) => {
-                    var aData = JSON.parse(JSON.stringify(data));
-                    if (aData.rows) {
-                        aData.rows.forEach((ele) => {
-                            ele.aFileImage = [];
-                            ele.aFileVideo = [];
-                            ele.oFileAudio = {};
-                            if (ele.tFileVos) {
-                                ele.tFileVos.forEach((element) => {
-                                    if (element.type === 1) {
-                                        element.path = global.baseurl + '/api/getImage/' + element.path;
-                                        ele.aFileImage.push(element);
-                                    } else if (element.type === 2) {
-                                        element.path = global.baseurl + element.path.slice(2);
-                                        ele.aFileVideo.push(element);
-                                    } else {
-                                        element.path = global.baseurl + element.path.slice(2);
-                                        ele.oFileAudio = element;
-                                    }
-                                });
-                            }
-                            this.aPostList.push(ele);
-                        });
-                    }
-
-                    if (this.aPostList.length == data.total) {
-                        this.bIsMore = false;
-                    }
-
-                    this.$nextTick(() => {
-                        if (this.myScroll != undefined) {
-                            setTimeout(() => {
-                                this.myScroll.refresh();
-                            }, 100);
-                        } else {
-                            this.fnLoadIscroll();
-                            setTimeout(() => {
-                                this.myScroll.refresh();
-                            }, 100);
+                axios.post('/api/getPostList', postData)
+                    .then(res => {
+                        var aData = JSON.parse(JSON.stringify(res.data));
+                        if (aData.rows) {
+                            aData.rows.forEach((ele) => {
+                                ele.aFileImage = [];
+                                ele.aFileVideo = [];
+                                ele.oFileAudio = {};
+                                if (ele.tFileVos) {
+                                    ele.tFileVos.forEach((element) => {
+                                        if (element.type === 1) {
+                                            element.path = global.baseurl + '/api/getImage/' + element.path;
+                                            ele.aFileImage.push(element);
+                                        } else if (element.type === 2) {
+                                            element.path = global.baseurl + element.path.slice(2);
+                                            ele.aFileVideo.push(element);
+                                        } else {
+                                            element.path = global.baseurl + element.path.slice(2);
+                                            ele.oFileAudio = element;
+                                        }
+                                    });
+                                }
+                                this.aPostList.push(ele);
+                            });
                         }
+
+                        if (this.aPostList.length == data.total) {
+                            this.bIsMore = false;
+                        }
+
+                        this.$nextTick(() => {
+                            if (this.myScroll != undefined) {
+                                setTimeout(() => {
+                                    this.myScroll.refresh();
+                                }, 100);
+                            } else {
+                                this.fnLoadIscroll();
+                                setTimeout(() => {
+                                    this.myScroll.refresh();
+                                }, 100);
+                            }
+                        })
                     })
-                });
+                    .catch(err => {
+                        console.log(err)
+                    })
             },
             fnGetSysMsg() {
-                var postData = {};
-                var type = 'POST';
-                var url = '/wechat/searchSystemTopics';
-
-                global.ajaxNative(type, postData, url, (data) => {
-                    var aData = JSON.parse(JSON.stringify(data));
-                    data.forEach((ele) => {
-                        this.aSysMsg.push(ele);
-                    });
-                    this.$nextTick(() => {
-                        //swiper
-                        var swiper = new Swiper('.swiper-container', {
-                            direction: 'vertical',
-                            loop: true, //循环
-                            autoplay: {
-                                delay: 2500,
-                                disableOnInteraction: false,
-                            },
-                            pagination: {
-                                el: '.swiper-pagination',
-                                clickable: true,
-                            },
+                axios.post('/wechat/searchSystemTopics', {})
+                    .then(res => {
+                        var aData = JSON.parse(JSON.stringify(res.data));
+                        data.forEach((ele) => {
+                            this.aSysMsg.push(ele);
                         });
-                    });
-                });
+                        this.$nextTick(() => {
+                            //swiper
+                            var swiper = new Swiper('.swiper-container', {
+                                direction: 'vertical',
+                                loop: true, //循环
+                                autoplay: {
+                                    delay: 2500,
+                                    disableOnInteraction: false,
+                                },
+                                pagination: {
+                                    el: '.swiper-pagination',
+                                    clickable: true,
+                                },
+                            });
+                        });
+                    })
+                    .catch(console.log);
             },
             fnLoadIscroll() {
                 let that = this;

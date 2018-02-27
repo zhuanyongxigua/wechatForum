@@ -66,12 +66,11 @@ router.get('/', (req, res, next) => {
     })
 
     .post('/getPostList', (req, res, next) => {
-        console.log(req);
         let fnGetCount = new Promise((resolve, reject) => {
             PostModel.count({}, (err, c)=> err ? reject(err) : resolve(c))
         });
         fnGetCount.then(resp => {
-
+            console.log(resp);
             PostModel.find({
                 content: new RegExp(req.body.param.topicVo.queryStr, "i"),
                 title: new RegExp(req.body.param.topicVo.queryStr, "i"),
