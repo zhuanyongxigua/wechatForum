@@ -94,14 +94,7 @@ const webpackConfig = merge(baseWebpackConfig, {
         to: config.build.assetsSubDirectory,
         ignore: ['.*']
       }
-  ]),
-  new webpack.ProvidePlugin({
-    $: 'webpack-zepto'
-  }),
-  new webpack.ProvidePlugin({
-    axios: 'axios'
-  })
-  ]
+  ])
 })
 
 if (config.build.productionGzip) {

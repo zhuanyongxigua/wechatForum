@@ -78,7 +78,7 @@
 </style>
 
 <template class="body_in">
-    <div id="home">
+    <div>
         <div class="share_box" :class="{show:clickShare}" @click="clickShare = false">
             <img class="share" src="" true-src="../../static/img/share.png">
             <div class="shade"></div>
@@ -220,7 +220,7 @@
 <script type="text/ecmascript-6">
     import {global} from '../../static/js/lib/global'
     import {initPhotoSwipeFromDOM} from '../../static/js/lib/PhotoSwipeDemo'
-    import IScroll from 'iscroll'
+    import IScroll from 'iscroll/build/iscroll-probe.js'
 
     export default{
         data () {
@@ -244,12 +244,12 @@
                 aSysMsg: [],
                 sCurPostId: '',
                 pullUpFlag: null,
-                myScroll: null
+                myScroll: undefined
             }
         } ,
         //加载组件时发出请求
-        created: function() {
-            document.addEventListener('touchmove', function(e) {
+        created() {
+            document.addEventListener('touchmove', (e) => {
                 e.preventDefault();
             }, global.isPassive() ? {
                 capture: false,
@@ -262,7 +262,7 @@
                 localStorage.removeItem('oHomeTabInfo');
             }
 
-            window.onbeforeunload = function(e) {
+            window.onbeforeunload = (e) => {
                 var oHomeTabInfo = {};
                 oHomeTabInfo.tab = home.tab;
                 oHomeTabInfo.queryType = home.oQueryInfo.queryType;
@@ -284,29 +284,24 @@
             // this.fnGetSysMsg();
         },
         methods: {
-            fnGetType: function() {
-                var postData = {};
-                var type = 'POST';
-                var url = '/api/getRoleType';
-                var that = this;
+            fnGetType() {
+                axios.post('/api/getRoleType', {type: 'TopicType'})
+                    .then(res => {
+                        var aData = JSON.parse(JSON.stringify(data));
+                        aData.unshift({
+                            id: '',
+                            name: '全部'
+                        });
+                        that.aType = aData;
+                    })
+                    .catch(err => {
 
-                postData.type = 'TopicType';
-
-                function ajaxSuccess(data) {
-                    var aData = JSON.parse(JSON.stringify(data));
-                    aData.unshift({
-                        id: '',
-                        name: '全部'
-                    });
-                    that.aType = aData;
-                }
-                global.ajaxNative(type, postData, url, ajaxSuccess);
+                    })
             },
-            fnGetPostList: function(bIsSearchButton) {
+            fnGetPostList(bIsSearchButton) {
                 var postData = {};
                 var type = 'POST';
                 var url = '/api/getPostList';
-                var that = this;
 
                 postData.pageSize = 10;
                 if (bIsSearchButton) {
@@ -321,16 +316,15 @@
                 postData.param = {};
                 postData.param.topicVo = this.oQueryInfo;
 
-
-                function ajaxSuccess(data) {
+                global.ajaxNative(type, postData, url, (data) => {
                     var aData = JSON.parse(JSON.stringify(data));
                     if (aData.rows) {
-                        aData.rows.forEach(function(ele) {
+                        aData.rows.forEach((ele) => {
                             ele.aFileImage = [];
                             ele.aFileVideo = [];
                             ele.oFileAudio = {};
                             if (ele.tFileVos) {
-                                ele.tFileVos.forEach(function(element) {
+                                ele.tFileVos.forEach((element) => {
                                     if (element.type === 1) {
                                         element.path = global.baseurl + '/api/getImage/' + element.path;
                                         ele.aFileImage.push(element);
@@ -343,43 +337,39 @@
                                     }
                                 });
                             }
-                            that.aPostList.push(ele);
+                            this.aPostList.push(ele);
                         });
                     }
 
-                    if (that.aPostList.length == data.total) {
-                        that.bIsMore = false;
+                    if (this.aPostList.length == data.total) {
+                        this.bIsMore = false;
                     }
 
-                    that.$nextTick(function() {
-                        if (that.myScroll != undefined) {
-                            setTimeout(function() {
-                                that.myScroll.refresh();
+                    this.$nextTick(() => {
+                        if (this.myScroll != undefined) {
+                            setTimeout(() => {
+                                this.myScroll.refresh();
                             }, 100);
                         } else {
                             this.fnLoadIscroll();
-                            setTimeout(function() {
-                                that.myScroll.refresh();
+                            setTimeout(() => {
+                                this.myScroll.refresh();
                             }, 100);
                         }
                     })
-
-
-                }
-                global.ajaxNative(type, postData, url, ajaxSuccess);
+                });
             },
-            fnGetSysMsg: function() {
+            fnGetSysMsg() {
                 var postData = {};
                 var type = 'POST';
                 var url = '/wechat/searchSystemTopics';
-                var that = this;
 
-                function ajaxSuccess(data) {
+                global.ajaxNative(type, postData, url, (data) => {
                     var aData = JSON.parse(JSON.stringify(data));
-                    data.forEach(function(ele) {
-                        that.aSysMsg.push(ele);
+                    data.forEach((ele) => {
+                        this.aSysMsg.push(ele);
                     });
-                    that.$nextTick(function() {
+                    this.$nextTick(() => {
                         //swiper
                         var swiper = new Swiper('.swiper-container', {
                             direction: 'vertical',
@@ -394,10 +384,9 @@
                             },
                         });
                     });
-                }
-                global.ajaxNative(type, postData, url, ajaxSuccess);
+                });
             },
-            fnLoadIscroll: function() {
+            fnLoadIscroll() {
                 let that = this;
                 this.myScroll = new IScroll('#wrapper', {
                     probeType: 3,
@@ -407,19 +396,19 @@
                     startX: 0,
                     startY: 0,
                 });
-                this.myScroll.on('scroll', function() {
-                    if (this.y < (this.maxScrollY - 40)) { //判断上拉是否到底且超过一段距离，如超过则说明需要获取更多消息
+                this.myScroll.on('scroll', () => {
+                    if (that.myScroll.y < (that.myScroll.maxScrollY - 40)) { //判断上拉是否到底且超过一段距离，如超过则说明需要获取更多消息
                         if (that.bIsMore) {
                             that.pullUpFlag = 1;
                         }
                     }
                 });
 
-                this.myScroll.on('scrollEnd', function() {
+                this.myScroll.on('scrollEnd', () => {
                     if (that.pullUpFlag == 1) {
                         if (that.bIsMore) {
                             that.pullUpFlag = 0;
-                            setTimeout(function() {
+                            setTimeout(() => {
                                 that.iCurrentPage++;
                                 that.fnGetPostList();
                             }, 500)
@@ -427,7 +416,7 @@
                     }
                 });
             },
-            fnChangeTab: function(index) {
+            fnChangeTab(index) {
                 for (var ele in this.tab) this.tab[ele] = false;
                 this.tab[index] = true;
                 this.bIsMore = true;
@@ -440,10 +429,10 @@
                 };
                 this.fnGetPostList();
             },
-            fnGoToSysMsgDetails: function(id) {
+            fnGoToSysMsgDetails(id) {
                 window.location.href = '007-news.html?id=' + id;
             },
-            fnGoToCardPage: function(id, event) {
+            fnGoToCardPage(id, event) {
                 var oCurPageOperateRecord = {};
                 oCurPageOperateRecord.sCurPostId = 'postLiId' + id;
                 oCurPageOperateRecord.aPostList = this.aPostList;
@@ -453,25 +442,26 @@
                 localStorage.setItem('oCurPageOperateRecord', JSON.stringify(oCurPageOperateRecord));
                 window.location.href = '005-card.html?id=' + id;
             },
-            fnGoToPersonalCardListPage: function(id) {
+            fnGoToPersonalCardListPage(id) {
                 window.location.href = '008-personalCardList.html?id=' + id;
             }
         },
-        mounted: function() {
+        mounted() {
+            var that = this;
             //进入帖子详情页后后退，回到原来阅览位置，赋值部分在created钩子下
-            this.$nextTick(function() {
+            this.$nextTick(() => {
                 if (this.sCurPostId) {
                     this.fnLoadIscroll();
-                    setTimeout(function() {
+                    setTimeout(() => {
                         this.myScroll.refresh();
-                        this.myScroll.scrollToElement(document.getElementById(home.sCurPostId), 0, 0, -100);
+                        this.myScroll.scrollToElement(document.getElementById(that.sCurPostId), 0, 0, -100);
                     }, 100);
                 }
             })
         },
-        updated: function() {
+        updated() {
             //每次上传新图片后，调整图片高度，使其与宽度相同。
-            this.$nextTick(function() {
+            this.$nextTick(() => {
                 // var w = $(window).get(0).innerWidth;
                 //图片的宽度是通过CSS设置的
                 // $('.card_img').css('height', w * 0.92 * 0.303333);

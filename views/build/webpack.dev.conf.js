@@ -31,12 +31,6 @@ module.exports = merge(baseWebpackConfig, {
       template: 'index.html',
       inject: true
     }),
-    new FriendlyErrorsPlugin(),
-    new webpack.ProvidePlugin({
-      $: 'webpack-zepto'
-    }),
-    new webpack.ProvidePlugin({
-      axios: 'axios'
-    })
+    new FriendlyErrorsPlugin()
   ]
 })
