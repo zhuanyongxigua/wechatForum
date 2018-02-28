@@ -13,6 +13,11 @@ export default new Router({
       path: '/001-home',
       name: 'home',
       component: (resolve) => require(['../pages/001-home.vue'], resolve)
+    },
+    {
+      path: '/003-send',
+      name: 'home',
+      component: (resolve) => require(['../pages/003-send.vue'], resolve)
     }
   ]
 })

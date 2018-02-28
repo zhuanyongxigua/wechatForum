@@ -1,5 +1,5 @@
 import PhotoSwipe from 'photoswipe'
-import photoswipeUiDefault from 'photoswipe/dist/photoswipe-ui-default'
+import PhotoSwipeUI_Default from 'photoswipe/dist/photoswipe-ui-default'
 
 var initPhotoSwipeFromDOM = function(gallerySelector) {
     var parseThumbnailElements = function(el) {

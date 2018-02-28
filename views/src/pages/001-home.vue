@@ -174,7 +174,7 @@
         <div class="foot_menu">
             <span id="column1" class="ripple_box selected">首页</span>
             <span id="column2" class="ripple_box" onclick="window.location.href='002-score.html'">赚积分</span>
-            <span id="column3" class="ripple_box" onclick="window.location.href='003-send.html'">发帖</span>
+            <router-link id="column3" class="ripple_box" to="/003-send">发帖</router-link>
             <span id="column4" class="ripple_box" onclick="window.location.href='004-my.html'">我的</span>
         </div>
 
@@ -221,6 +221,8 @@
     import {global} from '../../static/js/lib/global'
     import {initPhotoSwipeFromDOM} from '../../static/js/lib/PhotoSwipeDemo'
     import IScroll from 'iscroll/build/iscroll-probe.js'
+    import Swiper from 'swiper'
+    import 'swiper/dist/css/swiper.css'
 
     export default{
         data () {
@@ -460,7 +462,7 @@
         updated() {
             //每次上传新图片后，调整图片高度，使其与宽度相同。
             this.$nextTick(() => {
-                var w = $(window).get(0).innerWidth;
+                var w = window.innerWidth;
                 //图片的宽度是通过CSS设置的
                 $('.card_img').css('height', w * 0.92 * 0.303333);
                 $('.card_talk_img').css('height', (w * 0.92 - 62) * 0.303333);

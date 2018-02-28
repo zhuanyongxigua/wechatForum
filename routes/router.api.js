@@ -123,9 +123,6 @@ router.get('/', (req, res, next) => {
                 })
             })
         }
-
-
-
     })
     .post('/uploadImage', upload.array('file', 12), (req, res, next) => {
         var imgUpload = new imagesModel();

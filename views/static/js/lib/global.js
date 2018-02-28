@@ -12,7 +12,7 @@ function GlobalConstructorFunction() {
 添加支持第五个参数，如果有跨域cookie的需求，第五个参数传true，如果需要所有的请求都支持跨域cookie，还是把下面代码改了吧；
 添加识别http开头的绝对路径url，不再与baseUrl拼接。
 */
-GlobalConstructorFunction.prototype.ajaxNative = function(_sAjaxType, _oAjaxPostData, _sAjaxUrl, _fnAjaxSuccess, _withCredentials) {
+GlobalConstructorFunction.prototype.ajax = function(_sAjaxType, _oAjaxPostData, _sAjaxUrl, _fnAjaxSuccess, _withCredentials) {
     var _xhr = this.fnCreateXHR();
     // var _xhr = new XMLHttpRequest;
     var __url = "";
@@ -138,6 +138,27 @@ GlobalConstructorFunction.prototype.rippleFunction = function(_rippleFunctionEve
     ripple.style.left = left + 'px';
     ripple.classList.add('show');
     return false;
+}
+
+GlobalConstructorFunction.prototype.GetArgsFromHref = function (sHref, sArgName) {
+    var args = sHref.split("?");
+    var retval = "";
+    if (args[0] == sHref) {
+        return retval;
+    }
+    var str = args[1];
+    args = str.split("&");
+    for (var i = 0; i < args.length; i++) {
+        str = args[i];
+        var arg = str.split("=");
+        if (arg.length <= 1) {
+            continue;
+        }
+        if (arg[0] == sArgName) {
+            retval = arg[1];
+        }
+    }
+    return retval;
 }
 
 
