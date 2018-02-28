@@ -1,3 +1,6 @@
+import PhotoSwipe from 'photoswipe'
+import photoswipeUiDefault from 'photoswipe/dist/photoswipe-ui-default'
+
 var initPhotoSwipeFromDOM = function(gallerySelector) {
     var parseThumbnailElements = function(el) {
         var thumbElements = el.childNodes,

@@ -100,6 +100,33 @@ router.get('/', (req, res, next) => {
             });
         })
     })
+    .delete('/deletePostModel', (req, res, next) => {
+        console.log(req);
+        if (req.body.id === 'all') {
+            PostModel.remove({}, (err) => {
+                if (err) {
+                    res.json({success: false, message: err});
+                    return;
+                }
+                res.json({
+                    success: true
+                })
+            })
+        } else if ('id' in req.body) {
+            PostModel.remove({id: req.body.id}, (err) => {
+                if (err) {
+                    res.json({success: false, message: err});
+                    return;
+                }
+                res.json({
+                    success: true
+                })
+            })
+        }
+
+
+
+    })
     .post('/uploadImage', upload.array('file', 12), (req, res, next) => {
         var imgUpload = new imagesModel();
         imgUpload.img.data = fs.readFileSync(req.files[0].path)

@@ -287,7 +287,6 @@
             fnGetType() {
                 axios.post('/api/getRoleType', {type: 'TopicType'})
                     .then(res => {
-                        console.log(res);
                         var aData = JSON.parse(JSON.stringify(res.data));
                         aData.unshift({
                             id: '',
@@ -341,7 +340,7 @@
                             });
                         }
 
-                        if (this.aPostList.length == data.total) {
+                        if (this.aPostList.length == res.data.total) {
                             this.bIsMore = false;
                         }
 
@@ -388,7 +387,6 @@
                     .catch(console.log);
             },
             fnLoadIscroll() {
-                let that = this;
                 this.myScroll = new IScroll('#wrapper', {
                     probeType: 3,
                     scrollbars: true,
@@ -398,20 +396,20 @@
                     startY: 0,
                 });
                 this.myScroll.on('scroll', () => {
-                    if (that.myScroll.y < (that.myScroll.maxScrollY - 40)) { //判断上拉是否到底且超过一段距离，如超过则说明需要获取更多消息
-                        if (that.bIsMore) {
-                            that.pullUpFlag = 1;
+                    if (this.myScroll.y < (this.myScroll.maxScrollY - 40)) { //判断上拉是否到底且超过一段距离，如超过则说明需要获取更多消息
+                        if (this.bIsMore) {
+                            this.pullUpFlag = 1;
                         }
                     }
                 });
 
                 this.myScroll.on('scrollEnd', () => {
-                    if (that.pullUpFlag == 1) {
-                        if (that.bIsMore) {
-                            that.pullUpFlag = 0;
+                    if (this.pullUpFlag == 1) {
+                        if (this.bIsMore) {
+                            this.pullUpFlag = 0;
                             setTimeout(() => {
-                                that.iCurrentPage++;
-                                that.fnGetPostList();
+                                this.iCurrentPage++;
+                                this.fnGetPostList();
                             }, 500)
                         }
                     }
@@ -448,14 +446,13 @@
             }
         },
         mounted() {
-            var that = this;
             //进入帖子详情页后后退，回到原来阅览位置，赋值部分在created钩子下
             this.$nextTick(() => {
                 if (this.sCurPostId) {
                     this.fnLoadIscroll();
                     setTimeout(() => {
                         this.myScroll.refresh();
-                        this.myScroll.scrollToElement(document.getElementById(that.sCurPostId), 0, 0, -100);
+                        this.myScroll.scrollToElement(document.getElementById(this.sCurPostId), 0, 0, -100);
                     }, 100);
                 }
             })
@@ -463,10 +460,10 @@
         updated() {
             //每次上传新图片后，调整图片高度，使其与宽度相同。
             this.$nextTick(() => {
-                // var w = $(window).get(0).innerWidth;
+                var w = $(window).get(0).innerWidth;
                 //图片的宽度是通过CSS设置的
-                // $('.card_img').css('height', w * 0.92 * 0.303333);
-                // $('.card_talk_img').css('height', (w * 0.92 - 62) * 0.303333);
+                $('.card_img').css('height', w * 0.92 * 0.303333);
+                $('.card_talk_img').css('height', (w * 0.92 - 62) * 0.303333);
                 global.fnAllImgDelayLoad(true);
                 initPhotoSwipeFromDOM('demo-gallery');
             });
