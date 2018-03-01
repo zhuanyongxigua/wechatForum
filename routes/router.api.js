@@ -61,6 +61,7 @@ router.get('/', (req, res, next) => {
         post.typeCode = req.body.typeCode;
         // console.log(req);
         post.save((err, doc) => {
+            console.log(doc);
             res.json({success: true})
         });
     })
@@ -69,12 +70,12 @@ router.get('/', (req, res, next) => {
         let fnGetCount = new Promise((resolve, reject) => {
             PostModel.count({}, (err, c)=> err ? reject(err) : resolve(c))
         });
+
         fnGetCount.then(resp => {
-            console.log(resp);
             PostModel.find({
                 content: new RegExp(req.body.param.topicVo.queryStr, "i"),
                 title: new RegExp(req.body.param.topicVo.queryStr, "i"),
-                typeCode: req.body.param.topicVo.typeCode
+                typeCode: req.body.param.topicVo.typeCode || {$gt: 0, $lt: 100}
             }, {}, (err, posts) => {
                 let aPosts = [...posts];
                 if (err) {
@@ -121,6 +122,7 @@ router.get('/', (req, res, next) => {
                 res.json({
                     success: true
                 })
+
             })
         }
     })

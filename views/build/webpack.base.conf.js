@@ -18,13 +18,14 @@ module.exports = {
     filename: '[name].js',
     publicPath: process.env.NODE_ENV === 'production'
       ? config.build.assetsPublicPath
-      : config.dev.assetsPublicPath
+      : config.dev.assetsPublicPath,
+    libraryTarget: 'var'
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
-      '@': resolve('src'),
+      '@': resolve('src')
     }
   },
   module: {
@@ -75,9 +76,6 @@ module.exports = {
     plugins: [
       new webpack.ProvidePlugin({
         axios: 'axios'
-      }),
-      new webpack.ProvidePlugin({
-        $: 'jquery'
-      }),
+      })
     ]
 }

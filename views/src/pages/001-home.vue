@@ -172,10 +172,18 @@
         </div>
 
         <div class="foot_menu">
-            <span id="column1" class="ripple_box selected">首页</span>
-            <span id="column2" class="ripple_box" onclick="window.location.href='002-score.html'">赚积分</span>
-            <router-link id="column3" class="ripple_box" to="/003-send">发帖</router-link>
-            <span id="column4" class="ripple_box" onclick="window.location.href='004-my.html'">我的</span>
+            <router-link to="/002-score">
+                <span id="column1" class="ripple_box selected">首页</span>
+            </router-link>
+            <router-link to="/002-score">
+                <span id="column2" class="ripple_box">赚积分</span>
+            </router-link>
+            <router-link to="/003-send">
+                <span id="column2" class="ripple_box">发帖</span>
+            </router-link>
+            <router-link to="/004-my">
+                <span id="column4" class="ripple_box">我的</span>
+            </router-link>
         </div>
 
         <!-- 图片查看器共用部分 -->
@@ -224,6 +232,7 @@
     import Swiper from 'swiper'
     import 'swiper/dist/css/swiper.css'
 
+
     export default{
         data () {
             return {
@@ -234,7 +243,7 @@
                     4: false
                 },
                 oQueryInfo: {
-                    queryType: 1,
+                    queryType: '',
                     typeCode: '',
                     queryStr: ''
                 },
@@ -327,13 +336,13 @@
                                 if (ele.tFileVos) {
                                     ele.tFileVos.forEach((element) => {
                                         if (element.type === 1) {
-                                            element.path = global.baseurl + '/api/getImage/' + element.path;
+                                            element.path = global.baseUrl + '/api/getImage/' + element.path;
                                             ele.aFileImage.push(element);
                                         } else if (element.type === 2) {
-                                            element.path = global.baseurl + element.path.slice(2);
+                                            element.path = global.baseUrl + element.path.slice(2);
                                             ele.aFileVideo.push(element);
                                         } else {
-                                            element.path = global.baseurl + element.path.slice(2);
+                                            element.path = global.baseUrl + element.path.slice(2);
                                             ele.oFileAudio = element;
                                         }
                                     });

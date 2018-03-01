@@ -84,16 +84,25 @@
 
         <div style="height: 50px; width: 100%; float: left;"></div>
         <div class="foot_menu">
-            <router-link to="/001-home" id="column1" class="ripple_box">首页</router-link>
-            <span id="column2" class="ripple_box" onclick="window.location.href='002-score.html'">赚积分</span>
-            <span id="column3" class="ripple_box selected">发帖</span>
-            <span id="column4" class="ripple_box" onclick="window.location.href='004-my.html'">我的</span>
+            <router-link to="/001-home">
+                <span id="column1" class="ripple_box">首页</span>
+            </router-link>
+            <router-link to="/002-score">
+                <span id="column2" class="ripple_box">赚积分</span>
+            </router-link>
+            <router-link to="/003-send">
+                <span id="column2" class="ripple_box selected">发帖</span>
+            </router-link>
+            <router-link to="/004-my">
+                <span id="column4" class="ripple_box">我的</span>
+            </router-link>
         </div>
     </div>
 </template>
 
 <script>
     import {global} from '../../static/js/lib/global'
+    import '../../node_modules/jquery-weui/dist/js/jquery-weui.js'
     export default ({
         data() {
             return {
@@ -280,7 +289,7 @@
                             title: '提示',
                             text: '提交成功' + (data.message ? ('，' + data.message) : '') + '!',
                             onOK: function() {
-                                location.href = '001-home.html';
+                                that.$router.push("001-home");
                             }
                         });
                         localStorage.removeItem('aFileImage');
@@ -437,7 +446,6 @@
                 });
             },
             fnSelectFile(event) {
-                console.log(event);
                 this.oSelectedFile = event.target.files[0];
                 const fd = new FormData();
                 fd.append('file', this.oSelectedFile, this.oSelectedFile.name)
@@ -447,7 +455,6 @@
                     }
                 })
                     .then(res => {
-                        console.log(res);
                         event.target.value = "";
                         if ('path' in res.data) {
                             if (res.data.path === 'USER_BAN_CODE') {
