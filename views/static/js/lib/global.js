@@ -161,6 +161,14 @@ GlobalConstructorFunction.prototype.GetArgsFromHref = function (sHref, sArgName)
     return retval;
 }
 
+GlobalConstructorFunction.prototype.verifyIsNull = function(valStr) {
+  valStr = valStr.replace(/\s+/g, "");
+  if (valStr == undefined || valStr == "" || valStr == null) {
+    return true;
+  }
+  return false;
+}
+
 
 /*
 2018.01.20，于鑫，整理

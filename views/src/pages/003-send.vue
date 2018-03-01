@@ -53,20 +53,14 @@
         <div class="send_bottom">
             <div class="medias_tab_btns">
                 <span class="medias_tab_btn" @click="fnChangeTab(1)" :class="{selected:tab[1]}">
-                <i class="ion-android-image"></i>
-            </span>
-                <!-- <span class="medias_tab_btn" @click="fnChangeTab(2)" :class="{selected:tab[2]}">
-                <i class="ion-ios-film"></i>
-            </span>
-                <span class="medias_tab_btn" @click="fnChangeTab(3)" :class="{selected:tab[3]}">
-                <i class="ion-ios-mic"></i>
-            </span> -->
+                    <i class="ion-android-image"></i>
+                </span>
             </div>
 
             <div class="post_medias">
                 <div v-show="tab[1]">
                     <span class="add_img_btn">
-                    <input id="fileImage" name="file" type="file" accept="image/*" @click="fnSelectFile" multiple>
+                    <input id="fileImage" name="file" type="file" accept="image/*" @change="fnSelectFile" multiple>
                 </span>
                 </div>
 
@@ -125,14 +119,13 @@
                 loc: location.href.split('#')[0],
                 bRecording: false,
                 bIsShowDelay: false, //解决v-if在vue实例化后才渲染而产生的延迟闪烁
-                oSelectedFile: {}
+                oSelectedFile: {},
             }
         },
         //加载组件时发出请求
         created: function() {
             this.fnGetType();
             this.fnDelInvalidMediaFiles();
-
         },
         methods: {
             fnGetPostDetails() {
@@ -455,15 +448,16 @@
                 })
                     .then(res => {
                         console.log(res);
-                        if ('path' in res.data.result) {
-                            if (res.data.result.path === 'USER_BAN_CODE') {
+                        event.target.value = "";
+                        if ('path' in res.data) {
+                            if (res.data.path === 'USER_BAN_CODE') {
                                 $.alert('账户禁用，无法操作');
                                 return;
                             }
-                            var oData = JSON.parse(JSON.stringify(res.data.result));
-                            oData.path = global.baseurl + '/api/getImage/' + (oParameters.id === '#fileImage' ? oData.path : oData.path.slice(2));
-                            this[oParameters.localStorageName].push(oData);
-                            localStorage.setItem(oParameters.localStorageName, JSON.stringify(that[oParameters.localStorageName]));
+                            var oData = JSON.parse(JSON.stringify(res.data));
+                            oData.path = global.baseUrl + '/api/getImage/' + oData.path;
+                            this["aFileImage"].push(oData);
+                            localStorage.setItem("aFileImage", JSON.stringify(this["aFileImage"]));
                             if (global.GetArgsFromHref(this.loc, 'mode')) {
                                 this.aFileModifyNewMedia.push(oData);
                             }

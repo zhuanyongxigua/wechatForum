@@ -7,7 +7,9 @@ import 'weui/dist/style/weui.css'
 import 'jquery-weui/dist/css/jquery-weui.css'
 import 'photoswipe/dist/photoswipe.css'
 import 'photoswipe/dist/default-skin/default-skin.css'
-// require("../static/css/style.css");
+require("../node_modules/jquery-weui/dist/js/jquery-weui.js")($);
+
+console.log($);
 
 Vue.config.productionTip = false
 
