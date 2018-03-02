@@ -179,7 +179,7 @@
                 <span id="column2" class="ripple_box">赚积分</span>
             </router-link>
             <router-link to="/003-send">
-                <span id="column2" class="ripple_box">发帖</span>
+                <span id="column3" class="ripple_box">发帖</span>
             </router-link>
             <router-link to="/004-my">
                 <span id="column4" class="ripple_box">我的</span>
@@ -231,7 +231,6 @@
     import IScroll from 'iscroll/build/iscroll-probe.js'
     import Swiper from 'swiper'
     import 'swiper/dist/css/swiper.css'
-
 
     export default{
         data () {

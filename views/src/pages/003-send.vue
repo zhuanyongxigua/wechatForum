@@ -11,6 +11,11 @@
         background-color: #0aa5df;
     }
 
+    .post_title_input,
+    .post_textarea {
+      margin-left: 0px;
+    }
+
     [v-cloak] {
         display: none;
     }
@@ -91,7 +96,7 @@
                 <span id="column2" class="ripple_box">赚积分</span>
             </router-link>
             <router-link to="/003-send">
-                <span id="column2" class="ripple_box selected">发帖</span>
+                <span id="column3" class="ripple_box selected">发帖</span>
             </router-link>
             <router-link to="/004-my">
                 <span id="column4" class="ripple_box">我的</span>

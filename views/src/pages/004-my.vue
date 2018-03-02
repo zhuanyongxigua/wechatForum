@@ -4,8 +4,6 @@
     }
 </style>
 
-</head>
-
 <template class="body_in">
     <div id="my">
         <div class="usercenter_top">
@@ -19,9 +17,7 @@
             </span>
         </div>
 
-
         <div class="conent_top0_width100">
-
             <div class="qb_box">
                 <div class="ddfl_brn ripple_box" @click="fnGoToFollowAndFanPage('followList')">
                     <span class="qb_num" v-text="oMyInfo.attentions"></span>
@@ -79,7 +75,7 @@
                 <span id="column2" class="ripple_box">赚积分</span>
             </router-link>
             <router-link to="/003-send">
-                <span id="column2" class="ripple_box">发帖</span>
+                <span id="column3" class="ripple_box">发帖</span>
             </router-link>
             <router-link to="/004-my">
                 <span id="column4" class="ripple_box selected">我的</span>
