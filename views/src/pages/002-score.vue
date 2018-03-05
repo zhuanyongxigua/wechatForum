@@ -3,6 +3,14 @@
         line-height: 26px;
     }
 
+    .expenses_title {
+        text-align: left;
+    }
+
+    .text_left {
+        text-align: left;
+    }
+
     [v-cloak] {
         display: none;
     }
@@ -73,7 +81,9 @@
         data() {
             return {
                 aScoreList: [],
-                oMyInfo: {}
+                oMyInfo: {
+                    credit: 10
+                }
             }
         },
         //加载组件时发出请求
@@ -93,7 +103,7 @@
                     })
             },
             fnGetScoreList() {
-                axios.post('/wechat/searchCreditLogs', {})
+                axios.post('/api/getScoreList', {})
                     .then(res => {
                         this.aScoreList = JSON.parse(JSON.stringify(res.data));
                     })

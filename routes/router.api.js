@@ -52,6 +52,25 @@ router.get('/', (req, res, next) => {
             }
         ]);
     })
+    .post('/getScoreList', (req, res, next) => {
+        res.json([
+            {
+                createDate:"2018-02-26 10:17:45",
+                credit:10,
+                id:100,
+                money:null,
+                number:null,
+                path:1,
+                queryDateQ:null,
+                queryDateZ:null,
+                queryStr:null,
+                reason:"发帖",
+                type:5,
+                userId:25,
+                username:null
+            }
+        ])
+    })
     .put('/addUserPost', (req, res, next) => {
         var post = new PostModel();
         post.title = req.body.title;
@@ -135,7 +154,6 @@ router.get('/', (req, res, next) => {
                 res.json({success: false, message: err});
                 return
             }
-            console.log(doc);
             res.json({
                 success: true,
                 path: doc._id,
@@ -158,7 +176,6 @@ router.get('/', (req, res, next) => {
     })
     .get('/auth/github', passport.authenticate('github'))
     .get('/auth/github/callback', (req, res, next) => {
-        console.log("callback");
         /*
         *这里应该还会向github发一次请求，用code取回token，取回的回调函数在strategy时写的回调函数中
         *这里的这个'github'也相当于是一个中间件，作用就是上面这句话，在回调了strategy之后，再次回调，就是后面写的这个函数了
@@ -166,7 +183,6 @@ router.get('/', (req, res, next) => {
         *strategy中的回调函数的第四个参数cb就是'github'后面的那个函数
         */
         passport.authenticate('github', (err, user, info) => {
-            console.log("callbackGithub");
             if (err) {
                 return next(err);
             }
@@ -182,11 +198,18 @@ router.get('/', (req, res, next) => {
                     });
                 }
                 var token = Verify.getToken(user);
-                console.log(req);
                 res.cookie("configauthCookieName", token, opts);
-                res.redirect("/views/001-home.html");
+                res.redirect("http://192.168.0.103:8081/#/004-my");
             });
         })(req,res,next);
+    })
+    .post('/myInfo', Verify.verifyOrdinaryUser, (req, res, next) => {
+        UserModel.find({githubId: req.decoded.githubId}, (err, user) => {
+            res.json({
+                username: user[0].username,
+                avatar: user[0].avatar
+            });
+        })
     });
 
 module.exports = router;

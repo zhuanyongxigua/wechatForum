@@ -5,7 +5,9 @@ var Schema = mongoose.Schema;
 var UserSchema = new Schema({
     githubId: String,
     OauthId: String,
-    OauthToken: String
+    OauthToken: String,
+    avatar: String,
+    username: String
 });
 
 UserSchema.plugin(findOrCreate);

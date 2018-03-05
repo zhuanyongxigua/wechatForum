@@ -16,6 +16,11 @@
       margin-left: 0px;
     }
 
+    .medias_tab_btn {
+        float: left;
+        margin-left: 5px;
+    }
+
     [v-cloak] {
         display: none;
     }

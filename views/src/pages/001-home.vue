@@ -274,8 +274,8 @@
 
             window.onbeforeunload = (e) => {
                 var oHomeTabInfo = {};
-                oHomeTabInfo.tab = home.tab;
-                oHomeTabInfo.queryType = home.oQueryInfo.queryType;
+                oHomeTabInfo.tab = this.tab;
+                oHomeTabInfo.queryType = this.oQueryInfo.queryType;
                 localStorage.setItem('oHomeTabInfo', JSON.stringify(oHomeTabInfo));
             }
             //进入帖子详情页后后退，回到原来阅览位置，滚动部分在mounted钩子下

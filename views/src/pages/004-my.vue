@@ -1,4 +1,7 @@
 <style scoped>
+    .left_text {
+        text-align: left;
+    }
     [v-cloak] {
         display: none;
     }
@@ -8,7 +11,7 @@
     <div id="my">
         <div class="usercenter_top">
             <div class="usercenter_head" @click="fnLoginWithGithub">
-                <img class="usercenter_head_img" :src="oMyInfo.iconUrl" />
+                <img class="usercenter_head_img" :src="oMyInfo.avatar" />
             </div>
 
             <span class="my_top_name" v-cloak>
@@ -20,19 +23,19 @@
         <div class="conent_top0_width100">
             <div class="qb_box">
                 <div class="ddfl_brn ripple_box" @click="fnGoToFollowAndFanPage('followList')">
-                    <span class="qb_num" v-text="oMyInfo.attentions"></span>
+                    <span class="qb_num">0</span>
                     <span>关注</span>
                 </div>
                 <div class="ddfl_brn ripple_box" @click="fnGoToFollowAndFanPage('fanList')">
-                    <span class="qb_num" v-text="oMyInfo.fans"></span>
+                    <span class="qb_num">0</span>
                     <span>粉丝</span>
                 </div>
                 <div class="ddfl_brn">
-                    <span class="qb_num" v-text="oMyInfo.posts"></span>
+                    <span class="qb_num">0</span>
                     <span>发帖</span>
                 </div>
-                <div class="ddfl_brn ripple_box" onclick="window.location.href='002-score.html'">
-                    <span class="qb_num" v-text="oMyInfo.credit"></span>
+                <div class="ddfl_brn ripple_box" @click="fnGoToScorePage">
+                    <span class="qb_num">0</span>
                     <span>积分</span>
                 </div>
 
@@ -89,19 +92,21 @@
     export default({
         data() {
             return {
-                oMyInfo: {}
+                oMyInfo: {
+
+                }
             }
         },
         //加载组件时发出请求
         created: function() {
-            // this.fnGetMyInfo();
+            this.fnGetMyInfo();
         },
         methods: {
             fnLoginWithGithub() {
-                window.location.href = '/api/auth/github';
+                window.location.href = 'http://localhost:3000/api/auth/github';
             },
             fnGetMyInfo() {
-                axios.post('/wechat/myInfo', {})
+                axios.post('/api/myInfo', {})
                     .then(res => {
                         this.oMyInfo = Object.assign({}, res.data);
                     })
@@ -114,6 +119,9 @@
             },
             fnGoToPersonalCardListPage(id) {
                 window.location.href = '008-personalCardList.html?id=' + id;
+            },
+            fnGoToScorePage() {
+                this.$router.push('002-score');
             }
         },
     })

@@ -19,9 +19,10 @@ var app = express();
 app.set('view engine', 'jade');
 
 app.all("*", (req, res, next) => {      //支持跨域调试
-    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Origin", "http://192.168.0.103:8081");
     res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
     res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
+    res.header("Access-Control-Allow-Credentials", true);
     res.header("X-Powered-By",' 3.2.1');
     if(req.method=="OPTIONS") res.send(200);/*让options请求快速返回*/
     else  next();
@@ -45,10 +46,6 @@ passport.use(new GitHubStrategy({
     callbackURL: "http://localhost:3000/api/auth/github/callback"
   },
   function(accessToken, refreshToken, profile, cb) {
-      console.log("strategyCallback");
-      console.log(accessToken);
-      console.log(refreshToken);
-      console.log(profile);
       UserModel.findOne({ githubId: profile.id }, function(err, user) {
         if(err) {
           console.log(err); // handle errors!
@@ -57,7 +54,9 @@ passport.use(new GitHubStrategy({
           cb(null, user);
         } else {
           user = new UserModel({
-            githubId: profile.id
+            githubId: profile.id,
+            avatar: profile._json.avatar_url,
+            username: profile.username
           });
           user.OauthId = profile.id;
           user.OauthToken = accessToken;
@@ -74,7 +73,6 @@ passport.use(new GitHubStrategy({
   }
 ));
 passport.serializeUser(function(user, done) {
-    console.log(user);
     done(null, user);
 });
 
