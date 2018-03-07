@@ -52,20 +52,22 @@
                     <span class="right_text arrow_right"></span>
                 </div>
             </div>
-
-            <div class="list_style4 ripple_box" onclick="window.location.href='002-score.html'">
-                <div class="width90_box">
-                    <span class="left_text"><i class="icon icon-43 usercenter_icon"></i>钱包</span>
-                    <span class="right_text arrow_right"></span>
+            <router-link to="/002-score">
+                <div class="list_style4 ripple_box">
+                    <div class="width90_box">
+                        <span class="left_text"><i class="icon icon-43 usercenter_icon"></i>钱包</span>
+                        <span class="right_text arrow_right"></span>
+                    </div>
                 </div>
-            </div>
-
-            <div class="list_style4 ripple_box" onclick="window.location.href='015-settings.html'">
-                <div class="width90_box">
-                    <span class="left_text"><i class="icon icon-101 usercenter_icon"></i>设置</span>
-                    <span class="right_text arrow_right"></span>
+            </router-link>
+            <router-link to="/015-settings">
+                <div class="list_style4 ripple_box">
+                    <div class="width90_box">
+                        <span class="left_text"><i class="icon icon-101 usercenter_icon"></i>设置</span>
+                        <span class="right_text arrow_right"></span>
+                    </div>
                 </div>
-            </div>
+            </router-link>
 
         </div>
 

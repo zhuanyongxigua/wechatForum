@@ -11,6 +11,10 @@
         text-align: left;
     }
 
+    .score_btn:last-child {
+        border-right: 1px solid #eee;
+    }
+
     [v-cloak] {
         display: none;
     }
@@ -27,18 +31,24 @@
         </div>
 
         <div class="score_btns flex_row">
-            <div class="score_btn flex1 ripple_box" onclick="window.location.href='018-scoreRule.html'">
-                <i class="ion-ios-pricetags"></i>
-                <span>规则</span>
-            </div>
-            <div class="score_btn flex1 ripple_box" onclick="window.location.href='013-recharge.html'">
-                <i class="ion-ios-cart"></i>
-                <span>购买积分</span>
-            </div>
-            <div class="score_btn flex1 ripple_box" onclick="window.location.href='014-withdraw.html'">
-                <i class="ion-social-yen"></i>
-                <span>提现</span>
-            </div>
+            <router-link style="width: 33.3%" to="/018-scoreRule">
+                <div class="score_btn flex1 ripple_box">
+                    <i class="ion-ios-pricetags"></i>
+                    <span>规则</span>
+                </div>
+            </router-link>
+            <router-link style="width: 33.3%" to="/013-recharge">
+                <div class="score_btn flex1 ripple_box">
+                    <i class="ion-ios-cart"></i>
+                    <span>购买积分</span>
+                </div>
+            </router-link>
+            <router-link style="width: 33.3%" to="/014-withdraw">
+                <div class="score_btn flex1 ripple_box">
+                    <i class="ion-social-yen"></i>
+                    <span>提现</span>
+                </div>
+            </router-link>
         </div>
 
         <div class="expenses">
@@ -110,7 +120,7 @@
                     .catch(err => {
 
                     })
-            }
+            },
         },
     })
 </script>

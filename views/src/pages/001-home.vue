@@ -449,10 +449,10 @@
                 oCurPageOperateRecord.tab = this.tab;
                 oCurPageOperateRecord.queryType = this.oQueryInfo.queryType;
                 localStorage.setItem('oCurPageOperateRecord', JSON.stringify(oCurPageOperateRecord));
-                window.location.href = '005-card.html?id=' + id;
+                this.$router.push({path: '005-card', query: {id: id}});
             },
             fnGoToPersonalCardListPage(id) {
-                window.location.href = '008-personalCardList.html?id=' + id;
+                this.$router.push({path: '008-personalCardList', query: {id: id}});
             }
         },
         mounted() {

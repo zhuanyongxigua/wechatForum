@@ -71,6 +71,52 @@ router.get('/', (req, res, next) => {
             }
         ])
     })
+    .post('/getRechargeRule', (req, res, next) => {
+        res.json([
+            {
+                createDate : 1516761081000,
+                id : 18,
+                integral : 1000,
+                money : 0.01,
+                type : 1
+            },
+            {
+                createDate : 1516761081000,
+                id : 18,
+                integral : 2000,
+                money : 0.02,
+                type : 1
+            },
+            {
+                createDate : 1516761081000,
+                id : 18,
+                integral : 3000,
+                money : 0.03,
+                type : 1
+            },
+            {
+                createDate : 1516761081000,
+                id : 18,
+                integral : 4000,
+                money : 0.04,
+                type : 1
+            },
+            {
+                createDate : 1516761081000,
+                id : 18,
+                integral : 5000,
+                money : 0.05,
+                type : 1
+            },
+            {
+                createDate : 1516761081000,
+                id : 18,
+                integral : 6000,
+                money : 0.06,
+                type : 1
+            },
+        ])
+    })
     .put('/addUserPost', (req, res, next) => {
         var post = new PostModel();
         post.title = req.body.title;
@@ -172,6 +218,7 @@ router.get('/', (req, res, next) => {
             }
             res.contentType(doc.img.contentType);
             res.send(doc.img.data);
+
         })
     })
     .get('/auth/github', passport.authenticate('github'))
