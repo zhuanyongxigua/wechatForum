@@ -11,7 +11,8 @@
     <div id="my">
         <div class="usercenter_top">
             <div class="usercenter_head" @click="fnLoginWithGithub">
-                <img class="usercenter_head_img" :src="oMyInfo.avatar" />
+                <img class="usercenter_head_img" v-if="oMyInfo.avatar" :src="oMyInfo.avatar"/>
+                <p v-else>点击github登录</p>
             </div>
 
             <span class="my_top_name" v-cloak>
@@ -71,7 +72,7 @@
         <div style="height: 50px; float: left; width: 100%;"></div>
 
         <div class="foot_menu">
-            <router-link to="/002-score">
+            <router-link to="/001-home">
                 <span id="column1" class="ripple_box">首页</span>
             </router-link>
             <router-link to="/002-score">
