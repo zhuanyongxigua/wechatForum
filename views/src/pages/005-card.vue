@@ -1,6 +1,10 @@
 <style scoped>
+    #card {
+      font-size: 12px;
+      line-height: 1.5;
+      text-align: left;
+    }
     /*modal自定义样式*/
-
     .ivu-modal-footer {
         display: none;
     }
@@ -63,10 +67,12 @@
             <img class="share" src="../../static/img/share.png">
             <div class="shade"></div>
         </div>
-
-        <div class="back_home" onclick="window.location.href='001-home.html'">
-            <i class="ion-chevron-left"></i>返回首页</div>
-        <div class="card">
+        <router-link to="/001-home">
+            <div class="back_home">
+              <i class="ion-chevron-left"></i>返回首页
+            </div>
+        </router-link>
+            <div class="card">
             <div class="card_in">
                 <div class="card_info">
                     <img class="card_info_head" @click="fnGoToPersonalCardListPage(false)" :true-src="oPostDetails.head"/>
@@ -188,8 +194,6 @@
         <div style="">
             <span class="model_btn" @click="fnGoToModify" :style="{borderBottom: sIsBorderBottomStyle}">修改</span>
             <span class="model_btn" v-if="sCurModifyType === 'modifyCmt'" @click="fnDelete">删除</span>
-
-            <div slot="footer" style="display: none;"></div>
         </div>
 
         <!-- 图片查看器共用部分 -->
@@ -242,7 +246,7 @@
     export default({
         data() {
             return {
-                loc: location.href.split('#')[0],
+                loc: location.href.split('#')[1],
                 modal1: false,
                 oPostDetails: {},
                 aCmtList: [],
@@ -283,15 +287,13 @@
         methods: {
             fnGetPostDetails: function() {
                 var that = this;
-                var type = 'POST';
-                var url = '/topic/searchTopicDetail';
-                var postData = {};
+                var type = 'GET';
+                var url = '/api/getPostDtl?id=' + global.GetArgsFromHref(this.loc, "id");
 
-                postData.id = parseFloat(global.GetArgsFromHref(this.loc, "id"));
-                postData.parmType = 1;
+              console.log(url);
 
                 function ajaxSuccess(data) {
-                    var oData = JSON.parse(JSON.stringify(data));
+                    var oData = JSON.parse(JSON.stringify(data.row));
                     var aCurImages = [];
                     var aCurVideos = [];
                     var aCurAudios = [];
@@ -331,7 +333,7 @@
                         that.aSupportInfoShow = that.aSupportInfoAll.slice(0, 100);
                     }
                 }
-                global.ajax(type, postData, url, ajaxSuccess);
+                global.ajax(type, false, url, ajaxSuccess);
             },
             fnGetTotalCmt: function() {
                 var that = this;

@@ -126,7 +126,6 @@ router.get('/', (req, res, next) => {
         post.typeCode = req.body.typeCode;
         // console.log(req);
         post.save((err, doc) => {
-            console.log(doc);
             res.json({success: true})
         });
     })
@@ -166,8 +165,18 @@ router.get('/', (req, res, next) => {
             });
         })
     })
-    .delete('/deletePostModel', (req, res, next) => {
+    .get('/getPostDtl', (req, res, next) => {
         console.log(req);
+
+        PostModel.findById(req.query.id, (err, posts) => {
+            console.log(posts);
+            if (err) {
+                res.json({success: false});
+            }
+            res.json({ success: true, row: posts});
+        });
+    })
+    .delete('/deletePostModel', (req, res, next) => {
         if (req.body.id === 'all') {
             PostModel.remove({}, (err) => {
                 if (err) {
@@ -246,7 +255,7 @@ router.get('/', (req, res, next) => {
                 }
                 var token = Verify.getToken(user);
                 res.cookie("configauthCookieName", token, opts);
-                res.redirect("http://192.168.0.103:8081/#/004-my");
+                res.redirect("http://192.168.1.101:8081/#/004-my");
             });
         })(req,res,next);
     })
