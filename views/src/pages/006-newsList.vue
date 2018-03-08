@@ -61,7 +61,7 @@
     }
 </style>
 
-< class="body_in" onload="loaded()">
+<template class="body_in" onload="loaded()">
 <div id="newsList">
     <div class="news" style="background: #ff566b; border: 0px;">
         <div class="width90_box flex_row">
@@ -77,7 +77,7 @@
                     <div class="news_list">
                         <div class="card_in">
                             <div class="news_info">
-                                <Icon type="chatbubble-working"></Icon>
+                                <i class="ion-chatbubble-working"></i>
                                 <div class="card_info_texts">
                                     <span class="news_info_title" v-text="item.title"></span>
                                     <span class="card_info_time" v-text="item.createDate"></span>
@@ -94,6 +94,8 @@
 
 
 <script>
+import {global} from '../../static/js/lib/global'
+
 var myScroll, pullUpFlag;
 function loaded() {
     myScroll = new IScroll('#wrapper', {

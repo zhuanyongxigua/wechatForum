@@ -61,7 +61,7 @@
     }
 </style>
 
-<template class="body_in">
+<template>
     <div id="card">
         <div class="share_box" :class="{show:clickShare}" @click="clickShare = false">
             <img class="share" src="../../static/img/share.png">
@@ -191,10 +191,10 @@
             </span>
         </div>
 
-        <div style="">
+        <!-- <div :style="{display: bIsShowButton ? 'block' : 'none'}">
             <span class="model_btn" @click="fnGoToModify" :style="{borderBottom: sIsBorderBottomStyle}">修改</span>
             <span class="model_btn" v-if="sCurModifyType === 'modifyCmt'" @click="fnDelete">删除</span>
-        </div>
+        </div> -->
 
         <!-- 图片查看器共用部分 -->
         <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
@@ -267,6 +267,7 @@
                 iTotalCmtNum: 0,
                 bIsFollow: false,       //是否已关注
                 bIsShowDelay: false,     //解决v-if在vue实例化后才渲染而产生的延迟闪烁
+                bIsShowButton: false,
             }
         },
         //加载组件时发出请求
@@ -290,8 +291,6 @@
                 var type = 'GET';
                 var url = '/api/getPostDtl?id=' + global.GetArgsFromHref(this.loc, "id");
 
-              console.log(url);
-
                 function ajaxSuccess(data) {
                     var oData = JSON.parse(JSON.stringify(data.row));
                     var aCurImages = [];
@@ -313,6 +312,7 @@
                                 ele.path = global.baseurl + ele.path.slice(2);
                                 aCurVideos.push(ele);
                             } else {
+                                if (!ele.path) return;
                                 ele.path = global.baseurl + ele.path.slice(2);
                                 oCurAudio = ele;
                             }

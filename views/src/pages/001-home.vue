@@ -171,20 +171,7 @@
             </div>
         </div>
 
-        <div class="foot_menu">
-            <router-link to="/002-score">
-                <span id="column1" class="ripple_box selected">首页</span>
-            </router-link>
-            <router-link to="/002-score">
-                <span id="column2" class="ripple_box">赚积分</span>
-            </router-link>
-            <router-link to="/003-send">
-                <span id="column3" class="ripple_box">发帖</span>
-            </router-link>
-            <router-link to="/004-my">
-                <span id="column4" class="ripple_box">我的</span>
-            </router-link>
-        </div>
+        <my-footer></my-footer>
 
         <!-- 图片查看器共用部分 -->
         <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
@@ -231,6 +218,8 @@
     import IScroll from 'iscroll/build/iscroll-probe.js'
     import Swiper from 'swiper'
     import 'swiper/dist/css/swiper.css'
+    import footer from '../components/footer.vue'
+    console.log(footer);
 
     export default{
         data () {
@@ -292,6 +281,9 @@
             }
             this.fnGetType();
             // this.fnGetSysMsg();
+        },
+        components: {
+            'my-footer': footer
         },
         methods: {
             fnGetType() {

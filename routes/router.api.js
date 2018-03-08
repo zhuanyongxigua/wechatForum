@@ -174,6 +174,7 @@ router.get('/', (req, res, next) => {
                 res.json({success: false});
             }
             res.json({ success: true, row: posts});
+
         });
     })
     .delete('/deletePostModel', (req, res, next) => {
@@ -255,7 +256,7 @@ router.get('/', (req, res, next) => {
                 }
                 var token = Verify.getToken(user);
                 res.cookie("configauthCookieName", token, opts);
-                res.redirect("http://192.168.1.101:8081/#/004-my");
+                res.redirect("http://192.168.0.103:8081/#/004-my");
             });
         })(req,res,next);
     })

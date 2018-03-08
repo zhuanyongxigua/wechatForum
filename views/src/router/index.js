@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
 
 Vue.use(Router)
 
@@ -35,9 +34,34 @@ export default new Router({
         component: (resolve) => require(['../pages/005-card.vue'], resolve)
     },
     {
+        path: '/006-newsList',
+        name: 'newsList',
+        component: (resolve) => require(['../pages/006-newsList.vue'], resolve)
+    },
+    {
+        path: '/007-news',
+        name: 'news',
+        component: (resolve) => require(['../pages/007-news.vue'], resolve)
+    },
+    {
         path: '/008-personalCardList',
         name: 'personalCardList',
         component: (resolve) => require(['../pages/008-personalCardList.vue'], resolve)
+    },
+    {
+        path: '/009-followList',
+        name: 'followList',
+        component: (resolve) => require(['../pages/009-followList.vue'], resolve)
+    },
+    {
+        path: '/011-talk',
+        name: 'talk',
+        component: (resolve) => require(['../pages/011-talk.vue'], resolve)
+    },
+    {
+        path: '/012-reward',
+        name: 'reward',
+        component: (resolve) => require(['../pages/012-reward.vue'], resolve)
     },
     {
         path: '/013-recharge',
@@ -53,6 +77,16 @@ export default new Router({
         path: '/015-settings',
         name: 'settings',
         component: (resolve) => require(['../pages/015-settings.vue'], resolve)
+    },
+    {
+        path: '/016-edit',
+        name: 'edit',
+        component: (resolve) => require(['../pages/016-edit.vue'], resolve)
+    },
+    {
+        path: '/017-interest',
+        name: 'interest',
+        component: (resolve) => require(['../pages/017-interest.vue'], resolve)
     },
     {
         path: '/018-scoreRule',

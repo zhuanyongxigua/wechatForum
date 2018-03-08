@@ -35,11 +35,12 @@
     <div id="news">
 
         <div class="back_home" onclick="window.location.href='006-newsList.html'">
-            <Icon type="chatbubble-working"></Icon>更多系统消息</div>
+            <i class="ion-chatbubble-working"></i>更多系统消息
+        </div>
 
         <div class="card">
             <div class="share_box" :class="{show:clickShare}" @click="clickShare = false">
-                <img class="share" src="../static/img/share.png">
+                <img class="share" src="../../static/img/share.png">
                 <div class="shade"></div>
             </div>
             <div class="card_in">
@@ -102,29 +103,29 @@
 
         <div class="card_bottom_btns flex_row">
             <span class="card_bottom_btn flex1 ripple_box" @click="clickShare = true">
-                <Icon type="android-open"></Icon>
+                <i class="ion-android-open"></i>
                 分享
             </span>
             <span class="card_bottom_btn flex1 ripple_box" @click="fnGoToCmtPage">
-                <Icon type="chatbubble-working"></Icon>
+                <i class="ion-chatbubble-working"></i>
                 评论 {{oSysMsgDetails.reviews || ''}}
             </span>
             <span class="card_bottom_btn flex1 ripple_box" @click="fnGoToRewardPage">
-                <Icon type="eye"></Icon>
+                <i class="ion-eye"></i>
                 打赏 {{oSysMsgDetails.rewards || ''}}
             </span>
             <span class="card_bottom_btn flex1 ripple_box" @click="fnSupport">
-                <Icon :style="{color: sSupportColor}" type="thumbsup"></Icon>
+                <i :style="{color: sSupportColor}" class="ion-thumbsup"></i>
                 赞 {{iSupport || ''}}
             </span>
         </div>
 
-        <Modal v-model="modal1" class-name="vertical-center-modal" :closable="false" width="50%">
+        <!-- <Modal v-model="modal1" class-name="vertical-center-modal" :closable="false" width="50%">
             <span class="model_btn" @click="fnGoToModifyCmtPage" style="border-bottom: 1px solid #eee">修改</span>
             <span class="model_btn" @click="fnDelete">删除</span>
 
             <div slot="footer" style="display: none;"></div>
-        </Modal>
+        </Modal> -->
 
     </div>
 </template>
