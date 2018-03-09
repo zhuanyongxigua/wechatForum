@@ -171,7 +171,7 @@
             </div>
         </div>
 
-        <my-footer></my-footer>
+        <!--<my-footer :my-tab="1"></my-footer>-->
 
         <!-- 图片查看器共用部分 -->
         <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
@@ -219,17 +219,10 @@
     import Swiper from 'swiper'
     import 'swiper/dist/css/swiper.css'
     import footer from '../components/footer.vue'
-    console.log(footer);
 
     export default{
         data () {
             return {
-                tab: {
-                    1: true,
-                    2: false,
-                    3: false,
-                    4: false
-                },
                 oQueryInfo: {
                     queryType: '',
                     typeCode: '',

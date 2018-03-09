@@ -19,13 +19,13 @@ var app = express();
 app.set('view engine', 'jade');
 
 app.all("*", (req, res, next) => {      //支持跨域调试
-    res.header("Access-Control-Allow-Origin", "http://192.168.0.103:8081");
+    res.header("Access-Control-Allow-Origin", "http://192.168.1.101:8081");
     res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
     res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
     res.header("Access-Control-Allow-Credentials", true);
     res.header("X-Powered-By",' 3.2.1');
     if(req.method=="OPTIONS") res.send(200);/*让options请求快速返回*/
-    else  next();
+    else next();
 });
 
 // uncomment after placing your favicon in /public

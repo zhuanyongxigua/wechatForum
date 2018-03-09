@@ -73,25 +73,13 @@
 
         <div style="height: 50px; float: left; width: 100%;"></div>
 
-        <div class="foot_menu">
-            <router-link to="/001-home">
-                <span id="column1" class="ripple_box">首页</span>
-            </router-link>
-            <router-link to="/002-score">
-                <span id="column2" class="ripple_box">赚积分</span>
-            </router-link>
-            <router-link to="/003-send">
-                <span id="column3" class="ripple_box">发帖</span>
-            </router-link>
-            <router-link to="/004-my">
-                <span id="column4" class="ripple_box selected">我的</span>
-            </router-link>
-        </div>
+        <my-footer my-tab="4"></my-footer>
 
     </div>
 </template>
 
 <script>
+    import footer from '../components/footer.vue'
     export default({
         data() {
             return {
@@ -103,6 +91,9 @@
         //加载组件时发出请求
         created: function() {
             this.fnGetMyInfo();
+        },
+        components: {
+          'my-footer': footer
         },
         methods: {
             fnLoginWithGithub() {

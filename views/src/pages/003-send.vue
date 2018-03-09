@@ -93,26 +93,16 @@
         <span class="send_btn ripple_box" @click="fnPublishPost">确认发送</span>
 
         <div style="height: 50px; width: 100%; float: left;"></div>
-        <div class="foot_menu">
-            <router-link to="/001-home">
-                <span id="column1" class="ripple_box">首页</span>
-            </router-link>
-            <router-link to="/002-score">
-                <span id="column2" class="ripple_box">赚积分</span>
-            </router-link>
-            <router-link to="/003-send">
-                <span id="column3" class="ripple_box selected">发帖</span>
-            </router-link>
-            <router-link to="/004-my">
-                <span id="column4" class="ripple_box">我的</span>
-            </router-link>
-        </div>
+
+        <my-footer my-tab="3"></my-footer>
     </div>
 </template>
 
 <script>
     import {global} from '../../static/js/lib/global'
     import '../../node_modules/jquery-weui/dist/js/jquery-weui.js'
+    import footer from '../components/footer.vue'
+
     export default ({
         data() {
             return {
@@ -145,6 +135,9 @@
         created: function() {
             this.fnGetType();
             this.fnDelInvalidMediaFiles();
+        },
+        components: {
+          'my-footer': footer
         },
         methods: {
             fnGetPostDetails() {
