@@ -1,6 +1,4 @@
 <style scoped>
-    /*modal自定义样式*/
-
     .ivu-modal-footer {
         display: none;
     }

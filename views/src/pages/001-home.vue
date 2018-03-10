@@ -79,25 +79,7 @@
 
 <template class="body_in">
     <div>
-        <div class="share_box" :class="{show:clickShare}" @click="clickShare = false">
-            <img class="share" src="" true-src="../../static/img/share.png">
-            <div class="shade"></div>
-        </div>
-
-        <div class="news">
-            <div class="news_in">
-                <span class="news_title" onclick="window.location.href='006-newsList.html'">
-                    <i class="icon ion-chatbubble-working"></i>
-                    更多系统消息：
-                </span>
-                <!-- Swiper -->
-                <div class="swiper-container">
-                    <div class="swiper-wrapper">
-                        <div v-for="item in aSysMsg" class="swiper-slide" @click="fnGoToSysMsgDetails(item.id)" v-text="item.title"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <my-homeSysNews></my-homeSysNews>
 
         <div class="tab_btns">
             <span class="tab_btn ripple_box" @click="fnChangeTab(1)">
@@ -132,7 +114,7 @@
                         <div class="card">
                             <div class="card_in">
                                 <div class="card_info">
-                                    <img class="card_info_head head_icon_img" alt="" src="" @click="fnGoToPersonalCardListPage(item.owner)" :true-src="item.head" />
+                                    <img class="card_info_head head_icon_img" alt="" src="../../static/img/001.jpg" @click="fnGoToPersonalCardListPage(item.owner)"/>
                                     <div class="card_info_texts">
                                         <span class="card_info_name" @click="fnGoToPersonalCardListPage(item.owner)" v-text="item.username">
                                          <span class="user_type" v-text="item.identity"></span>
@@ -170,65 +152,32 @@
                 </ul>
             </div>
         </div>
-
-        <!--<my-footer :my-tab="1"></my-footer>-->
-
-        <!-- 图片查看器共用部分 -->
-        <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="pswp__bg"></div>
-            <div class="pswp__scroll-wrap">
-                <div class="pswp__container">
-                    <div class="pswp__item"></div>
-                    <div class="pswp__item"></div>
-                    <div class="pswp__item"></div>
-                </div>
-
-                <div class="pswp__ui pswp__ui--hidden">
-                    <div class="pswp__top-bar">
-                        <div class="pswp__counter"></div>
-                        <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-                        <button class="pswp__button pswp__button--share" title="Share"></button>
-                        <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-                        <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-                        <div class="pswp__preloader">
-                            <div class="pswp__preloader__icn">
-                                <div class="pswp__preloader__cut">
-                                    <div class="pswp__preloader__donut"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-                        <div class="pswp__share-tooltip"></div>
-                    </div>
-                    <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
-                    <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
-                    <div class="pswp__caption">
-                        <div class="pswp__caption__center"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <my-footer :my-tab="1"></my-footer>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
     import {global} from '../../static/js/lib/global'
+    //图片查看器，显示的部分在app.vue里面。
     import {initPhotoSwipeFromDOM} from '../../static/js/lib/PhotoSwipeDemo'
     import IScroll from 'iscroll/build/iscroll-probe.js'
-    import Swiper from 'swiper'
-    import 'swiper/dist/css/swiper.css'
     import footer from '../components/footer.vue'
+    import homeSysNews from '../components/homeSysNews.vue'
 
     export default{
         data () {
             return {
+                tab: {
+                    1: true,
+                    2: false,
+                    3: false,
+                    4: false
+                },
                 oQueryInfo: {
                     queryType: '',
                     typeCode: '',
                     queryStr: ''
                 },
-                clickShare: false,
                 iCurrentPage: 1,
                 bIsMore: true,
                 aType: [],
@@ -276,7 +225,8 @@
             // this.fnGetSysMsg();
         },
         components: {
-            'my-footer': footer
+            'my-footer': footer,
+            'my-homeSysNews': homeSysNews
         },
         methods: {
             fnGetType() {
@@ -320,7 +270,7 @@
                                 if (ele.tFileVos) {
                                     ele.tFileVos.forEach((element) => {
                                         if (element.type === 1) {
-                                            element.path = global.baseUrl + '/api/getImage/' + element.path;
+                                            element.path = global.baseUrl + 'api/getImage/' + element.path;
                                             ele.aFileImage.push(element);
                                         } else if (element.type === 2) {
                                             element.path = global.baseUrl + element.path.slice(2);
@@ -355,31 +305,6 @@
                     .catch(err => {
                         console.log(err)
                     })
-            },
-            fnGetSysMsg() {
-                axios.post('/wechat/searchSystemTopics', {})
-                    .then(res => {
-                        var aData = JSON.parse(JSON.stringify(res.data));
-                        data.forEach((ele) => {
-                            this.aSysMsg.push(ele);
-                        });
-                        this.$nextTick(() => {
-                            //swiper
-                            var swiper = new Swiper('.swiper-container', {
-                                direction: 'vertical',
-                                loop: true, //循环
-                                autoplay: {
-                                    delay: 2500,
-                                    disableOnInteraction: false,
-                                },
-                                pagination: {
-                                    el: '.swiper-pagination',
-                                    clickable: true,
-                                },
-                            });
-                        });
-                    })
-                    .catch(console.log);
             },
             fnLoadIscroll() {
                 this.myScroll = new IScroll('#wrapper', {
@@ -422,9 +347,6 @@
                     queryStr: ''
                 };
                 this.fnGetPostList();
-            },
-            fnGoToSysMsgDetails(id) {
-                window.location.href = '007-news.html?id=' + id;
             },
             fnGoToCardPage(id, event) {
                 var oCurPageOperateRecord = {};

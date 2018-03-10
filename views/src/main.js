@@ -17,7 +17,7 @@ if (process.env.NODE_ENV === 'development') {
     axios.defaults.withCredentials = true;
     Vue.config.performance = true;
 } else {
-    axios.defaults.baseURL = '../';
+    axios.defaults.baseURL = '';
 }
 
 /* eslint-disable no-new */

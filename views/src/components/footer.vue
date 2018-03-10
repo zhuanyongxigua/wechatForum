@@ -31,7 +31,7 @@
         props:['myTab'],
         //加载组件时发出请求
         created() {
-            console.log(this.myTab);
+            
         },
         methods: {
 

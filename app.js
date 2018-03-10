@@ -19,7 +19,7 @@ var app = express();
 app.set('view engine', 'jade');
 
 app.all("*", (req, res, next) => {      //支持跨域调试
-    res.header("Access-Control-Allow-Origin", "http://192.168.1.101:8081");
+    res.header("Access-Control-Allow-Origin", "http://192.168.1.2:8081");
     res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
     res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
     res.header("Access-Control-Allow-Credentials", true);
@@ -43,7 +43,7 @@ passport.use(new GitHubStrategy({
     signinValid: true,
     clientID: "cf8770d617d9298696c1",
     clientSecret: "db99f0e1491b0c1a27b59ada475521e18b469a12",
-    callbackURL: "http://localhost:3000/api/auth/github/callback"
+    callbackURL: "http://localhost:8080/api/auth/github/callback"
   },
   function(accessToken, refreshToken, profile, cb) {
       UserModel.findOne({ githubId: profile.id }, function(err, user) {
@@ -82,7 +82,7 @@ passport.deserializeUser(function(user, done) {
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/static', express.static(path.join(__dirname, 'static')));
+app.use('/views', express.static(path.join(__dirname, 'views')));
 
 app.use(
   connectBusboy({
