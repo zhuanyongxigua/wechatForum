@@ -110,6 +110,39 @@
                         </div>
                     </li>
 
+                    <li>
+                        <div class="card">
+                            <div class="card_in">
+                                <div class="card_info">
+                                    <img class="card_info_head head_icon_img" alt="" src="../../static/img/001.jpg"/>
+                                    <div class="card_info_texts">
+                                        <span class="card_info_name">
+                                         <span class="user_type">提示</span>
+                                        </span>
+                                        <span class="card_info_time">2018-03-09</span>
+                                    </div>
+                                    <span class="card_label">
+                                         <i class="icon ion-ios-pricetags-outline"></i>
+                                         <span style="font-size: 12px" v-text="item.type"></span>
+                                    </span>
+                                </div>
+                                <div class="card_title">
+                                    <p>特别提示</p>
+                                </div>
+                                <div class="card_texts">
+                                    <p>暂时后台接口还较少，可用的功能有：发帖、github登录</p>
+                                </div>
+                                <div class="card_imgs">
+                                    <div class="demo-gallery">
+                                        <a href="../../static/img/001.jpg" data-size="" data-med="../../static/img/001.jpg" data-med-size="">
+                                            <img class="card_img" src="" alt="" true-src="../../static/img/001.jpg"/>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
                     <li v-for="item in aPostList" :id="'postLiId' + item.id">
                         <div class="card">
                             <div class="card_in">
