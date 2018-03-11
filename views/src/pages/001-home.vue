@@ -123,7 +123,7 @@
                                     </div>
                                     <span class="card_label">
                                          <i class="icon ion-ios-pricetags-outline"></i>
-                                         <span style="font-size: 12px" v-text="item.type"></span>
+                                         <span style="font-size: 12px"></span>
                                     </span>
                                 </div>
                                 <div class="card_title">
@@ -131,13 +131,6 @@
                                 </div>
                                 <div class="card_texts">
                                     <p>暂时后台接口还较少，可用的功能有：发帖、github登录</p>
-                                </div>
-                                <div class="card_imgs">
-                                    <div class="demo-gallery">
-                                        <a href="../../static/img/001.jpg" data-size="" data-med="../../static/img/001.jpg" data-med-size="">
-                                            <img class="card_img" src="" alt="" true-src="../../static/img/001.jpg"/>
-                                        </a>
-                                    </div>
                                 </div>
                             </div>
                         </div>
