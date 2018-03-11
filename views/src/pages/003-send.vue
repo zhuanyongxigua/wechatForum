@@ -213,7 +213,7 @@
                 var postData = {};
                 var that = this;
                 var type = 'POST';
-                var url = '/api/getRoleType';
+                var url = 'api/getRoleType';
 
                 postData.type = 'TopicType';
 
@@ -231,7 +231,7 @@
                 var postData = {};
                 var that = this;
                 var type = 'PUT';
-                var url = '/api/';
+                var url = 'api/';
                 var oAudioObj = {};
 
                 //表单验证
@@ -452,7 +452,7 @@
                 this.oSelectedFile = event.target.files[0];
                 const fd = new FormData();
                 fd.append('file', this.oSelectedFile, this.oSelectedFile.name)
-                axios.post('/api/uploadImage', fd, {
+                axios.post('api/uploadImage', fd, {
                     onUploadProgress: uploadEvent => {
                         console.log('upload progress: ' + Math.round(uploadEvent.loaded / uploadEvent.total * 100) + '%')
                     }
@@ -465,7 +465,7 @@
                                 return;
                             }
                             var oData = JSON.parse(JSON.stringify(res.data));
-                            oData.path = global.baseUrl + '/api/getImage/' + oData.path;
+                            oData.path = global.baseUrl + 'api/getImage/' + oData.path;
                             this["aFileImage"].push(oData);
                             localStorage.setItem("aFileImage", JSON.stringify(this["aFileImage"]));
                             if (global.GetArgsFromHref(this.loc, 'mode')) {

@@ -104,7 +104,7 @@
                     })
             },
             fnGetScoreList() {
-                axios.post('/api/getScoreList', {})
+                axios.post('api/getScoreList', {})
                     .then(res => {
                         this.aScoreList = JSON.parse(JSON.stringify(res.data));
                     })

@@ -230,7 +230,7 @@
         },
         methods: {
             fnGetType() {
-                axios.post('/api/getRoleType', {type: 'TopicType'})
+                axios.post('api/getRoleType', {type: 'TopicType'})
                     .then(res => {
                         var aData = JSON.parse(JSON.stringify(res.data));
                         aData.unshift({
@@ -259,7 +259,7 @@
                 postData.param = {};
                 postData.param.topicVo = this.oQueryInfo;
 
-                axios.post('/api/getPostList', postData)
+                axios.post('api/getPostList', postData)
                     .then(res => {
                         var aData = JSON.parse(JSON.stringify(res.data));
                         if (aData.rows) {

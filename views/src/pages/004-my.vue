@@ -100,7 +100,7 @@
                 window.location.href = 'http://zhuanyongxigua.cn:8080/api/auth/github';
             },
             fnGetMyInfo() {
-                axios.post('/api/myInfo', {})
+                axios.post('api/myInfo', {})
                     .then(res => {
                         this.oMyInfo = Object.assign({}, res.data);
                     })

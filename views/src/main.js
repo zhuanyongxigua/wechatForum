@@ -12,7 +12,7 @@ require("expose-loader?$!jquery");
 Vue.config.productionTip = false
 
 if (process.env.NODE_ENV === 'development') {
-    axios.defaults.baseURL = 'http://localhost:3000';
+    axios.defaults.baseURL = 'http://localhost:3000/';
     // axios.defaults.baseURL = 'http://www.11wdkj.com/pavilion/';
     axios.defaults.withCredentials = true;
     Vue.config.performance = true;
