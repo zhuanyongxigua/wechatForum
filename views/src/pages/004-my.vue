@@ -97,7 +97,7 @@
         },
         methods: {
             fnLoginWithGithub() {
-                window.location.href = 'http://localhost:3000/api/auth/github';
+                window.location.href = 'http://zhuanyongxigua.cn:8080/api/auth/github';
             },
             fnGetMyInfo() {
                 axios.post('/api/myInfo', {})

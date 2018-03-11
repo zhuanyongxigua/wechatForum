@@ -256,7 +256,7 @@ router.get('/', (req, res, next) => {
                 }
                 var token = Verify.getToken(user);
                 res.cookie("configauthCookieName", token, opts);
-                res.redirect("./#/004-my");
+                res.redirect("/views/dist/index.html#/004-my");
             });
         })(req,res,next);
     })
