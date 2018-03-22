@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon --inspect ./bin/www"
+    "start": "NODE_ENV=production PORT=8080 node ./bin/www",
+    "dev":"nodemon --inspect ./bin/www"
   },
   "dependencies": {
     "body-parser": "~1.18.2",

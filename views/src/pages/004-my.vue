@@ -97,7 +97,12 @@
         },
         methods: {
             fnLoginWithGithub() {
-                window.location.href = 'http://zhuanyongxigua.cn:8080/api/auth/github';
+                if (process.env.NODE_ENV === 'development') {
+                    window.location.href = 'http://localhost:3000/api/auth/github';
+                } else {
+                    window.location.href = 'http://zhuanyongxigua.cn:8080/api/auth/github';
+                }
+                
             },
             fnGetMyInfo() {
                 axios.post('api/myInfo', {})

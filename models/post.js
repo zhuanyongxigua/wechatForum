@@ -6,7 +6,8 @@ var PostSchema = new Schema({
     content: String,
     type: String,
     typeCode: Number,
-    tFileVos: Array
+    tFileVos: Array,
+    avatar: String
 });
 
 var PostModel = mongoose.model('Post', PostSchema);

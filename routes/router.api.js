@@ -13,6 +13,7 @@ var imagesModel = require('../models/imgUpload');
 var UserModel = require('../models/user');
 var Verify = require('../middleware/verify');
 var router = express.Router();
+var config = require('../config');
 
 const opts = {
   path: '/',
@@ -117,17 +118,20 @@ router.get('/', (req, res, next) => {
             },
         ])
     })
-    .put('/addUserPost', (req, res, next) => {
-        var post = new PostModel();
-        post.title = req.body.title;
-        post.content = req.body.content;
-        post.type = req.body.type;
-        post.tFileVos = req.body.tFileVos;
-        post.typeCode = req.body.typeCode;
-        // console.log(req);
-        post.save((err, doc) => {
-            res.json({success: true})
-        });
+    .put('/addUserPost', Verify.verifyOrdinaryUser, (req, res, next) => {
+        UserModel.find({githubId: req.decoded.githubId}, (err, user) => {
+            var post = new PostModel();
+            post.title = req.body.title;
+            post.content = req.body.content;
+            post.type = req.body.type;
+            post.tFileVos = req.body.tFileVos;
+            post.typeCode = req.body.typeCode;
+            post.avatar = user[0].avatar;
+            // console.log(req);
+            post.save((err, doc) => {
+                res.json({success: true})
+            });
+        })
     })
 
     .post('/getPostList', (req, res, next) => {
@@ -256,7 +260,8 @@ router.get('/', (req, res, next) => {
                 }
                 var token = Verify.getToken(user);
                 res.cookie("configauthCookieName", token, opts);
-                res.redirect("/views/dist/index.html#/004-my");
+                console.log(config.github.redirectURL);
+                res.redirect(config.github.redirectURL);
             });
         })(req,res,next);
     })
