@@ -1,22 +1,23 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var bytes = require('bytes');
-var connectBusboy = require('connect-busboy');
-var session = require('express-session');
-var passport = require('passport');
-var GitHubStrategy = require('passport-github').Strategy;
-var config = require('./config');
+import express from 'express';
+import path from 'path';
+import favicon from 'serve-favicon';
+import logger from 'morgan';
+import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
+import bytes from 'bytes';
+import connectBusboy from 'connect-busboy';
+import session from 'express-session';
+import passport from 'passport';
+import passportGithub from 'passport-github';
+const GitHubStrategy = passportGithub.Strategy;
+import config from './config';
 
 require('./models/init');
 
-var RouteApi = require('./routes/router.api.js');
-var UserModel = require('./models/user')
+import RouteApi from './routes/router.api.js';
+import UserModel from './models/user';
 
-var app = express();
+const app = express();
 app.set('view engine', 'jade');
 
 app.all("*", (req, res, next) => {      //支持跨域调试
@@ -112,4 +113,4 @@ app.use((err, req, res, next) => {
     res.render('error');
 });
 
-module.exports = app;
+export default app;

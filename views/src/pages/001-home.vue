@@ -141,7 +141,7 @@
                         <div class="card">
                             <div class="card_in">
                                 <div class="card_info">
-                                    <img class="card_info_head head_icon_img" alt="" src="../../static/img/001.jpg" @click="fnGoToPersonalCardListPage(item.owner)"/>
+                                    <img class="card_info_head head_icon_img" alt="" :src="item.avatar" @click="fnGoToPersonalCardListPage(item.owner)"/>
                                     <div class="card_info_texts">
                                         <span class="card_info_name" @click="fnGoToPersonalCardListPage(item.owner)" v-text="item.username">
                                          <span class="user_type" v-text="item.identity"></span>

@@ -1,17 +1,17 @@
 /**
  * Created by yuxin on 2018/1/26.
  */
-
-var express = require('express');
-var fs = require('fs');
-var multer = require('multer');
-var passport = require('passport');
+import R from 'ramda';
+import express from 'express';
+import fs from 'fs';
+import multer from 'multer';
+import passport from 'passport';
 var upload = multer({ dest: 'uploads/' });
 
-var PostModel = require('../models/post');
-var imagesModel = require('../models/imgUpload');
-var UserModel = require('../models/user');
-var Verify = require('../middleware/verify');
+import PostModel from '../models/post';
+import imagesModel from '../models/imgUpload';
+import UserModel from '../models/user';
+import * as Verify from '../middleware/verify';
 var router = express.Router();
 var config = require('../config');
 
@@ -274,4 +274,4 @@ router.get('/', (req, res, next) => {
         })
     });
 
-module.exports = router;
+export default router;

@@ -12,4 +12,4 @@ var PostSchema = new Schema({
 
 var PostModel = mongoose.model('Post', PostSchema);
 
-module.exports = PostModel;
+export default PostModel;

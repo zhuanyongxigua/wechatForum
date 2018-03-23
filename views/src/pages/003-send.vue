@@ -230,7 +230,6 @@
             fnPublishPost() {
                 var postData = {};
                 var that = this;
-                var type = 'PUT';
                 var url = 'api/';
                 var oAudioObj = {};
 
@@ -286,29 +285,32 @@
                     }
                 }
 
-                function ajaxSuccess(data) {
-                    if (data.success) {
-                        $.alert({
-                            title: '提示',
-                            text: '提交成功' + (data.message ? ('，' + data.message) : '') + '!',
-                            onOK: function() {
-                                that.$router.push("001-home");
-                            }
-                        });
-                        localStorage.removeItem('aFileImage');
-                        localStorage.removeItem('aFileVideo');
-                    } else {
-                        if (data.message === 'USER_BAN_CODE') {
-                            $.alert('账户禁用，无法操作');
-                        } else {
+                axios.put(url, postData)
+                    .then(res => {
+                        if (res.data.success) {
                             $.alert({
                                 title: '提示',
-                                text: '发帖失败',
+                                text: '提交成功' + (res.data.message ? ('，' + res.data.message) : '') + '!',
+                                onOK: function() {
+                                    that.$router.push("001-home");
+                                }
                             });
+                            localStorage.removeItem('aFileImage');
+                            localStorage.removeItem('aFileVideo');
+                        } else {
+                            if (res.data.message === 'USER_BAN_CODE') {
+                                $.alert('账户禁用，无法操作');
+                            } else {
+                                $.alert({
+                                    title: '提示',
+                                    text: '发帖失败',
+                                });
+                            }
                         }
-                    }
-                }
-                global.ajax(type, postData, url, ajaxSuccess);
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
             },
             fnDelMedia(iCurId, sCurType) {
                 var postData = {};

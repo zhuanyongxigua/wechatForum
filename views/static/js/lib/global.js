@@ -3,7 +3,7 @@
 */
 
 function GlobalConstructorFunction() {
-    this.baseUrl = '../../';
+    this.baseUrl = 'http://localhost:3000/';
 }
 
 /*
