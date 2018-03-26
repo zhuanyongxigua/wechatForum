@@ -200,8 +200,8 @@
 </template>
 
 <script>
-    import {global} from '../../static/js/lib/global'
-    import {initPhotoSwipeFromDOM} from '../../static/js/lib/PhotoSwipeDemo'
+    import { global } from '../../static/js/lib/global'
+    import { initPhotoSwipeFromDOM } from '../../static/js/lib/PhotoSwipeDemo'
 
     export default({
         data() {
@@ -250,6 +250,7 @@
                 var that = this;
                 var type = 'GET';
                 var url = '/api/getPostDtl?id=' + global.GetArgsFromHref(this.loc, "id");
+                // axios.
 
                 function ajaxSuccess(data) {
                     var oData = JSON.parse(JSON.stringify(data.row));

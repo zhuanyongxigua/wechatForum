@@ -86,7 +86,7 @@
         },
         //加载组件时发出请求
         created: function() {
-            this.fnGetMyInfo();
+            // this.fnGetMyInfo();
             this.fnGetScoreList();
         },
         components: {

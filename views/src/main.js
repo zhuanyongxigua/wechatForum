@@ -12,6 +12,7 @@ require("expose-loader?$!jquery");
 Vue.config.productionTip = false
 
 if (process.env.NODE_ENV === 'development') {
+
     axios.defaults.baseURL = 'http://localhost:3000/';
     // axios.defaults.baseURL = 'http://www.11wdkj.com/pavilion/';
     axios.defaults.withCredentials = true;
@@ -22,8 +23,8 @@ if (process.env.NODE_ENV === 'development') {
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  router,
-  components: { App },
-  template: '<App/>'
+    el: '#app',
+    router,
+    components: { App },
+    template: '<App/>'
 })

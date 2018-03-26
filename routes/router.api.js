@@ -6,14 +6,15 @@ import express from 'express';
 import fs from 'fs';
 import multer from 'multer';
 import passport from 'passport';
-var upload = multer({ dest: 'uploads/' });
+const upload = multer({ dest: 'uploads/' });
 
 import PostModel from '../models/post';
 import imagesModel from '../models/imgUpload';
 import UserModel from '../models/user';
 import * as Verify from '../middleware/verify';
-var router = express.Router();
-var config = require('../config');
+import * as post from '../controllers/post'
+const router = express.Router();
+const config = require('../config');
 
 const opts = {
   path: '/',
@@ -118,57 +119,9 @@ router.get('/', (req, res, next) => {
             },
         ])
     })
-    .put('/addUserPost', Verify.verifyOrdinaryUser, (req, res, next) => {
-        UserModel.find({githubId: req.decoded.githubId}, (err, user) => {
-            var post = new PostModel();
-            post.title = req.body.title;
-            post.content = req.body.content;
-            post.type = req.body.type;
-            post.tFileVos = req.body.tFileVos;
-            post.typeCode = req.body.typeCode;
-            post.avatar = user[0].avatar;
-            // console.log(req);
-            post.save((err, doc) => {
-                res.json({success: true})
-            });
-        })
-    })
+    .put('/addUserPost', Verify.verifyOrdinaryUser, post.addUserPost)
 
-    .post('/getPostList', (req, res, next) => {
-        let fnGetCount = new Promise((resolve, reject) => {
-            PostModel.count({}, (err, c)=> err ? reject(err) : resolve(c))
-        });
-
-        fnGetCount.then(resp => {
-            PostModel.find({
-                content: new RegExp(req.body.param.topicVo.queryStr, "i"),
-                title: new RegExp(req.body.param.topicVo.queryStr, "i"),
-                typeCode: req.body.param.topicVo.typeCode || {$gt: 0, $lt: 100}
-            }, {}, (err, posts) => {
-                let aPosts = [...posts];
-                if (err) {
-                    res.json({success: false, message: err});
-                    return;
-                }
-                aPosts.forEach((ele, index) => {
-                    ele._doc.id = ele.id;
-                    if (ele._doc.tFileVos) {
-                        let newTFileVos = ele._doc.tFileVos.map((element) => {
-                            if (element) {
-                                element.type = 1;
-                                element.path = element.id;
-                                return element;
-                            } else {
-                                return {type: 1};
-                            }
-                        })
-                        ele._doc.tFileVos = newTFileVos;
-                    }
-                });
-                res.json({ total: resp, rows: aPosts});
-            });
-        })
-    })
+    .post('/getPostList', post.getPostList)
     .get('/getPostDtl', (req, res, next) => {
         console.log(req);
 
