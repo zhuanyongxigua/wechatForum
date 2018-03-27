@@ -107,7 +107,7 @@
                 <div class="card_imgs">
                     <div class="demo-gallery">
                         <a v-for="item in aImages" :href="item.path" data-size="" :data-med="item.path" data-med-size="">
-                            <img class="card_img" alt=""  :true-src="item.path"/>
+                            <img class="card_img" alt="" :true-src="item.path"/>
                         </a>
                     </div>
                     <div class="demo-gallery">
@@ -249,7 +249,6 @@
             fnGetPostDetails: function() {
                 axios.get('/api/getPostDtl?id=' + global.GetArgsFromHref(this.loc, "id"))
                     .then(res => {
-                        console.log(res);
                         var oData = JSON.parse(JSON.stringify(res.data.row));
                         var aCurImages = [];
                         var aCurVideos = [];
@@ -264,7 +263,6 @@
                         if (oData.tFileVos) {
                             oData.tFileVos.forEach(function(ele) {
                                 if (ele.type === 1) {
-                                    ele.path = global.baseurl + ele.path;
                                     aCurImages.push(ele);
                                 } else if (ele.type === 2) {
                                     ele.path = global.baseurl + ele.path.slice(2);

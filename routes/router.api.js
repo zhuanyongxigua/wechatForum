@@ -14,6 +14,8 @@ import UserModel from '../models/user';
 import * as Verify from '../middleware/verify';
 import * as post from '../controllers/post';
 import * as upload from '../controllers/upload'
+import * as user from '../controllers/user'
+import * as dictionary from '../controllers/dictionary'
 const router = express.Router();
 const config = require('../config');
 
@@ -25,115 +27,15 @@ const opts = {
 };
 
 router.get('/', (req, res, next) => {})
-    .post('/getRoleType', (req, res, next) => {
-        res.json([
-            {
-                code: null,
-                id: 70,
-                name: "运动",
-                pcode: null,
-                status: true,
-                type: "TopicType"
-            },
-            {
-                code: null,
-                id: 71,
-                name: "旅游",
-                pcode: null,
-                status: true,
-                type: "TopicType"
-            },
-            {
-                code: null,
-                id: 72,
-                name: "随拍",
-                pcode: null,
-                status: true,
-                type: "TopicType"
-            }
-        ]);
-    })
-    .post('/getScoreList', (req, res, next) => {
-        res.json([
-            {
-                createDate:"2018-02-26 10:17:45",
-                credit:10,
-                id:100,
-                money:null,
-                number:null,
-                path:1,
-                queryDateQ:null,
-                queryDateZ:null,
-                queryStr:null,
-                reason:"发帖",
-                type:5,
-                userId:25,
-                username:null
-            }
-        ])
-    })
-    .post('/getRechargeRule', (req, res, next) => {
-        res.json([
-            {
-                createDate : 1516761081000,
-                id : 18,
-                integral : 1000,
-                money : 0.01,
-                type : 1
-            },
-            {
-                createDate : 1516761081000,
-                id : 18,
-                integral : 2000,
-                money : 0.02,
-                type : 1
-            },
-            {
-                createDate : 1516761081000,
-                id : 18,
-                integral : 3000,
-                money : 0.03,
-                type : 1
-            },
-            {
-                createDate : 1516761081000,
-                id : 18,
-                integral : 4000,
-                money : 0.04,
-                type : 1
-            },
-            {
-                createDate : 1516761081000,
-                id : 18,
-                integral : 5000,
-                money : 0.05,
-                type : 1
-            },
-            {
-                createDate : 1516761081000,
-                id : 18,
-                integral : 6000,
-                money : 0.06,
-                type : 1
-            },
-        ])
-    })
+    .post('/getRoleType', dictionary.getRoleType)
+    .post('/getScoreList', user.getScoreList)
+    .post('/getRechargeRule', dictionary.getRechargeRule)
     .put('/addUserPost', Verify.verifyOrdinaryUser, post.addUserPost)
     .post('/getPostList', post.getPostList)
     .get('/getPostDtl', post.getPostDtl)
     .delete('/deletePostModel', post.deletePostModel)
     .post('/uploadImage', uploadMulter.array('file', 12), upload.uploadImage)
-    .get('/getImage/:id', (req, res, next) => {
-        imagesModel.findById(req.params.id, (err, doc) => {
-            if (err) {
-                res.json({success: false, message: err});
-                return;
-            }
-            res.contentType(doc.img.contentType);
-            res.send(doc.img.data);
-
-        })
-    })
+    .get('/getImage/:id', upload.getImage)
     .get('/auth/github', passport.authenticate('github'))
     .get('/auth/github/callback', (req, res, next) => {
         /*
@@ -164,13 +66,6 @@ router.get('/', (req, res, next) => {})
             });
         })(req,res,next);
     })
-    .post('/myInfo', Verify.verifyOrdinaryUser, (req, res, next) => {
-        UserModel.find({githubId: req.decoded.githubId}, (err, user) => {
-            res.json({
-                username: user[0].username,
-                avatar: user[0].avatar
-            });
-        })
-    });
+    .post('/myInfo', Verify.verifyOrdinaryUser, user.myInfo);
 
 export default router;

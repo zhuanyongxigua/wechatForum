@@ -1,7 +1,7 @@
 import R from 'ramda';
 
-export const find = R.curry(function(model, conditions) {
-    return model.find(conditions).exec();
+export const find = R.curry(function(model, conditions, options) {
+    return model.find(conditions).setOptions(options).exec();
 })
 
 export const findById = R.curry(function(model, conditions) {
@@ -10,8 +10,4 @@ export const findById = R.curry(function(model, conditions) {
 
 export const remove = R.curry(function(model, conditions) {
     return model.remove(conditions).exec();
-})
-
-export const save = R.curry(function(model) {
-    return model.save();
 })

@@ -5,12 +5,17 @@ import * as db from '../data/db'
 
 export const addUserPost = async (req, res, next) => {
     try {
-        let oUserModel = await db.find(UserModel)({githubId: req.decoded.githubId});
+        let oUserModel = await db.find(UserModel)({githubId: req.decoded.githubId})({});
         var post = new PostModel();
         post.title = req.body.title;
         post.content = req.body.content;
         post.type = req.body.type;
         post.tFileVos = req.body.tFileVos;
+        post.tFileVos.map((ele) => {
+            ele.path = 'http://' + req.headers.host + '/api/getImage/' + ele.id;
+            ele.type = 1;
+            return ele;
+        })
         post.typeCode = req.body.typeCode;
         post.avatar = oUserModel[0].avatar;
         post.save((err, doc) => {
@@ -23,6 +28,11 @@ export const addUserPost = async (req, res, next) => {
 
 export const getPostList = async (req, res, next) => {
     try {
+        let options = {
+            skip: (req.body.currentPage - 1) * req.body.pageSize,
+            limit: req.body.pageSize,
+            sort: '-createAt'
+        }
         let fnGetCount = new Promise((resolve, reject) => {
             PostModel.count({}, (err, c)=> err ? reject(err) : resolve(c))
         });
@@ -31,27 +41,12 @@ export const getPostList = async (req, res, next) => {
             content: new RegExp(req.body.param.topicVo.queryStr, "i"),
             title: new RegExp(req.body.param.topicVo.queryStr, "i"),
             typeCode: req.body.param.topicVo.typeCode || {$gt: 0, $lt: 100}
-        });
+        })(options);
 
         let aPosts = [...oPostModel];
-        
-        aPosts.forEach((ele, index) => {
-            ele._doc.id = ele.id;
-            if (ele._doc.tFileVos) {
-                let newTFileVos = ele._doc.tFileVos.map((element) => {
-                    if (element) {
-                        element.type = 1;
-                        element.path = element.id;
-                        return element;
-                    } else {
-                        return {type: 1};
-                    }
-                })
-                ele._doc.tFileVos = newTFileVos;
-            }
-        });
-        res.json({ total: (await fnGetCount), rows: aPosts});
+        aPosts.map(ele => ele._doc.id = ele.id);
 
+        res.json({ total: (await fnGetCount), rows: aPosts});
     } catch(err) {
         next(err);
     }

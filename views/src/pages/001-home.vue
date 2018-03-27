@@ -273,7 +273,7 @@
             fnGetPostList(bIsSearchButton) {
                 var postData = {};
 
-                postData.pageSize = 10;
+                postData.pageSize = 5;
                 if (bIsSearchButton) {
                     postData.currentPage = 1;
                     this.iCurrentPage = 1;
@@ -282,7 +282,6 @@
                 } else {
                     postData.currentPage = this.iCurrentPage;
                 }
-
                 postData.param = {};
                 postData.param.topicVo = this.oQueryInfo;
 
@@ -297,7 +296,6 @@
                                 if (ele.tFileVos) {
                                     ele.tFileVos.forEach((element) => {
                                         if (element.type === 1) {
-                                            element.path = global.baseUrl + 'api/getImage/' + element.path;
                                             ele.aFileImage.push(element);
                                         } else if (element.type === 2) {
                                             element.path = global.baseUrl + element.path.slice(2);
