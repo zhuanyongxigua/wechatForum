@@ -1,14 +1,11 @@
 import R from 'ramda';
 import PostModel from '../models/post';
 import UserModel from '../models/user';
-
-const find = R.curry(function(model, conditions) {
-    return model.find(conditions).exec();
-})
+import * as db from '../data/db'
 
 export const addUserPost = async (req, res, next) => {
     try {
-        let oUserModel = await find(UserModel)({githubId: req.decoded.githubId});
+        let oUserModel = await db.find(UserModel)({githubId: req.decoded.githubId});
         var post = new PostModel();
         post.title = req.body.title;
         post.content = req.body.content;
@@ -25,13 +22,12 @@ export const addUserPost = async (req, res, next) => {
 }
 
 export const getPostList = async (req, res, next) => {
-    console.log(req, "hahaha");
     try {
         let fnGetCount = new Promise((resolve, reject) => {
             PostModel.count({}, (err, c)=> err ? reject(err) : resolve(c))
         });
 
-        let oPostModel = await find(PostModel)({
+        let oPostModel = await db.find(PostModel)({
             content: new RegExp(req.body.param.topicVo.queryStr, "i"),
             title: new RegExp(req.body.param.topicVo.queryStr, "i"),
             typeCode: req.body.param.topicVo.typeCode || {$gt: 0, $lt: 100}
@@ -57,7 +53,29 @@ export const getPostList = async (req, res, next) => {
         res.json({ total: (await fnGetCount), rows: aPosts});
 
     } catch(err) {
-        res.json({success: false, message: err});
+        next(err);
+    }
+}
+
+export const getPostDtl = async (req, res, next) => {
+    try {
+        let oPostModel = await db.findById(PostModel)(req.query.id);
+        res.json({ success: true, row: oPostModel});
+    } catch (err) {
+        next(err);
+    }
+}
+
+export const deletePostModel = async (req, res, next) => {
+    try {
+        if (req.body.id === 'all') {
+            let oPostModel = await db.remove(PostModel)({});
+            res.json({success: true});
+        } else if ('id' in req.body) {
+            let oPostModel = await db.remove(PostModel)({id: req.body.id});
+            res.json({success: true});
+        }
+    } catch (err) {
         next(err);
     }
 }

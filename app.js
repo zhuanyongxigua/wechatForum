@@ -18,7 +18,6 @@ import RouteApi from './routes/router.api.js';
 import UserModel from './models/user';
 
 const app = express();
-app.set('view engine', 'jade');
 
 app.all("*", (req, res, next) => {      //支持跨域调试
     res.header("Access-Control-Allow-Origin", "http://localhost:8081");
@@ -37,6 +36,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
 }));
+
 app.use(session({secret: '12345-67890-09876-54321'}));
 app.use(cookieParser('12345-67890-09876-54321'));
 app.use(passport.initialize());
@@ -85,6 +85,7 @@ passport.deserializeUser(function(user, done) {
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/views', express.static(path.join(__dirname, 'views')));
+app.set('view engine', 'jade');
 
 app.use(
   connectBusboy({
@@ -102,11 +103,14 @@ app.use((req, res, next) => {
     next(err);
 });
 
+
 // error handler
 app.use((err, req, res, next) => {
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+    console.log(err);
 
     // render the error page
     res.status(err.status || 500);

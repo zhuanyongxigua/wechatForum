@@ -247,54 +247,53 @@
         },
         methods: {
             fnGetPostDetails: function() {
-                var that = this;
-                var type = 'GET';
-                var url = '/api/getPostDtl?id=' + global.GetArgsFromHref(this.loc, "id");
-                // axios.
+                axios.get('/api/getPostDtl?id=' + global.GetArgsFromHref(this.loc, "id"))
+                    .then(res => {
+                        console.log(res);
+                        var oData = JSON.parse(JSON.stringify(res.data.row));
+                        var aCurImages = [];
+                        var aCurVideos = [];
+                        var aCurAudios = [];
+                        var oCurAudio = {};
 
-                function ajaxSuccess(data) {
-                    var oData = JSON.parse(JSON.stringify(data.row));
-                    var aCurImages = [];
-                    var aCurVideos = [];
-                    var aCurAudios = [];
-                    var oCurAudio = {};
-
-                    that.oPostDetails = oData;
-                    that.bIsShowDelay = true;
-                    that.aCmtList = oData.tReviewVos;
-                    that.iTotalCmtNum = oData.reviews;
-                    that.aFileList = oData.tFileVos;
-                    if (oData.tFileVos) {
-                        oData.tFileVos.forEach(function(ele) {
-                            if (ele.type === 1) {
-                                ele.path = global.baseurl + ele.path;
-                                aCurImages.push(ele);
-                            } else if (ele.type === 2) {
-                                ele.path = global.baseurl + ele.path.slice(2);
-                                aCurVideos.push(ele);
-                            } else {
-                                if (!ele.path) return;
-                                ele.path = global.baseurl + ele.path.slice(2);
-                                oCurAudio = ele;
-                            }
-                        });
-                        that.aImages = aCurImages;
-                        that.aVideos = aCurVideos;
-                        that.oAudio = oCurAudio;
-                    }
-                    that.iSupport = oData.supports;
-                    that.isSupported = oData.isSupported;
-                    that.bIsFollow = oData.attentionId || oData.attentionId == 0 ? true : false;
-                    that.sSupportColor = oData.isSupported ? '#ff566b' : '#777';
-                    that.aSupportInfoAll = oData.tSupportVos;
-                    if (!that.aSupportInfoAll) {
-                        that.bShowSupportButton = false;
-                        that.aSupportInfoShow = [];
-                    } else {
-                        that.aSupportInfoShow = that.aSupportInfoAll.slice(0, 100);
-                    }
-                }
-                global.ajax(type, false, url, ajaxSuccess);
+                        this.oPostDetails = oData;
+                        this.bIsShowDelay = true;
+                        this.aCmtList = oData.tReviewVos;
+                        this.iTotalCmtNum = oData.reviews;
+                        this.aFileList = oData.tFileVos;
+                        if (oData.tFileVos) {
+                            oData.tFileVos.forEach(function(ele) {
+                                if (ele.type === 1) {
+                                    ele.path = global.baseurl + ele.path;
+                                    aCurImages.push(ele);
+                                } else if (ele.type === 2) {
+                                    ele.path = global.baseurl + ele.path.slice(2);
+                                    aCurVideos.push(ele);
+                                } else {
+                                    if (!ele.path) return;
+                                    ele.path = global.baseurl + ele.path.slice(2);
+                                    oCurAudio = ele;
+                                }
+                            });
+                            this.aImages = aCurImages;
+                            this.aVideos = aCurVideos;
+                            this.oAudio = oCurAudio;
+                        }
+                        this.iSupport = oData.supports;
+                        this.isSupported = oData.isSupported;
+                        this.bIsFollow = oData.attentionId || oData.attentionId == 0 ? true : false;
+                        this.sSupportColor = oData.isSupported ? '#ff566b' : '#777';
+                        this.aSupportInfoAll = oData.tSupportVos;
+                        if (!this.aSupportInfoAll) {
+                            this.bShowSupportButton = false;
+                            this.aSupportInfoShow = [];
+                        } else {
+                            this.aSupportInfoShow = this.aSupportInfoAll.slice(0, 100);
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
             },
             fnGetTotalCmt: function() {
                 var that = this;

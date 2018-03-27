@@ -6,13 +6,14 @@ import express from 'express';
 import fs from 'fs';
 import multer from 'multer';
 import passport from 'passport';
-const upload = multer({ dest: 'uploads/' });
+const uploadMulter = multer({ dest: 'uploads/' });
 
 import PostModel from '../models/post';
 import imagesModel from '../models/imgUpload';
 import UserModel from '../models/user';
 import * as Verify from '../middleware/verify';
-import * as post from '../controllers/post'
+import * as post from '../controllers/post';
+import * as upload from '../controllers/upload'
 const router = express.Router();
 const config = require('../config');
 
@@ -23,9 +24,7 @@ const opts = {
   httpOnly: true
 };
 
-router.get('/', (req, res, next) => {
-
-})
+router.get('/', (req, res, next) => {})
     .post('/getRoleType', (req, res, next) => {
         res.json([
             {
@@ -120,63 +119,10 @@ router.get('/', (req, res, next) => {
         ])
     })
     .put('/addUserPost', Verify.verifyOrdinaryUser, post.addUserPost)
-
     .post('/getPostList', post.getPostList)
-    .get('/getPostDtl', (req, res, next) => {
-        console.log(req);
-
-        PostModel.findById(req.query.id, (err, posts) => {
-            console.log(posts);
-            if (err) {
-                res.json({success: false});
-            }
-            res.json({ success: true, row: posts});
-
-        });
-    })
-    .delete('/deletePostModel', (req, res, next) => {
-        if (req.body.id === 'all') {
-            PostModel.remove({}, (err) => {
-                if (err) {
-                    res.json({success: false, message: err});
-                    return;
-                }
-                res.json({
-                    success: true
-                })
-            })
-        } else if ('id' in req.body) {
-            PostModel.remove({id: req.body.id}, (err) => {
-                if (err) {
-                    res.json({success: false, message: err});
-                    return;
-                }
-                res.json({
-                    success: true
-                })
-
-            })
-        }
-    })
-    .post('/uploadImage', upload.array('file', 12), (req, res, next) => {
-        var imgUpload = new imagesModel();
-        imgUpload.img.data = fs.readFileSync(req.files[0].path)
-        imgUpload.img.contentType = req.files[0].mimetype;
-        imgUpload.save((err, doc) => {
-            if (err) {
-                res.json({success: false, message: err});
-                return
-            }
-            res.json({
-                success: true,
-                path: doc._id,
-                id: doc._id,
-                result: {
-
-                }
-            });
-        });
-    })
+    .get('/getPostDtl', post.getPostDtl)
+    .delete('/deletePostModel', post.deletePostModel)
+    .post('/uploadImage', uploadMulter.array('file', 12), upload.uploadImage)
     .get('/getImage/:id', (req, res, next) => {
         imagesModel.findById(req.params.id, (err, doc) => {
             if (err) {
