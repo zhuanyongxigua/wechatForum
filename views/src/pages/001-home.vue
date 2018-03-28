@@ -117,7 +117,7 @@
                                     <img class="card_info_head head_icon_img" alt="" src="../../static/img/001.jpg"/>
                                     <div class="card_info_texts">
                                         <span class="card_info_name">
-                                         <span class="user_type">提示</span>
+                                            <span class="user_type">提示</span>
                                         </span>
                                         <span class="card_info_time">2018-03-09</span>
                                     </div>

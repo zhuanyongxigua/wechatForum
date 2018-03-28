@@ -20,10 +20,10 @@ const router = express.Router();
 const config = require('../config');
 
 const opts = {
-  path: '/',
-  maxAge: 1000 * 60 * 60 * 24 * 30,
-  signed: true,
-  httpOnly: true
+    path: '/',
+    maxAge: 1000 * 60 * 60 * 24 * 30,
+    signed: true,
+    httpOnly: true
 };
 
 router.get('/', (req, res, next) => {})
@@ -49,9 +49,9 @@ router.get('/', (req, res, next) => {})
                 return next(err);
             }
             if (!user) {
-                  return res.status(401).json({
-                    err: info
-                  });
+                return res.status(401).json({
+                err: info
+                });
             }
             req.logIn(user, function(err) {
                 if (err) {

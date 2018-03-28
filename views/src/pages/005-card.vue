@@ -75,15 +75,15 @@
             <div class="card">
             <div class="card_in">
                 <div class="card_info">
-                    <img class="card_info_head" @click="fnGoToPersonalCardListPage(false)" :true-src="oPostDetails.head"/>
+                    <img class="card_info_head" @click="fnGoToPersonalCardListPage(false)" :true-src="oPostDetails.avatar"/>
                     <div class="card_info_texts" @click="fnGoToPersonalCardListPage(false)">
                         <span class="card_info_name" v-text="oPostDetails.username"></span>
                         <span class="card_info_time" v-text="oPostDetails.publishDate"></span>
                     </div>
 
                     <span class="card_label">
-                         <i class="icon ion-ios-pricetags-outline"></i>
-                         <span v-text="oPostDetails.type"></span>
+                        <i class="icon ion-ios-pricetags-outline"></i>
+                        <span v-text="oPostDetails.type"></span>
                      </span>
 
                     <span v-cloak v-if="bIsShowDelay && oPostDetails.isOwn" class="operate_btn ripple_box shineBox" @click="fnShowModal(oPostDetails.id, oPostDetails.content, 'modifyPost')">
@@ -126,9 +126,7 @@
                         </audio>
                     </div>
                 </div>
-                <div class="card_video">
-
-                </div>
+                <div class="card_video"></div>
             </div>
         </div>
 
@@ -312,6 +310,13 @@
                 global.ajax(type, postData, url, ajaxSuccess);
             },
             fnSupport: function() {
+                // axios.put('', {})
+                //     .then(res => {
+
+                //     })
+                //     .catch(err => {
+
+                //     })
                 var that = this;
                 var type = 'PUT';
                 var url = '/wechat/';
