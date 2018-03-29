@@ -11,3 +11,7 @@ export const findById = R.curry(function(model, conditions) {
 export const remove = R.curry(function(model, conditions) {
     return model.remove(conditions).exec();
 })
+
+export const update = R.curry(function(model, conditions, data) {
+    return model.update(conditions, data).exec();
+})

@@ -34,6 +34,7 @@ router.get('/', (req, res, next) => {})
     .post('/getPostList', post.getPostList)
     .get('/getPostDtl', post.getPostDtl)
     .delete('/deletePostModel', post.deletePostModel)
+    .patch('/support', Verify.verifyOrdinaryUser, post.support)
     .post('/uploadImage', uploadMulter.array('file', 12), upload.uploadImage)
     .get('/getImage/:id', upload.getImage)
     .get('/auth/github', passport.authenticate('github'))
@@ -61,7 +62,6 @@ router.get('/', (req, res, next) => {})
                 }
                 var token = Verify.getToken(user);
                 res.cookie("configauthCookieName", token, opts);
-                console.log(config.github.redirectURL);
                 res.redirect(config.github.redirectURL);
             });
         })(req,res,next);

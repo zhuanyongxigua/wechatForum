@@ -55,6 +55,10 @@ export const getPostList = async (req, res, next) => {
 export const getPostDtl = async (req, res, next) => {
     try {
         let oPostModel = await db.findById(PostModel)(req.query.id);
+        let isSupported = oPostModel.support.find((ele) => { 
+            if ("githubId" in ele) return ele.githubId === req.query.githubId;
+        });
+        oPostModel._doc.isSupported = isSupported ? true : false;
         res.json({ success: true, row: oPostModel});
     } catch (err) {
         next(err);
@@ -71,6 +75,31 @@ export const deletePostModel = async (req, res, next) => {
             res.json({success: true});
         }
     } catch (err) {
+        next(err);
+    }
+}
+
+export const support = async (req, res, next) => {
+    try {
+        let oPostModel = await db.find(PostModel)({
+            "_id": req.body.postId,
+            "support.githubId": req.body.githubId
+        })({});
+        let oUserModel = await db.find(UserModel)({githubId: req.body.githubId})({});
+        if (oPostModel.length !== 0) {
+            let oPostModel = await db.update(PostModel)({
+                "_id": req.body.postId, 
+            })({"$pull": {"support": {githubId: req.body.githubId}}})
+        } else {
+            let oPostModel = await db.update(PostModel)({
+                "_id": req.body.postId, 
+            })({"$push": {"support": {githubId: req.body.githubId, avatar: oUserModel[0].avatar}}});
+        }
+        res.json({
+            success: true
+        })
+        
+    } catch(err) {
         next(err);
     }
 }

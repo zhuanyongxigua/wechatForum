@@ -108,6 +108,7 @@
                 axios.post('api/myInfo', {})
                     .then(res => {
                         this.oMyInfo = Object.assign({}, res.data);
+                        localStorage.setItem("myInfo", JSON.stringify(res.data));
                     })
                     .catch(err => {
 

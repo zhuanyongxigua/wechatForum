@@ -8,7 +8,8 @@ export const myInfo = async (req, res, next) => {
         let oUserModelData = await db.find(UserModel)({githubId: req.decoded.githubId})({});
         res.json({
             username: oUserModelData[0].username,
-            avatar: oUserModelData[0].avatar
+            avatar: oUserModelData[0].avatar,
+            githubId: req.decoded.githubId
         });
     } catch(err) {
         next(err);

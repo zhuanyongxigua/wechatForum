@@ -1,15 +1,25 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+import mongoose from 'mongoose';
+let Schema = mongoose.Schema;
 
-var PostSchema = new Schema({
+let SupportSchema = new Schema({
+    githubId: String,
+    avatar: String
+}, {
+    timestamps: true
+})
+
+let PostSchema = new Schema({
     title: String,
     content: String,
     type: String,
     typeCode: Number,
     tFileVos: Array,
-    avatar: String
+    avatar: String,
+    support: [SupportSchema]
+}, {
+    timestamps: true
 });
 
-var PostModel = mongoose.model('Post', PostSchema);
+let PostModel = mongoose.model('Post', PostSchema);
 
 export default PostModel;

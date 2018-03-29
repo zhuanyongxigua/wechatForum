@@ -234,9 +234,7 @@
         },
         computed: {
             bIsMoreCmt: function() {
-                if (!this.aCmtList || this.aCmtList.length >= this.iTotalCmtNum) {
-                    return false;
-                }
+                if (!this.aCmtList || this.aCmtList.length >= this.iTotalCmtNum) return false;
                 return true;
             },
             sIsBorderBottomStyle: function() {
@@ -245,7 +243,7 @@
         },
         methods: {
             fnGetPostDetails: function() {
-                axios.get('/api/getPostDtl?id=' + global.GetArgsFromHref(this.loc, "id"))
+                axios.get('/api/getPostDtl?id=' + global.GetArgsFromHref(this.loc, "id") + '&githubId=' + JSON.parse(localStorage.getItem("myInfo")).githubId)
                     .then(res => {
                         var oData = JSON.parse(JSON.stringify(res.data.row));
                         var aCurImages = [];
@@ -310,39 +308,30 @@
                 global.ajax(type, postData, url, ajaxSuccess);
             },
             fnSupport: function() {
-                // axios.put('', {})
-                //     .then(res => {
-
-                //     })
-                //     .catch(err => {
-
-                //     })
-                var that = this;
-                var type = 'PUT';
-                var url = '/wechat/';
-                var postData = {};
-
                 if (this.bPreventClickSupport) {
                     return;
                 }
-
-                url += this.isSupported ? 'cancelTopicSupport' : 'addTopicSupport';
-                postData.topicId = parseFloat(global.GetArgsFromHref(this.loc, "id"));
-
-                function ajaxSuccess(data) {
-                    if (data.success) {
-                        that.fnGetPostDetails();
-                    } else {
-                        if (data.message === 'USER_BAN_CODE') {
-                            $.alert('账户禁用，无法操作');
+                axios.patch('/api/support', {
+                    postId: global.GetArgsFromHref(this.loc, "id"),
+                    githubId: JSON.parse(localStorage.getItem("myInfo")).githubId
+                })
+                    .then(res => {
+                        if (res.data.success) {
+                            this.fnGetPostDetails();
+                        } else {
+                            if (res.data.message === 'USER_BAN_CODE') {
+                                $.alert('账户禁用，无法操作');
+                            }
                         }
-                    }
-                    //防止过快点赞造成服务器产生错误数据
-                    setTimeout(function() {
-                        that.bPreventClickSupport = false;
-                    }, 300);
-                }
-                global.ajax(type, postData, url, ajaxSuccess);
+                        //防止过快点赞造成服务器产生错误数据
+                        setTimeout(() => {
+                            this.bPreventClickSupport = false;
+                        }, 300);
+
+                    })
+                    .catch(err => {
+
+                    })
                 this.bPreventClickSupport = true;
             },
             fnFollow: function() {
