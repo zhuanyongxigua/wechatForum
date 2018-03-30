@@ -230,6 +230,7 @@
         },
         //加载组件时发出请求
         created: function() {
+            console.log(location.href);
             this.fnGetPostDetails();
         },
         computed: {
@@ -284,6 +285,8 @@
                         } else {
                             this.aSupportInfoShow = this.aSupportInfoAll.slice(0, 100);
                         }
+                        console.log(this.oPostDetails.avatar);
+                        console.log(encodeURI(this.oPostDetails.avatar));
                     })
                     .catch(err => {
                         console.log(err);
@@ -376,7 +379,6 @@
                     } else {
                         $.toast('删除失败');
                     }
-
                 }
 
                 $.confirm({
@@ -400,10 +402,11 @@
                 window.location.href = '011-talk.html?id=' + global.GetArgsFromHref(this.loc, "id");
             },
             fnGoToRewardPage: function() {
-                window.location.href='012-reward.html?topicId='
-                    + global.GetArgsFromHref(this.loc, "id")
-                    + '&sHead=' + this.oPostDetails.head
-                    + '&sUserName=' + this.oPostDetails.username;
+                this.$router.push({path: '/012-reward', query: {
+                    topicId: global.GetArgsFromHref(this.loc, "id"), 
+                    sHead: this.oPostDetails.avatar, 
+                    sUserName: this.oPostDetails.username
+                }});
             },
             fnGoToPersonalCardListPage: function(id) {
                 window.location.href='008-personalCardList.html?id=' + (id || this.oPostDetails.owner);

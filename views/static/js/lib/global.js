@@ -140,7 +140,7 @@ GlobalConstructorFunction.prototype.rippleFunction = function(_rippleFunctionEve
     return false;
 }
 
-GlobalConstructorFunction.prototype.GetArgsFromHref = function (sHref, sArgName) {
+GlobalConstructorFunction.prototype.GetArgsFromHref = function(sHref, sArgName) {
     var args = sHref.split("?");
     var retval = "";
     if (args[0] == sHref) {

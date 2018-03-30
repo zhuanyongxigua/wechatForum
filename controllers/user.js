@@ -39,3 +39,37 @@ export const getScoreList = (req, res, next) => {
         next(err);
     }
 }
+
+export const recharge = (req, res, next) => {
+    try {
+        let oUserModelData = db.update(UserModel)({githubId: req.decoded.githubId})({$inc: {reward: req.body.integral}});
+        if (oUserModelData.length != 0) {
+            res.json({
+                success: true
+            })
+        } else {
+            res.json({
+                success: false
+            })
+        }
+    } catch(err) {
+        next(err);
+    }
+}
+
+export const withdraw = (req, res, next) => {
+    try {
+        let oUserModelData = db.update(UserModel)({githubId: req.decoded.githubId})({$inc: {reward: req.body.integral}});
+        if (oUserModelData.length != 0) {
+            res.json({
+                success: true
+            })
+        } else {
+            res.json({
+                success: false
+            })
+        }
+    } catch(err) {
+        next(err);
+    }
+}

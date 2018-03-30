@@ -15,6 +15,7 @@ let PostSchema = new Schema({
     typeCode: Number,
     tFileVos: Array,
     avatar: String,
+    username: String,
     support: [SupportSchema]
 }, {
     timestamps: true

@@ -18,6 +18,7 @@ export const addUserPost = async (req, res, next) => {
         })
         post.typeCode = req.body.typeCode;
         post.avatar = oUserModel[0].avatar;
+        post.username = oUserModel[0].username;
         post.save((err, doc) => {
             res.json({success: true})
         });
@@ -33,6 +34,7 @@ export const getPostList = async (req, res, next) => {
             limit: req.body.pageSize,
             sort: '-createAt'
         }
+
         let fnGetCount = new Promise((resolve, reject) => {
             PostModel.count({}, (err, c)=> err ? reject(err) : resolve(c))
         });

@@ -100,7 +100,6 @@
 
 <script>
     import {global} from '../../static/js/lib/global'
-    import '../../node_modules/jquery-weui/dist/js/jquery-weui.js'
     import footer from '../components/footer.vue'
 
     export default ({
@@ -309,7 +308,9 @@
                         }
                     })
                     .catch(err => {
-                        console.log(err);
+                        if (err.response.status === 403) {
+                            $.alert("请登录之后再发帖");
+                        }
                     })
             },
             fnDelMedia(iCurId, sCurType) {

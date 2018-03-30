@@ -100,25 +100,15 @@
                     return;
                 }
 
-                axios.post('/wechatRest/charge', {
+                axios.post('/api/recharge', {
                     money: this.oCurCreditRule.money,
                     integral: this.oCurCreditRule.integral
                 })
                     .then(res => {
-                        if (data.success) {
-                            //微信浏览器BOM对象WeixinJSBridge是否已准备好
-                            if (typeof WeixinJSBridge == "undefined") {
-                                if (document.addEventListener) {
-                                    document.addEventListener('WeixinJSBridgeReady', that.fnWechatPay.bind(this, data.payInfo), false);
-                                } else if (document.attachEvent) {
-                                    document.attachEvent('WeixinJSBridgeReady', that.fnWechatPay.bind(this, data.payInfo));
-                                    document.attachEvent('onWeixinJSBridgeReady', that.fnWechatPay.bind(this, data.payInfo));
-                                }
-                            } else {
-                                that.fnWechatPay(data.payInfo);
-                            }
+                        if (res.data.success) {
+                            $.alert('支付成功', () => this.$router.push('/002-score'));
                         } else {
-                            if (data.message === 'USER_BAN_CODE') {
+                            if (res.data.message === 'USER_BAN_CODE') {
                                 $.alert('账户禁用，无法操作');
                                 return;
                             }
@@ -126,7 +116,9 @@
                         }
                     })
                     .catch(err => {
-                        console.log(err);
+                        if (err.response.status === 403) {
+                            $.alert("登录之后才能充值");
+                        }
                     })
             },
             fnSelectCreditRule: function (sCreditRuleIndex) {
@@ -137,16 +129,7 @@
                 this.oCurCreditRule = this.aCreditRule[sCreditRuleIndex];
             },
             fnWechatPay: function (payInfo) {
-                //微信浏览器BOM对象WeixinJSBridge调用微信支付接口
-                WeixinJSBridge.invoke('getBrandWCPayRequest', payInfo, function (res) {
-                    if (res.err_msg == "get_brand_wcpay_request:ok") {
-                        $.alert('支付成功', function () {
-                            history.back();
-                        });
-                    } else {
-                        $.alert('支付失败');
-                    }
-                });
+                
             }
         },
     });

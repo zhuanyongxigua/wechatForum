@@ -1,3 +1,9 @@
+<style scoped>
+    .reward_input {
+        margin-left: 0px;
+    }
+</style>
+
 <template class="body_in">
     <div id="reward">
         <div class="usercenter_top">
@@ -16,23 +22,19 @@
 
 </template>
 <script>
-    var reward = new Vue({
-        el: "#reward",
-        data: {
-            sRewardMonry: '',
-            loc: location.href.split('#')[0],
-        },
-        //加载组件时发出请求
-        computed: {
-            topicId: function() {
-                return global.GetArgsFromHref(this.loc,"topicId");
-            },
-            sHead: function() {
-                return global.GetArgsFromHref(this.loc,"sHead");
-            },
-            sUserName: function() {
-                return decodeURI(global.GetArgsFromHref(this.loc,"sUserName"));
+    import { global } from '../../static/js/lib/global'
+    export default ({
+        data() {
+            return {
+                sRewardMonry: '',
+                loc: location.href.split('#')[1],
+                topicId: this.$route.query.topicId,
+                sHead: this.$route.query.sHead,
+                sUserName: this.$route.query.sUserName
             }
+        },
+        created() {
+
         },
         methods: {
             fnReward:function() {
