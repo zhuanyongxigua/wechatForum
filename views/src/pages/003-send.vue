@@ -308,7 +308,7 @@
                         }
                     })
                     .catch(err => {
-                        if (err.response.status === 403) {
+                        if (err.response.status === 403 || err.response.status === 401) {
                             $.alert("请登录之后再发帖");
                         }
                     })

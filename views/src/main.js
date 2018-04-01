@@ -8,6 +8,7 @@ import 'photoswipe/dist/photoswipe.css'
 import 'photoswipe/dist/default-skin/default-skin.css'
 import '../static/css/style.css'
 import "expose-loader?$!jquery"
+import "expose-loader?R!ramda"
 import '../node_modules/jquery-weui/dist/js/jquery-weui.js'
 
 Vue.config.productionTip = false

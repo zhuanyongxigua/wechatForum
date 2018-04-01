@@ -230,7 +230,6 @@
         },
         //加载组件时发出请求
         created: function() {
-            console.log(location.href);
             this.fnGetPostDetails();
         },
         computed: {
@@ -285,8 +284,6 @@
                         } else {
                             this.aSupportInfoShow = this.aSupportInfoAll.slice(0, 100);
                         }
-                        console.log(this.oPostDetails.avatar);
-                        console.log(encodeURI(this.oPostDetails.avatar));
                     })
                     .catch(err => {
                         console.log(err);

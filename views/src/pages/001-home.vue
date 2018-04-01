@@ -259,12 +259,14 @@
             fnGetType() {
                 axios.post('api/getRoleType', {type: 'TopicType'})
                     .then(res => {
-                        var aData = JSON.parse(JSON.stringify(res.data));
-                        aData.unshift({
-                            id: '',
-                            name: '全部'
-                        });
-                        this.aType = aData;
+                        this.aType = R.pipe(
+                            JSON.stringify, 
+                            JSON.parse, 
+                            R.prepend({
+                                id: '',
+                                name: '全部'
+                            })
+                        )(res.data);
                     })
                     .catch(err => {
                         console.log(err);
