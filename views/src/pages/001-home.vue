@@ -305,11 +305,12 @@
                             });
                         }
                         let aaData = R.compose(
+                            R.trace("after clone"),
                             R.set(R.lensProp('aFileImage'), []), 
-                            R.set(R.lensProp('aFileVideo'), []), 
+                            R.set(R.lensProp('aFileVideo'), []),
                             R.set(R.lensProp('oFileAudio'), {})
-                        )
-                        let aaaData = R.compose(R.ifElse(R.has('rows') ,aaData), R.trace("after clone"), R.clone)(res.data);
+                        );
+                        let aaaData = R.compose(R.when(R.has('rows') , R.map(aaData)), R.clone)(res.data);
                         console.log(aaaData);
 
                         if (this.aPostList.length == res.data.total) {
