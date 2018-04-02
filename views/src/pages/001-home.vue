@@ -259,14 +259,7 @@
             fnGetType() {
                 axios.post('api/getRoleType', {type: 'TopicType'})
                     .then(res => {
-                        this.aType = R.pipe(
-                            JSON.stringify, 
-                            JSON.parse, 
-                            R.prepend({
-                                id: '',
-                                name: '全部'
-                            })
-                        )(res.data);
+                        this.aType = R.compose(R.prepend({id: '',name: '全部'}), R.clone)(res.data);
                     })
                     .catch(err => {
                         console.log(err);
@@ -289,7 +282,7 @@
 
                 axios.post('api/getPostList', postData)
                     .then(res => {
-                        var aData = JSON.parse(JSON.stringify(res.data));
+                        let aData = JSON.parse(JSON.stringify(res.data));
                         if (aData.rows) {
                             aData.rows.forEach((ele) => {
                                 ele.aFileImage = [];
@@ -311,6 +304,13 @@
                                 this.aPostList.push(ele);
                             });
                         }
+                        let aaData = R.compose(
+                            R.set(R.lensProp('aFileImage'), []), 
+                            R.set(R.lensProp('aFileVideo'), []), 
+                            R.set(R.lensProp('oFileAudio'), {})
+                        )
+                        let aaaData = R.compose(R.ifElse(R.has('rows') ,aaData), R.trace("after clone"), R.clone)(res.data);
+                        console.log(aaaData);
 
                         if (this.aPostList.length == res.data.total) {
                             this.bIsMore = false;

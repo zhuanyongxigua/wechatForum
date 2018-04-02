@@ -7,9 +7,17 @@ import 'jquery-weui/dist/css/jquery-weui.css'
 import 'photoswipe/dist/photoswipe.css'
 import 'photoswipe/dist/default-skin/default-skin.css'
 import '../static/css/style.css'
+
+//全局引入库
 import "expose-loader?$!jquery"
 import "expose-loader?R!ramda"
+import "expose-loader?axios!axios"
 import '../node_modules/jquery-weui/dist/js/jquery-weui.js'
+
+R.trace = R.curry(function(tag, x) {
+    console.log(tag, x);
+    return x;
+})
 
 Vue.config.productionTip = false
 

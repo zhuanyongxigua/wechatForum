@@ -27,7 +27,6 @@ app.all("*", (req, res, next) => {      //支持跨域调试
     res.header("X-Powered-By",' 3.2.1');
     if(req.method=="OPTIONS") res.send(200);/*让options请求快速返回*/
     else next();
-    
 });
 
 // uncomment after placing your favicon in /public

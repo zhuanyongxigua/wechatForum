@@ -9,7 +9,8 @@ export const myInfo = async (req, res, next) => {
         res.json({
             username: oUserModelData[0].username,
             avatar: oUserModelData[0].avatar,
-            githubId: req.decoded.githubId
+            githubId: req.decoded.githubId,
+            reward: oUserModelData[0].reward
         });
     } catch(err) {
         next(err);

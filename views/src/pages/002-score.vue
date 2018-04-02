@@ -25,7 +25,7 @@
 
         <div class="score_top">
             <div class="score_box">
-                <div class="score_num" v-text="oMyInfo.credit"></div>
+                <div class="score_num" v-text="oMyInfo.reward"></div>
                 <div class="score_label">我的积分</div>
             </div>
         </div>
@@ -79,14 +79,12 @@
         data() {
             return {
                 aScoreList: [],
-                oMyInfo: {
-                    credit: 10
-                }
+                oMyInfo: {}
             }
         },
         //加载组件时发出请求
         created: function() {
-            // this.fnGetMyInfo();
+            this.fnGetMyInfo();
             this.fnGetScoreList();
         },
         components: {
@@ -95,7 +93,7 @@
         methods: {
             fnGetMyInfo() {
                 //获取服务列表信息
-                axios.post('/wechat/myInfo', {})
+                axios.post('api/myInfo', {})
                     .then(res => {
                         this.oMyInfo = Object.assign({}, res.data);
                     })

@@ -330,7 +330,9 @@
 
                     })
                     .catch(err => {
-
+                        if (err.response.status === 403 || err.response.status === 401) {
+                            $.alert("请登录之后再操作");
+                        }
                     })
                 this.bPreventClickSupport = true;
             },
