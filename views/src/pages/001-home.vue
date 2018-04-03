@@ -304,13 +304,21 @@
                                 this.aPostList.push(ele);
                             });
                         }
+                        let fnReturn = x => x;
+                        let judge1 = R.compose(R.when(R.converge(R.equals(R.__, 1), [R.prop('type')]), fnReturn));
+                        let judge2 = R.compose(R.when(R.converge(R.equals(R.__, 2), [R.prop('type')]), fnReturn));
+                        let judge3 = R.compose(R.when(R.converge(R.equals(R.__, 3), [R.prop('type')]), fnReturn));
+                        let mapTFileVos1 = R.compose(R.map(judge1), R.prop('tFileVos'));
+                        let mapTFileVos2 = R.compose(R.map(judge2), R.prop('tFileVos'));
+                        let mapTFileVos3 = R.compose(R.map(judge3), R.prop('tFileVos'));
                         let aaData = R.compose(
-                            R.trace("after clone"),
-                            R.set(R.lensProp('aFileImage'), []), 
-                            R.set(R.lensProp('aFileVideo'), []),
-                            R.set(R.lensProp('oFileAudio'), {})
+                            R.converge(R.set(R.lensProp('aFileVideo')), [R.when(R.has('tFileVos'), mapTFileVos2), R.identity]),
+                            R.converge(R.set(R.lensProp('oFileAudio')), [R.when(R.has('tFileVos'), mapTFileVos3), R.identity]),
+                            R.converge(R.set(R.lensProp('aFileImage')), [R.when(R.has('tFileVos'), mapTFileVos1), R.identity]),
                         );
-                        let aaaData = R.compose(R.when(R.has('rows') , R.map(aaData)), R.clone)(res.data);
+                        let mapRows = R.compose(R.map(aaData), R.prop('rows'));
+                        let judge = R.when(R.has('rows'), mapRows);
+                        let aaaData = R.compose(judge, R.clone)(res.data);
                         console.log(aaaData);
 
                         if (this.aPostList.length == res.data.total) {
