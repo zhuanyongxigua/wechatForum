@@ -305,6 +305,7 @@
                             });
                         }
                         let fnReturn = x => x;
+<<<<<<< HEAD
                         let judge1 = R.compose(R.when(R.equals(R.lensProp('type'), 1), fnReturn));
                         let judge2 = R.compose(R.when(R.equals(R.lensProp('type'), 2), fnReturn));
                         let judge3 = R.compose(R.when(R.equals(R.lensProp('type'), 3), fnReturn));
@@ -318,6 +319,21 @@
                         );
                         let mapRows = R.compose(R.map(aaData), R.prop('rows'));
                         let judge = R.when(R.has('rows') , mapRows);
+=======
+                        let judge1 = R.compose(R.when(R.converge(R.equals(R.__, 1), [R.prop('type')]), fnReturn));
+                        let judge2 = R.compose(R.when(R.converge(R.equals(R.__, 2), [R.prop('type')]), fnReturn));
+                        let judge3 = R.compose(R.when(R.converge(R.equals(R.__, 3), [R.prop('type')]), fnReturn));
+                        let mapTFileVos1 = R.compose(R.map(judge1), R.prop('tFileVos'));
+                        let mapTFileVos2 = R.compose(R.map(judge2), R.prop('tFileVos'));
+                        let mapTFileVos3 = R.compose(R.map(judge3), R.prop('tFileVos'));
+                        let aaData = R.compose(
+                            R.converge(R.set(R.lensProp('aFileVideo')), [R.when(R.has('tFileVos'), mapTFileVos2), R.identity]),
+                            R.converge(R.set(R.lensProp('oFileAudio')), [R.when(R.has('tFileVos'), mapTFileVos3), R.identity]),
+                            R.converge(R.set(R.lensProp('aFileImage')), [R.when(R.has('tFileVos'), mapTFileVos1), R.identity]),
+                        );
+                        let mapRows = R.compose(R.map(aaData), R.prop('rows'));
+                        let judge = R.when(R.has('rows'), mapRows);
+>>>>>>> fd63a5185e4259785fd8c2ad8f2b74a7ce1a0145
                         let aaaData = R.compose(judge, R.clone)(res.data);
                         console.log(aaaData);
 
