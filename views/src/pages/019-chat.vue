@@ -157,7 +157,7 @@
         //加载组件时发出请求
         created() {
             this.fnGetMyInfo();
-            this.socket = io.connect(process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'http://localhost:8080');
+            this.socket = io.connect(process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'http://zhuanyongxigua.cn:8080');
             this.socket.on('receive', (data) => {
                 this.aPostList = this.aPostList.concat(data);
             })
