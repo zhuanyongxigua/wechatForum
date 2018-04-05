@@ -2,17 +2,6 @@
     .foot_menu span {
         width: 20%;
     }
-
-    #column5.selected {
-        background: url(../../static/img/select-foot-btn5.png) no-repeat center 4px;
-        background-size: 25px;
-        color: #c97f8c;
-    }
-
-    #column5 {
-        background: url(../../static/img/foot-btn5.png) no-repeat center 4px;
-        background-size: 25px;
-    }
 </style>
 
 <template class="body_in">
