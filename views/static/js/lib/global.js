@@ -3,7 +3,8 @@
 */
 
 function GlobalConstructorFunction() {
-    this.baseUrl = 'http://localhost:3000/';
+    // this.baseUrl = 'http://localhost:3000/';
+    this.baseUrl = 'http://zhuanyongxigua.cn:8080/';
 }
 
 /*

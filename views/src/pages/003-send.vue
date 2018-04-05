@@ -209,22 +209,13 @@
 
             },
             fnGetType() {
-                var postData = {};
-                var that = this;
-                var type = 'POST';
-                var url = 'api/getRoleType';
-
-                postData.type = 'TopicType';
-
-                function ajaxSuccess(data) {
-                    data.forEach(function(ele) {
-                        that.aType.push(ele)
-                    });
-                    if (global.GetArgsFromHref(that.loc, 'mode')) {
-                        that.fnGetPostDetails();
-                    }
-                }
-                global.ajax(type, postData, url, ajaxSuccess);
+                axios.post('api/getRoleType', {type: 'TopicType'})
+                    .then(res => {
+                        this.aType = R.compose(R.prepend({id: '',name: '全部'}), R.clone)(res.data);
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
             },
             fnPublishPost() {
                 var postData = {};

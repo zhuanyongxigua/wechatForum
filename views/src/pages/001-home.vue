@@ -130,7 +130,7 @@
                                     <p>特别提示</p>
                                 </div>
                                 <div class="card_texts">
-                                    <p>暂时后台接口还较少，可用的功能有：发帖、github登录、查看帖子详情、点赞、打赏、购买积分</p>
+                                    <p>暂时后台接口还较少，可用的功能有：发帖、github登录、查看帖子详情、点赞、打赏、购买积分、多人聊天室</p>
                                 </div>
                                 
                             </div>
@@ -295,7 +295,7 @@
                                         } else if (element.type === 2) {
                                             element.path = global.baseUrl + element.path.slice(2);
                                             ele.aFileVideo.push(element);
-                                        } else {
+                                        } else if (element.type === 3){
                                             element.path = global.baseUrl + element.path.slice(2);
                                             ele.oFileAudio = element;
                                         }
