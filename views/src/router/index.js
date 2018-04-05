@@ -93,6 +93,11 @@ export default new Router({
         path: '/018-scoreRule',
         name: 'scoreRule',
         component: (resolve) => require(['../pages/018-scoreRule.vue'], resolve)
+    },
+    {
+        path: '/019-chat',
+        name: 'chat',
+        component: (resolve) => require(['../pages/019-chat.vue'], resolve)
     }
   ]
 })
