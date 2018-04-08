@@ -136,7 +136,6 @@
 <script type="text/ecmascript-6">
     import footer from '../components/footer.vue';
     import io from 'socket.io-client';
-    import config from '../../config'
     export default{
         data () {
             return {
@@ -157,7 +156,8 @@
         //加载组件时发出请求
         created() {
             this.fnGetMyInfo();
-            this.socket = io.connect('http://zhuanyongxigua.cn:8080');
+            // this.socket = io.connect('http://zhuanyongxigua.cn:8080');
+            this.socket = io.connect('http://localhost:3000');
             this.socket.on('receive', (data) => {
                 this.aPostList = this.aPostList.concat(data);
             })
