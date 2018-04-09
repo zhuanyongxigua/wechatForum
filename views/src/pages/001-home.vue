@@ -304,37 +304,13 @@
                                 this.aPostList.push(ele);
                             });
                         }
-                        let ReturnNull = () => {};
-                        let fillInListName = (x) => {
-                            return R.converge(R.set(R.lensProp(x)), [R.when(R.has('tFileVos'), mapTFileVos2), R.identity])
-                        }
-                        let judgeAll = (x) => {
-                            return R.ifElse(R.converge(R.equals(R.__, x), [R.prop('type')]), R.identity, ReturnNull);
-                        }
-                        let fucArrayToCompose = (fucArray) => {
-                            let fucReduce = R.identity;
-                            fucArray.forEach((ele) => {
-                                fucReduce = R.compose(fucReduce, ele);
-                            })
-                            return fucReduce;
-                        }
-                        let judgeAllFucArray = R.map(judgeAll, [1, 2, 3]);
-                        let judgeAllRun = R.map(x => x(), judgeAllFucArray);
-                        let judge1 = R.ifElse(R.converge(R.equals(R.__, 1), [R.prop('type')]), R.identity, ReturnNull);
-                        let judge2 = R.ifElse(R.converge(R.equals(R.__, 2), [R.prop('type')]), R.identity, ReturnNull);
-                        let judge3 = R.ifElse(R.converge(R.equals(R.__, 3), [R.prop('type')]), R.identity, ReturnNull);
-                        let mapTFileVos1 = R.compose(R.map(judge1), R.prop('tFileVos'));
-                        let mapTFileVos2 = R.compose(R.map(judge2), R.prop('tFileVos'));
-                        let mapTFileVos3 = R.compose(R.map(judge3), R.prop('tFileVos'));
-                        // let aaData = R.compose(
-                        //     R.trace('trace3'),
-                        //     R.converge(R.set(R.lensProp('aFileVideo')), [R.when(R.has('tFileVos'), mapTFileVos2), R.identity]),
-                        //     R.trace('trace2'),
-                        //     R.converge(R.set(R.lensProp('oFileAudio')), [R.when(R.has('tFileVos'), mapTFileVos3), R.identity]),
-                        //     R.trace('trace1'),
-                        //     R.converge(R.set(R.lensProp('aFileImage')), [R.when(R.has('tFileVos'), mapTFileVos1), R.identity]),
-                        // );
-                        let aaData = R.map(fillInListName, ['aFileImage', 'aFileVideo', 'oFileAudio'])
+                        let ReturnNull = () => null;
+                        let setWhat = x => R.when(R.has('tFileVos'), R.compose(R.map(judge1(x)), R.prop('tFileVos')));
+                        let returnWhen = R.curry((x, y) => R.converge(R.set(R.lensProp(y)), [setWhat(x), R.identity]));
+                        let fixIdentity = R.curry((x, y) => R.identity(y));
+
+                        let judge1 = R.ifElse(R.pathEq(['type']), fixIdentity, ReturnNull);
+                        let aaData = R.compose(returnWhen(3)('oFileAudio'), returnWhen(2)('aFileVideo'), returnWhen(1)('aFileImage'));
                         let mapRows = R.compose(R.map(aaData), R.prop('rows'));
                         let judge = R.when(R.has('rows'), mapRows);
                         let aaaData = R.compose(judge, R.clone)(res.data);
