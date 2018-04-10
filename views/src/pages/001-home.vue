@@ -258,12 +258,8 @@
         methods: {
             fnGetType() {
                 axios.post('api/getRoleType', {type: 'TopicType'})
-                    .then(res => {
-                        this.aType = R.compose(R.prepend({id: '',name: '全部'}), R.clone)(res.data);
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    })
+                    .then(res => this.aType = R.prepend({id: '',name: '全部'})(res.data))
+                    .catch(console.log)
             },
             fnGetPostList(bIsSearchButton) {
                 var postData = {};
@@ -282,60 +278,25 @@
 
                 axios.post('api/getPostList', postData)
                     .then(res => {
-                        let aData = JSON.parse(JSON.stringify(res.data));
-                        if (aData.rows) {
-                            aData.rows.forEach((ele) => {
-                                ele.aFileImage = [];
-                                ele.aFileVideo = [];
-                                ele.oFileAudio = {};
-                                if (ele.tFileVos) {
-                                    ele.tFileVos.forEach((element) => {
-                                        if (element.type === 1) {
-                                            ele.aFileImage.push(element);
-                                        } else if (element.type === 2) {
-                                            element.path = global.baseUrl + element.path.slice(2);
-                                            ele.aFileVideo.push(element);
-                                        } else if (element.type === 3){
-                                            element.path = global.baseUrl + element.path.slice(2);
-                                            ele.oFileAudio = element;
-                                        }
-                                    });
-                                }
-                                this.aPostList.push(ele);
-                            });
-                        }
-                        let ReturnNull = () => null;
-                        let setWhat = x => R.when(R.has('tFileVos'), R.compose(R.map(judge1(x)), R.prop('tFileVos')));
-                        let returnWhen = R.curry((x, y) => R.converge(R.set(R.lensProp(y)), [setWhat(x), R.identity]));
-                        let fixIdentity = R.curry((x, y) => R.identity(y));
+                        let fnFilterType = x => R.filter(R.propEq('type', x));
+                        let fnSetWhat = x => R.when(R.has('tFileVos'), R.compose(fnFilterType(x), R.prop('tFileVos')));
+                        let fnSetAttribute = R.curry((x, y) => R.converge(R.set(R.lensProp(y)), [fnSetWhat(x), R.identity]));
 
-                        let judge1 = R.ifElse(R.pathEq(['type']), fixIdentity, ReturnNull);
-                        let aaData = R.compose(returnWhen(3)('oFileAudio'), returnWhen(2)('aFileVideo'), returnWhen(1)('aFileImage'));
-                        let mapRows = R.compose(R.map(aaData), R.prop('rows'));
-                        let judge = R.when(R.has('rows'), mapRows);
-                        let aaaData = R.compose(judge, R.clone)(res.data);
-                        console.log(aaaData);
+                        let aaData = R.compose(fnSetAttribute(3)('oFileAudio'), fnSetAttribute(2)('aFileVideo'), fnSetAttribute(1)('aFileImage'));
+                        let judge = R.when(R.has('rows'), R.compose(R.map(aaData), R.prop('rows')));
+                        this.aPostList = R.concat(this.aPostList, judge(res.data));                        
 
-                        if (this.aPostList.length == res.data.total) {
-                            this.bIsMore = false;
-                        }
+                        if (this.aPostList.length === res.data.total) this.bIsMore = false;
 
                         this.$nextTick(() => {
-                            if (this.myScroll != undefined) {
-                                setTimeout(() => {
-                                    this.myScroll.refresh();
-                                }, 100);
-                            } else {
+                            if (this.myScroll) setTimeout(() => this.myScroll.refresh(), 100); 
+                            else {
                                 this.fnLoadIscroll();
-                                setTimeout(() => {
-                                    this.myScroll.refresh();
-                                }, 100);
+                                setTimeout(() => this.myScroll.refresh(), 100);
                             }
                         })
                     })
-                    .catch(err => {
-                        console.log(err)
-                    })
+                    .catch(console.log)
             },
             fnLoadIscroll() {
                 this.myScroll = new IScroll('#wrapper', {
@@ -348,9 +309,7 @@
                 });
                 this.myScroll.on('scroll', () => {
                     if (this.myScroll.y < (this.myScroll.maxScrollY - 40)) { //判断上拉是否到底且超过一段距离，如超过则说明需要获取更多消息
-                        if (this.bIsMore) {
-                            this.pullUpFlag = 1;
-                        }
+                        if (this.bIsMore) this.pullUpFlag = 1;
                     }
                 });
 

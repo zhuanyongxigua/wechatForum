@@ -42,50 +42,21 @@
                     <img :id="'imgID' + item.id" :src="item.path">
                     <span class="delete_img_btn ripple_box" @click="fnDelMedia(item.id, 'image')"></span>
                 </div>
-                <div v-for="item in aFileVideo" class="post_img">
-                    <img :id="'videoId' + item.id" src="../../static/img/video_player.jpg">
-                    <span class="delete_img_btn ripple_box" @click="fnDelMedia(item.id, 'video')"></span>
-                </div>
-            </div>
-
-            <div class="post_medias">
-                <div v-show="oLocalWechatAudioInfo.localId" class="post_play">
-                    <div class="record_square" style="" @click="fnPlayRecord">
-                        <i class="ion-play"></i>
-                    </div>
-                    <span class="delete_img_btn2 ripple_box" @click="fnDelMedia('id', 'audio')"></span>
-                </div>
-                <audio v-if="oAudio.path" :src="oAudio.path" controls></audio>
-                <span v-if="oAudio.path" class="delete_img_btn2 ripple_box" @click="fnDelMedia('id', 'audio')"></span>
             </div>
         </div>
 
         <div class="send_bottom">
             <div class="medias_tab_btns">
-                <span class="medias_tab_btn" @click="fnChangeTab(1)" :class="{selected:tab[1]}">
+                <span class="medias_tab_btn selected" @click="fnChangeTab(1)">
                     <i class="ion-android-image"></i>
                 </span>
             </div>
 
             <div class="post_medias">
-                <div v-show="tab[1]">
+                <div>
                     <span class="add_img_btn">
-                    <input id="fileImage" name="file" type="file" accept="image/*" @change="fnSelectFile" multiple>
-                </span>
-                </div>
-
-                <div v-show="tab[2]">
-                    <span class="add_img_btn">
-                    <input id="fileVideo" name="filename" type="file" accept="video/*" multiple>
-                </span>
-                    <span class="ts_box">
-                    提示：支持标清30秒左右(100秒以内)本地小视频
-                </span>
-                </div>
-
-                <div v-show="tab[3]">
-                    <span v-if="!bRecording" class="send_btn2" @click="fnStartRecord">点击录音</span>
-                    <span v-else class="send_btn2 stop_record" @click="fnStopRecord">停止录音</span>
+                        <input id="fileImage" name="file" type="file" accept="image/*" @change="fnSelectFile" multiple>
+                    </span>
                 </div>
             </div>
         </div>
@@ -105,11 +76,6 @@
     export default ({
         data() {
             return {
-                tab: {
-                    1: true,
-                    2: false,
-                    3: false
-                },
                 oFormInfo: {
                     typeCode: '',
                     title: '',
@@ -175,47 +141,10 @@
                 }
                 global.ajax(type, postData, url, ajaxSuccess);
             },
-            fnGetWechatPermsInfo() {
-                var postData = {};
-                var that = this;
-                var type = 'POST';
-                var url = 'http://www.11wdkj.com/forum/wechatRest/createJsapiSignature';
-
-                postData.message = this.loc;
-
-                $.ajax({
-                    type: type,
-                    url: url,
-                    contentType: "application/json",
-                    dataType: 'json',
-                    data: JSON.stringify(postData),
-                    success: function(data) {
-                        wx.config({
-                            debug: false,
-                            appId: data.signatrue.appId,
-                            timestamp: data.signatrue.timestamp,
-                            nonceStr: data.signatrue.nonceStr,
-                            signature: data.signatrue.signature,
-                            jsApiList: [
-                                'startRecord',
-                                'stopRecord',
-                                'playVoice',
-                                'uploadVoice',
-                                'chooseImage'
-                            ]
-                        });
-                    }
-                });
-
-            },
             fnGetType() {
                 axios.post('api/getRoleType', {type: 'TopicType'})
-                    .then(res => {
-                        this.aType = R.compose(R.prepend({id: '',name: '全部'}), R.clone)(res.data);
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    })
+                    .then(res => this.aType = R.prepend({id: '',name: '全部'})(res.data))
+                    .catch(console.log);
             },
             fnPublishPost() {
                 var postData = {};
@@ -402,46 +331,6 @@
                     global.ajax(type, postData, url, ajaxSuccess);
                 }
             },
-            fnChangeTab(index) {
-                for (var ele in this.tab) this.tab[ele] = false;
-                this.tab[index] = true;
-            },
-            fnStartRecord() {
-                this.bRecording = true;
-                this.bIsShowDelay = true;
-                wx.startRecord({
-                    success: function() {},
-                    cancel: function() {
-                        alert('用户拒绝授权录音');
-                    }
-                });
-            },
-            fnStopRecord() {
-                var that = this;
-                this.bRecording = false;
-                wx.stopRecord({
-                    success: function(res) {
-                        that.oLocalWechatAudioInfo = res;
-                        that.aFileModifyDelMedia.push(that.oAudio);
-                        that.oAudio = {};
-                        wx.uploadVoice({
-                            localId: that.oLocalWechatAudioInfo.localId,
-                            isShowProgressTips: 1,
-                            success: function(res) {
-                                that.sWechatServerAudioId = res.serverId
-                            }
-                        });
-                    }
-                });
-            },
-            fnPlayRecord() {
-                wx.playVoice({
-                    localId: this.oLocalWechatAudioInfo.localId,
-                    success: function(res) {
-                        console.log(res);
-                    }
-                });
-            },
             fnSelectFile(event) {
                 this.oSelectedFile = event.target.files[0];
                 const fd = new FormData();
@@ -469,25 +358,12 @@
                     })
                     .catch(console.log)
             },
-            fnWechatChooseImg() {
-                wx.chooseImage({
-                    count: 1, // 默认9
-                    sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-                    sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-                    success: function (res) {
-                        console.log('chooseSuccess');
-                        var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-                    }
-                });
-            }
         },
-        mounted() {
-            // this.fnGetWechatPermsInfo();
-        },
+        mounted() {},
         updated() {
             //每次上传新图片后，调整图片高度，使其与宽度相同。
-            this.$nextTick(function() {
-                var w = $(window).get(0).innerWidth;
+            this.$nextTick(() => {
+                let w = $(window).get(0).innerWidth;
                 //图片的宽度通过CSS设置
                 $('.post_img').css('height', w * 0.94 * 0.23);
                 $('.post_img img').css('height', w * 0.94 * 0.23);
