@@ -153,21 +153,29 @@
                 var oAudioObj = {};
 
                 //表单验证
-                for (var index in this.oFormInfo) {
-                    if (global.verifyIsNull(this.oFormInfo[index].toString())) {
-                        switch (index) {
-                            case 'typeCode':
-                                $.alert('请选择类型');
-                                return;
-                            case 'title':
-                                $.alert('请填写标题');
-                                return;
-                            case 'content':
-                                $.alert('请填写内容');
-                                return;
-                        }
-                    }
+                // mapObjIndexed
+                
+                R.trace = tag => x => {
+                    console.log(tag, x);
+                    return Object.prototype.toString.call(x);
                 }
+                // let judge = R.curry((x, y) => R.ifElse(R.compose(R.isEmpty, R.toString, R.prop(x)), () => $.alert(y), R.identity));
+                let judge = R.curry((x, y) => R.ifElse(R.compose(R.isEmpty,R.trace("get2"), R.toString, R.trace("get"), R.prop(x)), R.trace('ifElse'), R.identity));
+                  
+                R.compose(
+                    R.security(judge('typeCode')('请选择类型')),
+                    R.security(judge('title')('请填写标题')),
+                    R.security(judge('content')('请填写内容'))
+                )(this.oFormInfo);
+                // for (var index in this.oFormInfo) {
+                //     if (global.verifyIsNull(this.oFormInfo[index].toString())) {
+                //         switch (index) {
+                //             case 'typeCode': $.alert('请选择类型'); break;
+                //             case 'title': $.alert('请填写标题'); break;
+                //             case 'content': $.alert('请填写内容'); break;
+                //         }
+                //     }
+                // }
 
                 postData.type = this.aType.find(function(ele) {
                     return ele.id == that.oFormInfo.typeCode;

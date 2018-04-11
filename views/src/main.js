@@ -14,10 +14,12 @@ import "expose-loader?R!ramda"
 import "expose-loader?axios!axios"
 import '../node_modules/jquery-weui/dist/js/jquery-weui.js'
 
-R.trace = R.curry(function(tag, x) {
+R.trace = tag => x => {
     console.log(tag, x);
     return x;
-})
+}
+
+R.security = f => val => val === null || val === undefined ? null : f(val);
 
 Vue.config.productionTip = false
 
