@@ -5,17 +5,21 @@ import * as db from '../data/db'
 
 export const uploadImage = async (req, res ,next) => {
     try {
-        let imgUpload = new imagesModel();
-        imgUpload.img.data = fs.readFileSync(req.files[0].path)
-        imgUpload.img.contentType = req.files[0].mimetype;
-        let oImgUpload = await imgUpload.save();
-
-        res.json({
-            success: true,
-            path: oImgUpload._id,
-            id: oImgUpload._id,
-            result: {}
-        })
+        let aImgList = [];
+        req.files.forEach(async ele => {
+            let imgUpload = new imagesModel();
+            imgUpload.img.data = fs.readFileSync(ele.path);
+            imgUpload.img.contentType = ele.mimetype;
+            let oImgUpload = await imgUpload.save();
+            aImgList.push(oImgUpload);
+            if (aImgList.length === req.files.length) {
+                res.json({
+                    success: true,
+                    rows: aImgList,
+                    result: {}
+                })
+            }
+        });        
     } catch (err) {
         next(err);
     }

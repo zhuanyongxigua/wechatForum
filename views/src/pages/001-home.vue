@@ -280,7 +280,7 @@
                     .then(res => {
                         let fnFilterType = x => R.filter(R.propEq('type', x));
                         let fnSetWhat = x => R.when(R.has('tFileVos'), R.compose(fnFilterType(x), R.prop('tFileVos')));
-                        let fnSetAttribute = R.curry((x, y) => R.converge(R.set(R.lensProp(y)), [fnSetWhat(x), R.identity]));
+                        let fnSetAttribute = x => y => R.converge(R.set(R.lensProp(y)), [fnSetWhat(x), R.identity]);
 
                         let aaData = R.compose(fnSetAttribute(3)('oFileAudio'), fnSetAttribute(2)('aFileVideo'), fnSetAttribute(1)('aFileImage'));
                         let judge = R.when(R.has('rows'), R.compose(R.map(aaData), R.prop('rows')));
