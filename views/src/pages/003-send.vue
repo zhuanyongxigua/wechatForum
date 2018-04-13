@@ -143,7 +143,7 @@
             },
             fnGetType() {
                 axios.post('api/getRoleType', {type: 'TopicType'})
-                    .then(res => this.aType = R.prepend({id: '',name: '全部'})(res.data))
+                    .then(res => this.aType = JSON.parse(JSON.stringify(res.data)))
                     .catch(console.log);
             },
             fnPublishPost() {
@@ -198,12 +198,12 @@
                     }
                 })
                     .then(res => {
-                        console.log(res);
                         res.data.rows.forEach(ele => postData.tFileVos.push({id: ele._id}));
                         return axios.put(url, postData);
                     })
                     .then(res => {
                         if (res.data.success) {
+                            $.hideLoading();
                             $.alert({
                                 title: '提示',
                                 text: '提交成功' + (res.data.message ? ('，' + res.data.message) : '') + '!',
@@ -224,10 +224,14 @@
                         }
                     })
                     .catch(err => {
+                        $.hideLoading();
                         if (err.response.status === 403 || err.response.status === 401) {
                             $.alert("请登录之后再发帖");
+                        } else {
+                            $.alert("提交失败");
                         }
-                    })      
+                    });
+                $.showLoading("正在提交");
             },
             fnDelMedia(iCurId, sCurType) {
                 var postData = {};
