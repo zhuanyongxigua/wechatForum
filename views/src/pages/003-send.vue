@@ -153,21 +153,30 @@
                 var oAudioObj = {};
 
                 //表单验证
-                let mySecurity = x => x === null || x === true ? true : false;
-                let myAlert = x => () => {
-                    $.alert(x);
-                    return null;
+                let channelOne = function(x) {
+                    this._value = x;
                 }
-                let judge = x => y => R.ifElse(R.compose(mySecurity, R.security(R.isEmpty), R.prop(x)), myAlert(y), R.identity);
+                channelOne.of = x => new channelOne(x);
+                R.selectChannel = f => val => val.constructor === channelOne ? val : f(val);
+                let mySecurity = x => y => z => z[x] || z[x] === 0 ? z : channelOne.of(y);
+                let myAlert = x => {
+                    if (x.constructor === channelOne) {
+                        $.alert(x._value);
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
                   
                 let isPass = R.compose(
-                    R.not,
-                    R.isNil,
-                    R.security(judge('content')('请填写内容')),
-                    R.security(judge('title')('请填写标题')),
-                    judge('typeCode')('请选择类型'),
+                    myAlert,
+                    R.selectChannel(mySecurity('content')('请填写内容')),
+                    R.selectChannel(mySecurity('title')('请填写标题')),
+                    R.selectChannel(mySecurity('typeCode')('请选择类型'))
                 )(this.oFormInfo);
+                console.log(channelOne.of('hahaha'));
                 if (!isPass) return;
+                
 
                 postData.type = this.aType.find(ele => ele.id == that.oFormInfo.typeCode).name;
                 postData.typeCode = this.oFormInfo.typeCode;
