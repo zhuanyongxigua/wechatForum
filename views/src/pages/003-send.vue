@@ -170,7 +170,6 @@
                   
                 let isPass = R.compose(
                     myAlert,
-                    // R.selectChannel(R.compose(mySecurity('content')('请填写内容'), mySecurity('title')('请填写标题'), mySecurity('typeCode')('请选择类型')))
                     R.selectChannel(mySecurity('content')('请填写内容')),
                     R.selectChannel(mySecurity('title')('请填写标题')),
                     R.selectChannel(mySecurity('typeCode')('请选择类型'))
