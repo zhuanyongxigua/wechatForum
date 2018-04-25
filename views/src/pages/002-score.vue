@@ -94,12 +94,12 @@
             fnGetMyInfo() {
                 //获取服务列表信息
                 axios.post('api/myInfo', {})
-                    .then(res => this.oMyInfo = JSON.parse(JSON.stringify(res.data)))
+                    .then(res => this.oMyInfo = R.clone(res.data))
                     .catch(console.log)
             },
             fnGetScoreList() {
                 axios.post('api/getScoreList', {})
-                    .then(res => this.aScoreList = JSON.parse(JSON.stringify(res.data)))
+                    .then(res => this.aScoreList = R.clone(res.data))
                     .catch(console.log)
             },
         },

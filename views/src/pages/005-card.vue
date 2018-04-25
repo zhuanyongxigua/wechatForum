@@ -110,21 +110,6 @@
                             <img class="card_img" alt="" :true-src="item.path"/>
                         </a>
                     </div>
-                    <div class="demo-gallery">
-                        <video class="card_img" poster="" v-for="item in aVideos" :id="item.id" controls>
-                            <source :src="item.path" type="video/ogg">
-                            <source :src="item.path" type="video/mp4">
-                            <source :src="item.path" type="video/webm">
-                            Your browser does not support the video tag
-                        </video>
-                    </div>
-                    <div class="demo-gallery" v-if="oAudio.path" v-cloak>
-                        <audio controls>
-                            <source :src="oAudio.path" type="audio/ogg">
-                            <source :src="oAudio.path" type="audio/mpeg">
-                            Your browser does not support the audio element.
-                        </audio>
-                    </div>
                 </div>
                 <div class="card_video"></div>
             </div>
@@ -218,9 +203,6 @@
                 iCurCmtId: null,
                 clickShare: false,
                 aImages: [],
-                aVideos: [],
-                aAudios: [],
-                oAudio: {},
                 sCurModifyType: '',
                 iTotalCmtNum: 0,
                 bIsFollow: false,       //是否已关注
@@ -245,7 +227,7 @@
             fnGetPostDetails: function() {
                 axios.get('/api/getPostDtl?id=' + global.GetArgsFromHref(this.loc, "id") + '&githubId=' + JSON.parse(localStorage.getItem("myInfo")).githubId)
                     .then(res => {
-                        var oData = JSON.parse(JSON.stringify(res.data.row));
+                        var oData = R.clone(res.data.row);
                         var aCurImages = [];
                         var aCurVideos = [];
                         var aCurAudios = [];
@@ -260,18 +242,9 @@
                             oData.tFileVos.forEach(function(ele) {
                                 if (ele.type === 1) {
                                     aCurImages.push(ele);
-                                } else if (ele.type === 2) {
-                                    ele.path = global.baseurl + ele.path.slice(2);
-                                    aCurVideos.push(ele);
-                                } else {
-                                    if (!ele.path) return;
-                                    ele.path = global.baseurl + ele.path.slice(2);
-                                    oCurAudio = ele;
                                 }
                             });
                             this.aImages = aCurImages;
-                            this.aVideos = aCurVideos;
-                            this.oAudio = oCurAudio;
                         }
                         this.iSupport = oData.supports;
                         this.isSupported = oData.isSupported;
@@ -324,10 +297,7 @@
                             }
                         }
                         //防止过快点赞造成服务器产生错误数据
-                        setTimeout(() => {
-                            this.bPreventClickSupport = false;
-                        }, 300);
-
+                        setTimeout(() => this.bPreventClickSupport = false, 300);
                     })
                     .catch(err => {
                         if (err.response.status === 403 || err.response.status === 401) {

@@ -15,7 +15,8 @@ export const addUserPost = async (req, res, next) => {
             ele.path = 'http://' + req.headers.host + '/api/getImage/' + ele.id;
             ele.type = 1;
             return ele;
-        })
+        });
+
         post.typeCode = req.body.typeCode;
         post.avatar = oUserModel[0].avatar;
         post.username = oUserModel[0].username;

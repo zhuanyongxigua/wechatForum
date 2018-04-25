@@ -40,7 +40,7 @@
             <div class="post_medias">
                 <div v-for="(item, index) in aFileImage" class="post_img">
                     <img :id="'imgID' + index" :src="item.path">
-                    <span class="delete_img_btn ripple_box" @click="fnDelMedia(index, 'image')"></span>
+                    <span class="delete_img_btn ripple_box" @click="aFileImage.splice(index, 1)"></span>
                 </div>
             </div>
         </div>
@@ -83,9 +83,6 @@
                 },
                 aFileImage: [],
                 aFileImageInServer: [],
-                aFileVideo: [],
-                aFileModifyNewMedia: [],
-                aFileModifyDelMedia: [],
                 oAudio: {},
                 aType: [],
                 sWechatServerAudioId: '',
@@ -120,7 +117,7 @@
                 postData.parmType = 1;
 
                 function ajaxSuccess(data) {
-                    var oData = JSON.parse(JSON.stringify(data));
+                    var oData = R.clone(data);
                     that.oPostDetails = oData;
                     that.oFormInfo.typeCode = oData.typeCode;
                     that.oFormInfo.title = oData.title;
@@ -143,7 +140,7 @@
             },
             fnGetType() {
                 axios.post('api/getRoleType', {type: 'TopicType'})
-                    .then(res => this.aType = JSON.parse(JSON.stringify(res.data)))
+                    .then(res => this.aType = R.clone(res.data))
                     .catch(console.log);
             },
             fnPublishPost() {
@@ -176,7 +173,6 @@
                 )(this.oFormInfo);
                 if (!isPass) return;
                 
-
                 postData.type = this.aType.find(ele => ele.id == that.oFormInfo.typeCode).name;
                 postData.typeCode = this.oFormInfo.typeCode;
                 postData.title = this.oFormInfo.title;
@@ -184,14 +180,10 @@
                 postData.tFileVos = [];
 
                 if (global.GetArgsFromHref(this.loc, 'mode')) {
+                    let aNew = R.differentWith(R.eqProps('id'), this.aFileImage, this.aFileImageInServer);
+                    let aDel = R.differentWith(R.eqProps('id'), this.aFileImageInServer, this.aFileImage);
                     url = url + 'modifyUserTopic';
-                    postData.tFileVos = this.aFileModifyNewMedia;
-                    postData.delFileVos = this.aFileModifyDelMedia;
                     postData.id = global.GetArgsFromHref(this.loc, 'id');
-                    if (this.sWechatServerAudioId) {
-                        oAudioObj.audioId = this.sWechatServerAudioId;
-                        postData.tFileVos.push(oAudioObj);
-                    }
                 } else {
                     url = url + 'addUserPost';
                 }
@@ -240,69 +232,6 @@
                         }
                     });
                 $.showLoading("正在提交");
-            },
-            fnDelMedia(iCurId, sCurType) {
-                var postData = {};
-                var oCurFile = {};
-                var that = this;
-                var type = 'DELETE';
-                var url = '/wechat/deleteFile';
-
-                if (global.GetArgsFromHref(this.loc, 'mode')) {
-                    if (sCurType === 'image') {
-                        this.aFileImage.forEach(function(ele, index) {
-                            if (ele.id === iCurId) {
-                                that.aFileModifyDelMedia.push(ele);
-                                that.aFileImage.splice(index, 1);
-                            }
-                        });
-                    }
-                    if (sCurType === 'video') {
-                        this.aFileVideo.forEach(function(ele, index) {
-                            if (ele.id === iCurId) {
-                                that.aFileModifyDelMedia.push(ele);
-                                that.aFileVideo.splice(index, 1);
-                            }
-                        });
-                    }
-                    if (sCurType === 'audio') {
-                        this.aFileModifyDelMedia.push(this.oAudio);
-                        this.oAudio = {};
-                    }
-                    return;
-                }
-
-                if (sCurType === 'audio') {
-                    this.oLocalWechatAudioInfo = {};
-                    this.sWechatServerAudioId = '';
-                    return;
-                }
-
-                oCurFile.id = iCurId;
-                postData.delFileVos = [];
-                postData.delFileVos.push(oCurFile);
-
-                function ajaxSuccess(data) {
-                    if (data.success) {
-                        if (sCurType === 'image') {
-                            that.aFileImage.forEach(function(ele, index) {
-                                if (ele.id === iCurId) {
-                                    that.aFileImage.splice(index, 1);
-                                }
-                            });
-                            localStorage.setItem('aFileImage', JSON.stringify(that['aFileImage']));
-                        }
-                        if (sCurType === 'video') {
-                            that.aFileVideo.forEach(function(ele, index) {
-                                if (ele.id === iCurId) {
-                                    that.aFileVideo.splice(index, 1);
-                                }
-                            });
-                            localStorage.setItem('aFileVideo', JSON.stringify(that['aFileVideo']));
-                        }
-                    }
-                }
-                global.ajax(type, postData, url, ajaxSuccess);
             },
             fnSelectFile(event) {
                 this.oSelectedFile = event.target.files[0];
