@@ -1,3 +1,9 @@
+<style scoped>
+    .post_textarea {
+        margin-left: 0px;
+    }
+</style>
+
 <template class="body_in">
     <div id="talk">
         <div class="send_top" style="border: 0;">
@@ -9,31 +15,27 @@
     </div>
 </template>
 
-
 <script>
-    var loc = location.href.split('#')[0];
-    var id = global.GetArgsFromHref(loc,"id");
+    import { global } from '../../static/js/lib/global'
 
     export default({
         data () {
             return {
-                id: id,
+                loc: location.href.split('#')[1],
                 oFormInfo: {
                     content: ''
                 }
             }
         },
         //加载组件时发出请求
-        created: function() {
-            this.oFormInfo.content = decodeURI(global.GetArgsFromHref(loc,"content")) || '';
+        created() {
+            this.oFormInfo.content = decodeURI(global.GetArgsFromHref(this.loc,"content")) || '';
         },
         methods: {
             //发表评论
-            fnSubmitReview: function() {
-                var postData = {};
-                var that = this;
-                var type = 'PUT';
-                var url = '/wechat/';
+            fnSubmitReview() {
+                let postData = {};
+                let url = '/api/';
 
                 //表单验证
                 if(global.verifyIsNull(this.oFormInfo.content)){
@@ -42,18 +44,19 @@
                 }
 
                 postData = this.oFormInfo;
-                if (global.GetArgsFromHref(loc,"mode")) {
-                    postData.id = id;
+                if (global.GetArgsFromHref(this.loc, "mode")) {
+                    postData.id = global.GetArgsFromHref(this.loc, "id");;
                     url += 'modifyTopicReview';
 
                 } else {
-                    postData.topicId = id;
-                    url += 'addTopicReview';
+                    postData.postId = global.GetArgsFromHref(this.loc, "id");;
+                    url += 'addCmt';
                 }
 
-
-                function ajaxSuccess(data) {
-                    if (data.success) {
+                axios.post(url, postData)
+                    .then(res => {
+                        console.log(res);
+                        if (res.data.success) {
                         $.alert({
                             title: '提示',
                             text: '提交成功',
@@ -62,14 +65,16 @@
                             }
                         });
                     } else {
-                        if (data.message === 'USER_BAN_CODE') {
+                        if (res.data.message === 'USER_BAN_CODE') {
                             $.alert('账户禁用，无法操作');
                         } else {
                             $.alert('评论失败');
                         }
                     }
-                }
-                global.ajax(type, postData, url, ajaxSuccess);
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
             }
         },
     })

@@ -1,6 +1,3 @@
-/**
- * Created by yuxin on 2018/1/26.
- */
 import R from 'ramda';
 import express from 'express';
 import fs from 'fs';
@@ -8,14 +5,12 @@ import multer from 'multer';
 import passport from 'passport';
 const uploadMulter = multer({ dest: 'uploads/' });
 
-import PostModel from '../models/post';
-import imagesModel from '../models/imgUpload';
-import UserModel from '../models/user';
 import * as Verify from '../middleware/verify';
 import * as post from '../controllers/post';
-import * as upload from '../controllers/upload'
-import * as user from '../controllers/user'
-import * as dictionary from '../controllers/dictionary'
+import * as upload from '../controllers/upload';
+import * as user from '../controllers/user';
+import * as dictionary from '../controllers/dictionary';
+import * as reply from '../controllers/reply';
 const router = express.Router();
 const config = require('../config');
 
@@ -68,6 +63,7 @@ router.get('/', (req, res, next) => {})
             });
         })(req,res,next);
     })
-    .post('/myInfo', Verify.verifyOrdinaryUser, user.myInfo);
+    .post('/myInfo', Verify.verifyOrdinaryUser, user.myInfo)
+    .post('/addCmt', Verify.verifyOrdinaryUser, reply.addCmt)
 
 export default router;

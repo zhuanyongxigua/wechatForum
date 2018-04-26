@@ -211,7 +211,7 @@
             }
         },
         //加载组件时发出请求
-        created: function() {
+        created() {
             this.fnGetPostDetails();
         },
         computed: {
@@ -224,28 +224,16 @@
             }
         },
         methods: {
-            fnGetPostDetails: function() {
+            fnGetPostDetails() {
                 axios.get('/api/getPostDtl?id=' + global.GetArgsFromHref(this.loc, "id") + '&githubId=' + JSON.parse(localStorage.getItem("myInfo")).githubId)
                     .then(res => {
-                        var oData = R.clone(res.data.row);
-                        var aCurImages = [];
-                        var aCurVideos = [];
-                        var aCurAudios = [];
-                        var oCurAudio = {};
-
+                        let oData = R.clone(res.data.row);
                         this.oPostDetails = oData;
                         this.bIsShowDelay = true;
                         this.aCmtList = oData.tReviewVos;
                         this.iTotalCmtNum = oData.reviews;
                         this.aFileList = oData.tFileVos;
-                        if (oData.tFileVos) {
-                            oData.tFileVos.forEach(function(ele) {
-                                if (ele.type === 1) {
-                                    aCurImages.push(ele);
-                                }
-                            });
-                            this.aImages = aCurImages;
-                        }
+                        if (oData.tFileVos) this.aImages = oData.tFileVos;
                         this.iSupport = oData.supports;
                         this.isSupported = oData.isSupported;
                         this.bIsFollow = oData.attentionId || oData.attentionId == 0 ? true : false;
@@ -262,7 +250,7 @@
                         console.log(err);
                     })
             },
-            fnGetTotalCmt: function() {
+            fnGetTotalCmt() {
                 var that = this;
                 var type = 'POST';
                 var url = '/topic/searchTopicReviewsByParm';
@@ -280,7 +268,7 @@
                 }
                 global.ajax(type, postData, url, ajaxSuccess);
             },
-            fnSupport: function() {
+            fnSupport() {
                 if (this.bPreventClickSupport) {
                     return;
                 }
@@ -306,7 +294,7 @@
                     })
                 this.bPreventClickSupport = true;
             },
-            fnFollow: function() {
+            fnFollow() {
                 var that = this;
                 var type = 'PUT';
                 var url = '/wechat/';
@@ -332,7 +320,7 @@
                 }
                 global.ajax(type, postData, url, ajaxSuccess);
             },
-            fnDelete: function() {
+            fnDelete() {
                 var that = this;
                 var type = 'DELETE';
                 var url = '/topic/removeTopicReview';
@@ -361,16 +349,17 @@
                     }
                 });
             },
-            fnShowModal: function(id, content, type) {
+            fnShowModal(id, content, type) {
                 this.modal1 = true;
                 this.iCurCmtId = id;
                 this.sCurCmtContent = content;
                 this.sCurModifyType = type;
             },
-            fnGoToCmtPage: function() {
-                window.location.href = '011-talk.html?id=' + global.GetArgsFromHref(this.loc, "id");
+            fnGoToCmtPage() {
+                // console.log(global.GetArgsFromHref);
+                this.$router.push({path: '/011-talk', query: {id: global.GetArgsFromHref(this.loc, "id")}});
             },
-            fnGoToRewardPage: function() {
+            fnGoToRewardPage() {
                 this.$router.push({path: '/012-reward', query: {
                     topicId: global.GetArgsFromHref(this.loc, "id"), 
                     sHead: this.oPostDetails.avatar, 
