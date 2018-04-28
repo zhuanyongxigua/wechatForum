@@ -11,6 +11,8 @@ export const addCmt = async (req, res, next) => {
         reply.postId = req.body.postId;
         reply.autherId = oUserModel[0].id;
         reply.content = req.body.content;
+        reply.avatar = oUserModel[0].avatar;
+
         reply.save((err, doc) => {
             res.json({success: true})
         });
@@ -21,29 +23,12 @@ export const addCmt = async (req, res, next) => {
 
 export const getCmtList = async (req, res, next) => {
     try {
-        let options = {
-            skip: (req.body.currentPage - 1) * req.body.pageSize,
-            limit: req.body.pageSize,
-            sort: '-createAt'
-        }
-
-        let fnGetCount = new Promise((resolve, reject) => {
-            PostModel.count({}, (err, c)=> err ? reject(err) : resolve(c))
-        });
-
-        let oPostModel = await db.find(PostModel)({
-            content: new RegExp(req.body.param.topicVo.queryStr, "i"),
-            title: new RegExp(req.body.param.topicVo.queryStr, "i"),
-            typeCode: req.body.param.topicVo.typeCode || {$gt: 0, $lt: 100}
-        })(options);
-
-        let aPosts = [...oPostModel];
-        aPosts.map(ele => ele._doc.id = ele.id);
-
-        res.json({ total: (await fnGetCount), rows: aPosts});
-    } catch(err) {
+        let oReplyModel = await db.find(ReplyModel)({postId: req.query.id})({});
+        res.json({ success: true, row: oReplyModel});
+    } catch (err) {
         next(err);
     }
+
 }
 
 export const deleteCmt = async (req, res, next) => {

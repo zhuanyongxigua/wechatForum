@@ -5,7 +5,8 @@ let ReplySchema = new Schema({
     postId: String,
     autherId: String,
     replyId: String,
-    content: String
+    content: String,
+    avatar: String
 }, {
     timestamps: true
 });

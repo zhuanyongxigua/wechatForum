@@ -2,6 +2,7 @@ import R from 'ramda';
 import PostModel from '../models/post';
 import UserModel from '../models/user';
 import * as db from '../data/db'
+import ReplyModel from '../models/reply';
 
 export const addUserPost = async (req, res, next) => {
     try {
@@ -58,10 +59,12 @@ export const getPostList = async (req, res, next) => {
 export const getPostDtl = async (req, res, next) => {
     try {
         let oPostModel = await db.findById(PostModel)(req.query.id);
+        let oReplyModel = await db.find(ReplyModel)({postId: req.query.id})({limit: 5});
         let isSupported = oPostModel.support.find((ele) => { 
             if ("githubId" in ele) return ele.githubId === req.query.githubId;
         });
         oPostModel._doc.isSupported = isSupported ? true : false;
+        oPostModel._doc.aCmtList = oReplyModel;
         res.json({ success: true, row: oPostModel});
     } catch (err) {
         next(err);

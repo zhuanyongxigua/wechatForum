@@ -230,7 +230,7 @@
                         let oData = R.clone(res.data.row);
                         this.oPostDetails = oData;
                         this.bIsShowDelay = true;
-                        this.aCmtList = oData.tReviewVos;
+                        this.aCmtList = oData.aCmtList;
                         this.iTotalCmtNum = oData.reviews;
                         this.aFileList = oData.tFileVos;
                         if (oData.tFileVos) this.aImages = oData.tFileVos;
@@ -251,22 +251,19 @@
                     })
             },
             fnGetTotalCmt() {
-                var that = this;
-                var type = 'POST';
-                var url = '/topic/searchTopicReviewsByParm';
-                var postData = {};
-
-                postData.pageSize = this.iTotalCmtNum;
-                postData.currentPage = 1;
-                postData.param = {
+                axios.post('/api/getCmtList', {
+                    pageSize: this.iTotalCmtNum,
+                    currentPage: 1,
                     topicVo: {
                         id: global.GetArgsFromHref(this.loc, "id")
                     }
-                };
-                function ajaxSuccess(data) {
-                    that.aCmtList = data.rows.concat();
-                }
-                global.ajax(type, postData, url, ajaxSuccess);
+                })
+                    .then(res => {
+                        console.log(res);
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
             },
             fnSupport() {
                 if (this.bPreventClickSupport) {
