@@ -56,6 +56,33 @@
         background-size: 10px 10px;
     }
 
+    .modal_div {
+        width: 100px;
+        height: 100px;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        margin: auto;
+    }
+
+    .curtain_div {
+        position: absolute;
+        padding: 0px;
+        top: 0px;
+        left: 0px;
+        bottom: 0px;
+        right: 0px;
+        width: 100%;
+        height: 112%;
+        -moz-opacity:0.7;
+        filter: alpha(opacity=40);
+        background-color: #000000;
+        display: none;
+        z-index: 200;
+    }
+
     [v-cloak] {
         display: none;
     }
@@ -119,7 +146,7 @@
             <div class="flex_row zan_top">
                 <i class="ion-ios-heart-outline"></i>
                 <div class="flex1">
-                    <img v-for="item in aSupportInfoShow" class="support_head" @click="fnGoToPersonalCardListPage(item.id)" :true-src="item.head"/>
+                    <img v-for="item in aSupportInfoShow" class="support_head" @click="fnGoToPersonalCardListPage(item.id)" :true-src="item.avatar"/>
                 </div>
             </div>
 
@@ -130,7 +157,7 @@
             <div v-for="(item, index) in aCmtList" class="card_talk">
                 <div class="card_in">
                     <div class="card_info">
-                        <img class="card_info_head" @click="fnGoToPersonalCardListPage(item.id)" :true-src="item.head"/>
+                        <img class="card_info_head" @click="fnGoToPersonalCardListPage(item.id)" :true-src="item.avatar"/>
                         <div class="card_info_texts">
                             <span class="card_info_name" @click="fnGoToPersonalCardListPage(item.id)">
                                 <span v-text="item.username"></span>
@@ -174,10 +201,12 @@
             </span>
         </div>
 
-        <!-- <div :style="{display: bIsShowButton ? 'block' : 'none'}">
+        <div class="modal_div" :style="{display: bIsShowButton ? 'block' : 'none'}">
             <span class="model_btn" @click="fnGoToModify" :style="{borderBottom: sIsBorderBottomStyle}">修改</span>
             <span class="model_btn" v-if="sCurModifyType === 'modifyCmt'" @click="fnDelete">删除</span>
-        </div> -->
+        </div>
+
+        <div class="curtain_div"></div>
 
     </div>
 </template>
@@ -204,10 +233,11 @@
                 clickShare: false,
                 aImages: [],
                 sCurModifyType: '',
-                iTotalCmtNum: 0,
+                iCmtNum: 0,
+                iCurCmtPage: 1,
                 bIsFollow: false,       //是否已关注
                 bIsShowDelay: false,     //解决v-if在vue实例化后才渲染而产生的延迟闪烁
-                bIsShowButton: false,
+                bIsShowButton: true,
             }
         },
         //加载组件时发出请求
@@ -216,7 +246,7 @@
         },
         computed: {
             bIsMoreCmt: function() {
-                if (!this.aCmtList || this.aCmtList.length >= this.iTotalCmtNum) return false;
+                if (!this.aCmtList || this.aCmtList.length >= this.iCmtNum) return false;
                 return true;
             },
             sIsBorderBottomStyle: function() {
@@ -231,14 +261,14 @@
                         this.oPostDetails = oData;
                         this.bIsShowDelay = true;
                         this.aCmtList = oData.aCmtList;
-                        this.iTotalCmtNum = oData.reviews;
+                        this.iCmtNum = oData.iCmtNum;
                         this.aFileList = oData.tFileVos;
                         if (oData.tFileVos) this.aImages = oData.tFileVos;
                         this.iSupport = oData.supports;
                         this.isSupported = oData.isSupported;
                         this.bIsFollow = oData.attentionId || oData.attentionId == 0 ? true : false;
                         this.sSupportColor = oData.isSupported ? '#ff566b' : '#777';
-                        this.aSupportInfoAll = oData.tSupportVos;
+                        this.aSupportInfoAll = oData.support;
                         if (!this.aSupportInfoAll) {
                             this.bShowSupportButton = false;
                             this.aSupportInfoShow = [];
@@ -251,15 +281,11 @@
                     })
             },
             fnGetTotalCmt() {
-                axios.post('/api/getCmtList', {
-                    pageSize: this.iTotalCmtNum,
-                    currentPage: 1,
-                    topicVo: {
-                        id: global.GetArgsFromHref(this.loc, "id")
-                    }
-                })
+                axios.get('/api/getCmtList?pageSize=' + (this.iCurCmtPage === 1 ? 15 : 20)
+                    + '&currentPage=' + this.iCurCmtPage
+                    + '&id=' + global.GetArgsFromHref(this.loc, 'id'))
                     .then(res => {
-                        console.log(res);
+                        this.aCmtList = this.aCmtList.concat(res.data);
                     })
                     .catch(err => {
                         console.log(err);
@@ -353,7 +379,6 @@
                 this.sCurModifyType = type;
             },
             fnGoToCmtPage() {
-                // console.log(global.GetArgsFromHref);
                 this.$router.push({path: '/011-talk', query: {id: global.GetArgsFromHref(this.loc, "id")}});
             },
             fnGoToRewardPage() {

@@ -29,7 +29,7 @@ router.get('/', (req, res, next) => {})
     .post('/withdraw', Verify.verifyOrdinaryUser, user.withdraw)
     .put('/addUserPost', Verify.verifyOrdinaryUser, post.addUserPost)
     .post('/getPostList', post.getPostList)
-    .get('/getPostDtl', post.getPostDtl)
+    .get('/getPostDtl', Verify.verifyParse, post.getPostDtl)
     .delete('/deletePostModel', post.deletePostModel)
     .patch('/support', Verify.verifyOrdinaryUser, post.support)
     .post('/uploadImage', uploadMulter.array('file', 12), upload.uploadImage)
@@ -65,5 +65,7 @@ router.get('/', (req, res, next) => {})
     })
     .post('/myInfo', Verify.verifyOrdinaryUser, user.myInfo)
     .post('/addCmt', Verify.verifyOrdinaryUser, reply.addCmt)
+    .get('/getCmtList', reply.getCmtList)
+    
 
 export default router;

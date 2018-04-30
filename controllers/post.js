@@ -38,7 +38,7 @@ export const getPostList = async (req, res, next) => {
         }
 
         let fnGetCount = new Promise((resolve, reject) => {
-            PostModel.count({}, (err, c)=> err ? reject(err) : resolve(c))
+            PostModel.count({}, (err, c)=> err ? reject(err) : resolve(c));
         });
 
         let oPostModel = await db.find(PostModel)({
@@ -60,11 +60,20 @@ export const getPostDtl = async (req, res, next) => {
     try {
         let oPostModel = await db.findById(PostModel)(req.query.id);
         let oReplyModel = await db.find(ReplyModel)({postId: req.query.id})({limit: 5});
+        let fnCmtNum = new Promise((resolve, reject) => {
+            ReplyModel.count({}, (err, c)=> err ? reject(err) : resolve(c));
+        });
         let isSupported = oPostModel.support.find((ele) => { 
             if ("githubId" in ele) return ele.githubId === req.query.githubId;
         });
         oPostModel._doc.isSupported = isSupported ? true : false;
         oPostModel._doc.aCmtList = oReplyModel;
+        oPostModel._doc.iCmtNum = await fnCmtNum;
+        if (req.decoded.githubId === req.query.githubId) {
+            oPostModel._doc.isOwn = true;
+        } else {
+            oPostModel._doc.isOwn = false;
+        }
         res.json({ success: true, row: oPostModel});
     } catch (err) {
         next(err);

@@ -22,9 +22,14 @@ export const addCmt = async (req, res, next) => {
 }
 
 export const getCmtList = async (req, res, next) => {
+    let options = {
+        skip: req.query.currentPage === '1' ? 5 : (req.query.currentPage - 1) * req.query.pageSize,
+        limit: parseFloat(req.query.pageSize),
+        sort: '-createAt'
+    }
     try {
-        let oReplyModel = await db.find(ReplyModel)({postId: req.query.id})({});
-        res.json({ success: true, row: oReplyModel});
+        let oReplyModel = await db.find(ReplyModel)({postId: req.query.id})(options);
+        res.json(oReplyModel);
     } catch (err) {
         next(err);
     }
