@@ -16,6 +16,7 @@ let PostSchema = new Schema({
     tFileVos: Array,
     avatar: String,
     username: String,
+    githubId: String,
     support: [SupportSchema]
 }, {
     timestamps: true

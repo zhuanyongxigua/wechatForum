@@ -1,8 +1,8 @@
 import R from 'ramda';
 import PostModel from '../models/post';
 import UserModel from '../models/user';
-import * as db from '../data/db'
 import ReplyModel from '../models/reply';
+import * as db from '../data/db'
 
 export const addUserPost = async (req, res, next) => {
     try {
@@ -21,6 +21,7 @@ export const addUserPost = async (req, res, next) => {
         post.typeCode = req.body.typeCode;
         post.avatar = oUserModel[0].avatar;
         post.username = oUserModel[0].username;
+        post.githubId = req.decoded.githubId;
         post.save((err, doc) => {
             res.json({success: true})
         });
@@ -64,16 +65,24 @@ export const getPostDtl = async (req, res, next) => {
             ReplyModel.count({}, (err, c)=> err ? reject(err) : resolve(c));
         });
         let isSupported = oPostModel.support.find((ele) => { 
-            if ("githubId" in ele) return ele.githubId === req.query.githubId;
+            if ("githubId" in ele) return ele.githubId === req.decoded.githubId;
         });
+        oPostModel._doc.aCmtList = oReplyModel.map(ele => {
+            if ("decoded" in req && ele.githubId === req.decoded.githubId) {
+                ele._doc.isOwn = true;
+            } else {
+                ele._doc.isOwn = false;
+            }
+            return ele;
+        })
         oPostModel._doc.isSupported = isSupported ? true : false;
-        oPostModel._doc.aCmtList = oReplyModel;
         oPostModel._doc.iCmtNum = await fnCmtNum;
-        if (req.decoded.githubId === req.query.githubId) {
+        if ("decoded" in req && req.decoded.githubId === oPostModel.githubId) {
             oPostModel._doc.isOwn = true;
         } else {
             oPostModel._doc.isOwn = false;
         }
+        
         res.json({ success: true, row: oPostModel});
     } catch (err) {
         next(err);

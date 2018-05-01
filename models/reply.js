@@ -6,7 +6,8 @@ let ReplySchema = new Schema({
     autherId: String,
     replyId: String,
     content: String,
-    avatar: String
+    avatar: String,
+    githubId: String
 }, {
     timestamps: true
 });

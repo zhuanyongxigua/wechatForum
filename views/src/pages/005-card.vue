@@ -57,14 +57,15 @@
     }
 
     .modal_div {
-        width: 100px;
-        height: 100px;
+        width: 200px;
+        height: 92px;
         position: absolute;
         top: 0;
         right: 0;
         bottom: 0;
         left: 0;
         margin: auto;
+        z-index: 1001;
     }
 
     .curtain_div {
@@ -79,8 +80,19 @@
         -moz-opacity:0.7;
         filter: alpha(opacity=40);
         background-color: #000000;
-        display: none;
-        z-index: 200;
+        display: block;
+        z-index: 1000;
+        opacity: 0.5;
+    }
+
+    .modal_top {
+        background-color: white;
+        border-radius: 5px 5px 0 0;
+    }
+
+    .modal_bottom {
+        background-color: white;
+        border-radius: 0 0 5px 5px;
     }
 
     [v-cloak] {
@@ -113,7 +125,7 @@
                         <span v-text="oPostDetails.type"></span>
                      </span>
 
-                    <span v-cloak v-if="bIsShowDelay && oPostDetails.isOwn" class="operate_btn ripple_box shineBox" @click="fnShowModal(oPostDetails.id, oPostDetails.content, 'modifyPost')">
+                    <span v-cloak v-if="bIsShowDelay && oPostDetails.isOwn" class="operate_btn ripple_box shineBox" @click="fnShowModal(oPostDetails._id, oPostDetails.content, 'modifyPost')">
                         <i class="ion-ios-gear"></i>
                     </span>
 
@@ -157,9 +169,9 @@
             <div v-for="(item, index) in aCmtList" class="card_talk">
                 <div class="card_in">
                     <div class="card_info">
-                        <img class="card_info_head" @click="fnGoToPersonalCardListPage(item.id)" :true-src="item.avatar"/>
+                        <img class="card_info_head" @click="fnGoToPersonalCardListPage(item._id)" :true-src="item.avatar"/>
                         <div class="card_info_texts">
-                            <span class="card_info_name" @click="fnGoToPersonalCardListPage(item.id)">
+                            <span class="card_info_name" @click="fnGoToPersonalCardListPage(item._id)">
                                 <span v-text="item.username"></span>
                                 <span style="float: right" v-text="index + 1 + '楼'"></span>
                             </span>
@@ -169,7 +181,7 @@
                             </div>
                         </div>
 
-                        <span v-if="item.isOwn" class="operate_btn2 ripple_box" @click="fnShowModal(item.id, item.content, 'modifyCmt')" v-cloak>
+                        <span v-if="item.isOwn" class="operate_btn2 ripple_box" @click="fnShowModal(item._id, item.content, 'modifyCmt')" v-cloak>
                             <i class="ion-ios-gear"></i>
                         </span>
                     </div>
@@ -201,12 +213,12 @@
             </span>
         </div>
 
-        <div class="modal_div" :style="{display: bIsShowButton ? 'block' : 'none'}">
-            <span class="model_btn" @click="fnGoToModify" :style="{borderBottom: sIsBorderBottomStyle}">修改</span>
-            <span class="model_btn" v-if="sCurModifyType === 'modifyCmt'" @click="fnDelete">删除</span>
+        <div class="modal_div" v-show="editModal">
+            <div class="model_btn modal_top" @click="fnGoToModify" :style="{borderBottom: sIsBorderBottomStyle}">修改</div>
+            <div class="model_btn modal_bottom" v-if="sCurModifyType === 'modifyCmt'" @click="fnDelete">删除</div>
         </div>
 
-        <div class="curtain_div"></div>
+        <div class="curtain_div" v-show="editModal" @click="editModal = false"></div>
 
     </div>
 </template>
@@ -219,7 +231,7 @@
         data() {
             return {
                 loc: location.href.split('#')[1],
-                modal1: false,
+                editModal: false,
                 oPostDetails: {},
                 aCmtList: [],
                 iSupport: 0,
@@ -229,7 +241,7 @@
                 aSupportInfoShow: [],
                 aSupportInfoAll: [],
                 bShowSupportButton: true,
-                iCurCmtId: null,
+                iCurId: null,
                 clickShare: false,
                 aImages: [],
                 sCurModifyType: '',
@@ -237,7 +249,6 @@
                 iCurCmtPage: 1,
                 bIsFollow: false,       //是否已关注
                 bIsShowDelay: false,     //解决v-if在vue实例化后才渲染而产生的延迟闪烁
-                bIsShowButton: true,
             }
         },
         //加载组件时发出请求
@@ -255,7 +266,7 @@
         },
         methods: {
             fnGetPostDetails() {
-                axios.get('/api/getPostDtl?id=' + global.GetArgsFromHref(this.loc, "id") + '&githubId=' + JSON.parse(localStorage.getItem("myInfo")).githubId)
+                axios.get('/api/getPostDtl?id=' + global.GetArgsFromHref(this.loc, "id"))
                     .then(res => {
                         let oData = R.clone(res.data.row);
                         this.oPostDetails = oData;
@@ -349,12 +360,12 @@
                 var url = '/topic/removeTopicReview';
                 var postData = {};
 
-                postData.id = this.sCurModifyType === 'modifyCmt' ? this.iCurCmtId : null;
+                postData.id = this.sCurModifyType === 'modifyCmt' ? this.iCurId : null;
 
                 function ajaxSuccess(data) {
                     if (data.success) {
                         $.toast("删除成功");
-                        that.modal1 = false;
+                        that.editModal = false;
                         that.fnGetPostDetails();
                     } else {
                         $.toast('删除失败');
@@ -368,13 +379,13 @@
                         global.ajax(type, postData, url, ajaxSuccess);
                     },
                     onCancel: function () {
-                        setTimeout(function() {that.modal1 = false;}, 500);
+                        setTimeout(function() {that.editModal = false;}, 500);
                     }
                 });
             },
             fnShowModal(id, content, type) {
-                this.modal1 = true;
-                this.iCurCmtId = id;
+                this.editModal = true;
+                this.iCurId = id;
                 this.sCurCmtContent = content;
                 this.sCurModifyType = type;
             },
@@ -393,11 +404,18 @@
             },
             fnGoToModify: function() {
                 if (this.sCurModifyType === 'modifyCmt') {
-                    window.location.href = '011-talk.html?id=' + this.iCurCmtId + '&mode=modify' + '&content=' + encodeURI(this.sCurCmtContent);
+                    this.$router.push({path: '/011-talk', query: {
+                        id: this.iCurId,
+                        mode: 'modify',
+                        content: this.sCurCmtContent
+                    }});
                 } else {
-                    window.location.href = '003-send.html?id=' + this.iCurCmtId + '&mode=modify' + '&content=';
+                    this.$router.push({path: '/011-send', query: {
+                        id: this.iCurId,
+                        mode: 'modify'
+                    }});
                 }
-                this.modal1 = false;
+                this.editModal = false;
             },
             fnClickShowMoreSupport: function() {
                 var iLength = this.aSupportInfoShow.length;

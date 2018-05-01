@@ -64,8 +64,8 @@ router.get('/', (req, res, next) => {})
         })(req,res,next);
     })
     .post('/myInfo', Verify.verifyOrdinaryUser, user.myInfo)
-    .post('/addCmt', Verify.verifyOrdinaryUser, reply.addCmt)
-    .get('/getCmtList', reply.getCmtList)
+    .post('/editCmt', Verify.verifyOrdinaryUser, reply.editCmt)
+    .get('/getCmtList', Verify.verifyParse, reply.getCmtList)
     
 
 export default router;

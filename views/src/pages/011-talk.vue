@@ -29,31 +29,26 @@
         },
         //加载组件时发出请求
         created() {
-            this.oFormInfo.content = decodeURI(global.GetArgsFromHref(this.loc,"content")) || '';
+            this.oFormInfo.content = this.$route.query.content || '';
         },
         methods: {
             //发表评论
             fnSubmitReview() {
                 let postData = {};
-                let url = '/api/';
-
                 //表单验证
                 if(global.verifyIsNull(this.oFormInfo.content)){
                     $.alert('请填写内容');
                     return;
                 }
 
-                postData = this.oFormInfo;
-                if (global.GetArgsFromHref(this.loc, "mode")) {
-                    postData.id = global.GetArgsFromHref(this.loc, "id");;
-                    url += 'modifyTopicReview';
-
+                postData.content = this.oFormInfo.content;
+                if (this.$route.query.mode) {
+                    postData.id = this.$route.query.id;
                 } else {
-                    postData.postId = global.GetArgsFromHref(this.loc, "id");;
-                    url += 'addCmt';
+                    postData.postId = this.$route.query.id;
                 }
 
-                axios.post(url, postData)
+                axios.post('/api/editCmt', postData)
                     .then(res => {
                         console.log(res);
                         if (res.data.success) {
