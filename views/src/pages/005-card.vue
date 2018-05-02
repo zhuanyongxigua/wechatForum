@@ -266,7 +266,7 @@
         },
         methods: {
             fnGetPostDetails() {
-                axios.get('/api/getPostDtl?id=' + global.GetArgsFromHref(this.loc, "id"))
+                axios.get('api/getPostDtl?id=' + this.$route.query.id)
                     .then(res => {
                         let oData = R.clone(res.data.row);
                         this.oPostDetails = oData;
@@ -292,7 +292,7 @@
                     })
             },
             fnGetTotalCmt() {
-                axios.get('/api/getCmtList?pageSize=' + (this.iCurCmtPage === 1 ? 15 : 20)
+                axios.get('api/getCmtList?pageSize=' + (this.iCurCmtPage === 1 ? 15 : 20)
                     + '&currentPage=' + this.iCurCmtPage
                     + '&id=' + global.GetArgsFromHref(this.loc, 'id'))
                     .then(res => {
@@ -306,7 +306,7 @@
                 if (this.bPreventClickSupport) {
                     return;
                 }
-                axios.patch('/api/support', {
+                axios.patch('api/support', {
                     postId: global.GetArgsFromHref(this.loc, "id"),
                     githubId: JSON.parse(localStorage.getItem("myInfo")).githubId
                 })
@@ -360,7 +360,7 @@
                     title: '确认删除',
                     text: '确认删除此评论？',
                     onOK: () => {
-                        axios.delete('/api/deleteCmt', {data: {id: this.iCurId}})
+                        axios.delete('api/deleteCmt', {data: {id: this.iCurId}})
                             .then(res => {
                                 if (res.data.success) {
                                     $.toast("删除成功");

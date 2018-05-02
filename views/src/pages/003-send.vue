@@ -97,46 +97,28 @@
         //加载组件时发出请求
         created: function() {
             this.fnGetType();
+            this.fnGetPostDetails();
         },
         components: {
           'my-footer': footer
         },
         methods: {
             fnGetPostDetails() {
-                var that = this;
-                var type = 'POST';
-                var url = '/topic/searchTopicDetail';
-                var postData = {};
-
                 this.aFileImage = [];
-                this.aFileVideo = [];
-                this.aAudios = [];
-                this.oAudio = {};
-
-                postData.id = parseFloat(global.GetArgsFromHref(this.loc, 'id'));
-                postData.parmType = 1;
-
-                function ajaxSuccess(data) {
-                    var oData = R.clone(data);
-                    that.oPostDetails = oData;
-                    that.oFormInfo.typeCode = oData.typeCode;
-                    that.oFormInfo.title = oData.title;
-                    that.oFormInfo.content = oData.content;
-                    that.aFileList = oData.tFileVos;
-                    oData.tFileVos.forEach(function(ele) {
-                        if (ele.type === 1) {
-                            ele.path = global.baseurl + ele.path;
-                            that.aFileImage.push(ele);
-                        } else if (ele.type === 2) {
-                            ele.path = global.baseurl + ele.path.slice(2);
-                            that.aFileVideo.push(ele);
-                        } else {
-                            ele.path = global.baseurl + ele.path.slice(2);
-                            that.oAudio = ele;
-                        }
-                    });
-                }
-                global.ajax(type, postData, url, ajaxSuccess);
+                axios.get('api/getPostDtl?id=' + this.$route.query.id)
+                    .then(res => {
+                        let oData = R.clone(res.data.row);
+                        this.oPostDetails = oData;
+                        this.oFormInfo.typeCode = oData.typeCode;
+                        this.oFormInfo.title = oData.title;
+                        this.oFormInfo.content = oData.content;
+                        this.aFileList = oData.tFileVos;
+                        this.aFileImage = R.clone(oData.tFileVos);
+                        this.aFileImageInServer = R.clone(oData.tFileVos);
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
             },
             fnGetType() {
                 axios.post('api/getRoleType', {type: 'TopicType'})
@@ -144,53 +126,31 @@
                     .catch(console.log);
             },
             fnPublishPost() {
-                var postData = {};
-                var that = this;
-                var url = 'api/';
-                var oAudioObj = {};
+                let postData = {};
+                let url = 'api/';
 
                 //表单验证
-                let channelOne = function(x) {
-                    this._value = x;
-                }
-                channelOne.of = x => new channelOne(x);
-                R.selectChannel = f => val => val.constructor === channelOne ? val : f(val);
-                let mySecurity = x => y => z => z[x] || z[x] === 0 ? z : channelOne.of(y);
-                let myAlert = x => {
-                    if (x.constructor === channelOne) {
-                        $.alert(x._value);
-                        return false;
-                    } else {
-                        return true;
-                    }
-                }
-                  
-                let isPass = R.compose(
-                    myAlert,
-                    R.selectChannel(mySecurity('content')('请填写内容')),
-                    R.selectChannel(mySecurity('title')('请填写标题')),
-                    R.selectChannel(mySecurity('typeCode')('请选择类型'))
-                )(this.oFormInfo);
-                if (!isPass) return;
+                if (!this.fnValidate(this.oFormInfo)) return;
                 
-                postData.type = this.aType.find(ele => ele.id == that.oFormInfo.typeCode).name;
+                postData.type = this.aType.find(ele => ele.id == this.oFormInfo.typeCode).name;
                 postData.typeCode = this.oFormInfo.typeCode;
                 postData.title = this.oFormInfo.title;
                 postData.content = this.oFormInfo.content;
                 postData.tFileVos = [];
 
-                if (global.GetArgsFromHref(this.loc, 'mode')) {
-                    let aNew = R.differentWith(R.eqProps('id'), this.aFileImage, this.aFileImageInServer);
-                    let aDel = R.differentWith(R.eqProps('id'), this.aFileImageInServer, this.aFileImage);
-                    url = url + 'modifyUserTopic';
-                    postData.id = global.GetArgsFromHref(this.loc, 'id');
-                } else {
-                    url = url + 'addUserPost';
-                }
                 let fd = new FormData();
-                this.aFileImage.forEach(ele => {
-                    fd.append('file', ele, ele.name);
-                })
+                if (this.$route.query.mode) {
+                    let aNew = R.differenceWith(R.eqProps('id'), this.aFileImage, this.aFileImageInServer);
+                    let aDel = R.differenceWith(R.eqProps('id'), this.aFileImageInServer, this.aFileImage);
+                    url += 'modifyPost';
+                    postData.postId = this.$route.query.id;
+                    postData.aNew = aNew;
+                    postData.aDel = aDel;
+                    aNew.forEach(ele => fd.append('file', ele, ele.name));
+                } else {
+                    url += 'addUserPost';
+                    this.aFileImage.forEach(ele => fd.append('file', ele, ele.name));
+                }
                 
                 axios.post('api/uploadImage', fd, {
                     onUploadProgress: uploadEvent => {
@@ -199,7 +159,7 @@
                 })
                     .then(res => {
                         res.data.rows.forEach(ele => postData.tFileVos.push({id: ele._id}));
-                        return axios.put(url, postData);
+                        return axios.post(url, postData);
                     })
                     .then(res => {
                         if (res.data.success) {
@@ -207,8 +167,9 @@
                             $.alert({
                                 title: '提示',
                                 text: '提交成功' + (res.data.message ? ('，' + res.data.message) : '') + '!',
-                                onOK: function() {
-                                    that.$router.push("001-home");
+                                onOK: () => {
+                                    this.$router.push("001-home");
+                                    localStorage.removeItem('oCurPageOperateRecord');
                                 }
                             });
                             localStorage.removeItem('aFileImage');
@@ -232,6 +193,31 @@
                         }
                     });
                 $.showLoading("正在提交");
+            },
+            fnValidate(data) {
+                let channelOne = function(x) {
+                    this._value = x;
+                }
+                channelOne.of = x => new channelOne(x);
+                R.selectChannel = f => val => val.constructor === channelOne ? val : f(val);
+                let mySecurity = x => y => z => z[x] || z[x] === 0 ? z : channelOne.of(y);
+                let myAlert = x => {
+                    if (x.constructor === channelOne) {
+                        $.alert(x._value);
+                        return false;
+                    } else {
+                        return true;
+                    }
+                }
+                  
+                let isPass = R.compose(
+                    myAlert,
+                    R.selectChannel(mySecurity('content')('请填写内容')),
+                    R.selectChannel(mySecurity('title')('请填写标题')),
+                    R.selectChannel(mySecurity('typeCode')('请选择类型'))
+                );
+
+                return isPass(data);
             },
             fnSelectFile(event) {
                 this.oSelectedFile = event.target.files[0];

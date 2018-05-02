@@ -1,36 +1,33 @@
 import R from 'ramda';
 import PostModel from '../models/post';
 import UserModel from '../models/user';
+import RoleTypeModel from '../models/roleType';
 import * as db from '../data/db'
 
-export const getRoleType = (req, res, next) => {
+export const addRoleType = (req, res, next) => {
     try {
-        res.json([
-            {
-                code: null,
-                id: 70,
-                name: "运动",
-                pcode: null,
-                status: true,
-                type: "TopicType"
-            },
-            {
-                code: null,
-                id: 71,
-                name: "旅游",
-                pcode: null,
-                status: true,
-                type: "TopicType"
-            },
-            {
-                code: null,
-                id: 72,
-                name: "随拍",
-                pcode: null,
-                status: true,
-                type: "TopicType"
-            }
-        ]);
+        let oRoleType = new RoleTypeModel();
+        oRoleType.code = req.body.code;
+        oRoleType.id = req.body.id;
+        oRoleType.name = req.body.name;
+        oRoleType.pcode = req.body.pcode;
+        oRoleType.status = req.body.status;
+        oRoleType.type = req.body.type;
+        oRoleType.isDel = false;
+        oRoleType.save((err, doc) => {
+            res.json({
+                success: true
+            })
+        })
+    } catch(err) {
+        next(err);
+    }
+}
+
+export const getRoleType = async (req, res, next) => {
+    try {
+        let oRoleType = await db.find(RoleTypeModel)({})({});
+        res.json(oRoleType);
     } catch(err) {
         next(err);
     }
