@@ -22,6 +22,7 @@ export const addUserPost = async (req, res, next) => {
         post.avatar = oUserModel[0].avatar;
         post.username = oUserModel[0].username;
         post.githubId = req.decoded.githubId;
+        post.isDel = false;
         post.save((err, doc) => {
             res.json({success: true})
         });
@@ -59,10 +60,10 @@ export const getPostList = async (req, res, next) => {
 
 export const getPostDtl = async (req, res, next) => {
     try {
-        let oPostModel = await db.findById(PostModel)(req.query.id);
+        let oPostModel = await db.findOneById(PostModel)(req.query.id);
         let oReplyModel = await db.find(ReplyModel)({postId: req.query.id})({limit: 5});
         let fnCmtNum = new Promise((resolve, reject) => {
-            ReplyModel.count({}, (err, c)=> err ? reject(err) : resolve(c));
+            ReplyModel.count({postId: req.query.id}, (err, c)=> err ? reject(err) : resolve(c));
         });
         let isSupported = oPostModel.support.find((ele) => { 
             if ("githubId" in ele) return ele.githubId === req.decoded.githubId;

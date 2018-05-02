@@ -10,6 +10,7 @@ export const uploadImage = async (req, res ,next) => {
             let imgUpload = new imagesModel();
             imgUpload.img.data = fs.readFileSync(ele.path);
             imgUpload.img.contentType = ele.mimetype;
+            imgUpload.isDel = false;
             let oImgUpload = await imgUpload.save();
             aImgList.push(oImgUpload);
             if (aImgList.length === req.files.length) {
@@ -27,7 +28,7 @@ export const uploadImage = async (req, res ,next) => {
 
 export const getImage = async (req, res, next) => {
     try {
-        let oImageModel = await db.findById(imagesModel)(req.params.id);
+        let oImageModel = await db.findOneById(imagesModel)(req.params.id);
         res.contentType(oImageModel.img.contentType);
         res.send(oImageModel.img.data);
     } catch(err) {

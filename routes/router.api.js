@@ -66,6 +66,7 @@ router.get('/', (req, res, next) => {})
     .post('/myInfo', Verify.verifyOrdinaryUser, user.myInfo)
     .post('/editCmt', Verify.verifyOrdinaryUser, reply.editCmt)
     .get('/getCmtList', Verify.verifyParse, reply.getCmtList)
+    .delete('/deleteCmt', reply.deleteCmt)
     
 
 export default router;

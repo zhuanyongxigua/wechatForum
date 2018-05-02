@@ -62,6 +62,7 @@ passport.use(new GitHubStrategy({
           });
           user.OauthId = profile.id;
           user.OauthToken = accessToken;
+          user.isDel = false;
           user.save(function(err) {
             if(err) {
               console.log(err); // handle errors!
