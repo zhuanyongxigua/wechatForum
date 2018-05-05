@@ -9,13 +9,15 @@ var debug = require('debug')('wechatforum:server');
 import http from 'http';
 import socket from 'socket.io';
 import { socketCon } from '../controllers/socket';
+import config from '../config';
+
 
 
 /**
  * Get port from environment and store in Express.
  */
 
-const port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(process.env.PORT || config.port);
 app.set('port', port);
 
 /**

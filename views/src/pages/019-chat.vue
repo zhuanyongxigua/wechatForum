@@ -156,8 +156,8 @@
         //加载组件时发出请求
         created() {
             this.fnGetMyInfo();
-            // this.socket = io.connect('http://zhuanyongxigua.cn:8080');
-            this.socket = io.connect('http://localhost:3000');
+            this.socket = io.connect('http://zhuanyongxigua.cn:8080');
+            // this.socket = io.connect('http://localhost:3000');
             this.socket.on('receive', (data) => {
                 this.aPostList = this.aPostList.concat(data);
             })
@@ -170,7 +170,7 @@
                 axios.post('api/myInfo', {})
                     .then(res => {
                         this.isLogin = true;
-                        this.oMyInfo = Object.assign({}, res.data);
+                        this.oMyInfo = JSON.parse(JSON.stringify(res.data));
                     })
                     .catch(err => {
                         if (err.response.status === 403 || err.response.status === 401) {
