@@ -59,7 +59,7 @@
     .modal_div {
         width: 200px;
         height: 92px;
-        position: absolute;
+        position: fixed;
         top: 0;
         right: 0;
         bottom: 0;
@@ -69,7 +69,7 @@
     }
 
     .curtain_div {
-        position: absolute;
+        position: fixed;
         padding: 0px;
         top: 0px;
         left: 0px;
@@ -257,7 +257,7 @@
         },
         computed: {
             bIsMoreCmt: function() {
-                if (!this.aCmtList || this.aCmtList.length >= this.iCmtNum) return false;
+                if (('length' in this.aCmtList) && ((this.aCmtList.length === 0) || (this.aCmtList.length >= this.iCmtNum))) return false;
                 return true;
             },
             sIsBorderBottomStyle: function() {
@@ -266,7 +266,7 @@
         },
         methods: {
             fnGetPostDetails() {
-                axios.get('/api/getPostDtl?id=' + global.GetArgsFromHref(this.loc, "id"))
+                axios.get('api/getPostDtl?id=' + this.$route.query.id)
                     .then(res => {
                         let oData = R.clone(res.data.row);
                         this.oPostDetails = oData;
@@ -292,7 +292,7 @@
                     })
             },
             fnGetTotalCmt() {
-                axios.get('/api/getCmtList?pageSize=' + (this.iCurCmtPage === 1 ? 15 : 20)
+                axios.get('api/getCmtList?pageSize=' + (this.iCurCmtPage === 1 ? 15 : 20)
                     + '&currentPage=' + this.iCurCmtPage
                     + '&id=' + global.GetArgsFromHref(this.loc, 'id'))
                     .then(res => {
@@ -306,7 +306,7 @@
                 if (this.bPreventClickSupport) {
                     return;
                 }
-                axios.patch('/api/support', {
+                axios.patch('api/support', {
                     postId: global.GetArgsFromHref(this.loc, "id"),
                     githubId: JSON.parse(localStorage.getItem("myInfo")).githubId
                 })
@@ -355,31 +355,27 @@
                 global.ajax(type, postData, url, ajaxSuccess);
             },
             fnDelete() {
-                var that = this;
-                var type = 'DELETE';
-                var url = '/topic/removeTopicReview';
-                var postData = {};
-
-                postData.id = this.sCurModifyType === 'modifyCmt' ? this.iCurId : null;
-
-                function ajaxSuccess(data) {
-                    if (data.success) {
-                        $.toast("删除成功");
-                        that.editModal = false;
-                        that.fnGetPostDetails();
-                    } else {
-                        $.toast('删除失败');
-                    }
-                }
 
                 $.confirm({
                     title: '确认删除',
                     text: '确认删除此评论？',
-                    onOK: function () {
-                        global.ajax(type, postData, url, ajaxSuccess);
+                    onOK: () => {
+                        axios.delete('api/deleteCmt', {data: {id: this.iCurId}})
+                            .then(res => {
+                                if (res.data.success) {
+                                    $.toast("删除成功");
+                                    this.editModal = false;
+                                    this.fnGetPostDetails();
+                                } else {
+                                    $.toast('删除失败');
+                                }
+                            })
+                            .catch(err => {
+                                console.log(err);
+                            })
                     },
-                    onCancel: function () {
-                        setTimeout(function() {that.editModal = false;}, 500);
+                    onCancel: () => {
+                        setTimeout(() => {this.editModal = false;}, 500);
                     }
                 });
             },
@@ -410,7 +406,7 @@
                         content: this.sCurCmtContent
                     }});
                 } else {
-                    this.$router.push({path: '/011-send', query: {
+                    this.$router.push({path: '/003-send', query: {
                         id: this.iCurId,
                         mode: 'modify'
                     }});

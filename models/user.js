@@ -14,6 +14,7 @@ var UserSchema = new Schema({
     avatar: String,
     username: String,
     reward: Number,
+    isDel: String,
     rewardFrom: [bountyUser]
 });
 

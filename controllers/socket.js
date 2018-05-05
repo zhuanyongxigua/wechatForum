@@ -11,6 +11,7 @@ export const socketCon = async (socket) => {
             chat.avatar = data.avatar;
             chat.username = data.username;
             chat.githubId = data.githubId;
+            chat.isDel = false;
             chat.save((err, doc) => {
                 socket.broadcast.emit('receive', doc);
                 socket.emit('receive', doc);

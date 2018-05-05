@@ -5,7 +5,6 @@ import ReplyModel from '../models/reply';
 import * as db from '../data/db'
 
 export const editCmt = async (req, res, next) => {
-    console.log(req);
     try {
         if (req.body.postId) {
             let oUserModel = await db.find(UserModel)({githubId: req.decoded.githubId})({});
@@ -15,13 +14,14 @@ export const editCmt = async (req, res, next) => {
             reply.content = req.body.content;
             reply.avatar = oUserModel[0].avatar;
             reply.githubId = req.decoded.githubId;
+            reply.isDel = false;
             reply.save((err, doc) => res.json({success: true}));
         } else {
-            let ReplyModel = await db.find(ReplyModel)({'_id': req.body.id})({});
+            let oReplyModel = await db.findOneById(ReplyModel)(req.body.id);
             let sMessage = '';
             let isSuccess = true;
-            if (ReplyModel.length !== 0) {
-                let ReplyModel = await db.update(ReplyModel)({'_id': req.body.id})({'$set': {content: req.body.content}});
+            if (oReplyModel.length !== 0) {
+                let oReplyModel = await db.update(ReplyModel)({'_id': req.body.id})({'$set': {content: req.body.content}});
                 isSuccess = true;
             } else {
                 sMessage = "未找到此评论";
@@ -39,7 +39,7 @@ export const editCmt = async (req, res, next) => {
 
 export const getCmtList = async (req, res, next) => {
     try {
-        let oPostModel = await db.findById(PostModel)(req.query.id);
+        let oPostModel = await db.findOneById(PostModel)(req.query.id);
         let options = {
             skip: req.query.currentPage === '1' ? 5 : (req.query.currentPage - 1) * req.query.pageSize,
             limit: parseFloat(req.query.pageSize),
@@ -63,13 +63,8 @@ export const getCmtList = async (req, res, next) => {
 
 export const deleteCmt = async (req, res, next) => {
     try {
-        if (req.body.id === 'all') {
-            let oPostModel = await db.remove(PostModel)({});
-            res.json({success: true});
-        } else if ('id' in req.body) {
-            let oPostModel = await db.remove(PostModel)({id: req.body.id});
-            res.json({success: true});
-        }
+        let oReplyModel = await db.update(ReplyModel)({'_id': req.body.id})({'$set': {isDel: true}});
+        res.json({success: true});
     } catch (err) {
         next(err);
     }

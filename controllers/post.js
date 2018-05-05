@@ -2,17 +2,19 @@ import R from 'ramda';
 import PostModel from '../models/post';
 import UserModel from '../models/user';
 import ReplyModel from '../models/reply';
+import imagesModel from '../models/imgUpload';
+import RoleTypeModel from '../models/roleType';
 import * as db from '../data/db'
 
 export const addUserPost = async (req, res, next) => {
     try {
         let oUserModel = await db.find(UserModel)({githubId: req.decoded.githubId})({});
-        var post = new PostModel();
+        let post = new PostModel();
         post.title = req.body.title;
         post.content = req.body.content;
         post.type = req.body.type;
         post.tFileVos = req.body.tFileVos;
-        post.tFileVos.map((ele) => {
+        post = post.tFileVos.map(ele => {
             ele.path = 'http://' + req.headers.host + '/api/getImage/' + ele.id;
             ele.type = 1;
             return ele;
@@ -22,6 +24,7 @@ export const addUserPost = async (req, res, next) => {
         post.avatar = oUserModel[0].avatar;
         post.username = oUserModel[0].username;
         post.githubId = req.decoded.githubId;
+        post.isDel = false;
         post.save((err, doc) => {
             res.json({success: true})
         });
@@ -59,10 +62,10 @@ export const getPostList = async (req, res, next) => {
 
 export const getPostDtl = async (req, res, next) => {
     try {
-        let oPostModel = await db.findById(PostModel)(req.query.id);
+        let oPostModel = await db.findOneById(PostModel)(req.query.id);
         let oReplyModel = await db.find(ReplyModel)({postId: req.query.id})({limit: 5});
         let fnCmtNum = new Promise((resolve, reject) => {
-            ReplyModel.count({}, (err, c)=> err ? reject(err) : resolve(c));
+            ReplyModel.count({postId: req.query.id, isDel: false}, (err, c)=> err ? reject(err) : resolve(c));
         });
         let isSupported = oPostModel.support.find((ele) => { 
             if ("githubId" in ele) return ele.githubId === req.decoded.githubId;
@@ -109,7 +112,7 @@ export const support = async (req, res, next) => {
             "_id": req.body.postId,
             "support.githubId": req.body.githubId
         })({});
-        let oUserModel = await db.find(UserModel)({githubId: req.body.githubId})({});
+        let oUserModel = await db.find(UserModel)({githubId: req.decoded.githubId})({});
         if (oPostModel.length !== 0) {
             let oPostModel = await db.update(PostModel)({
                 "_id": req.body.postId, 
@@ -123,6 +126,36 @@ export const support = async (req, res, next) => {
             success: true
         })
         
+    } catch(err) {
+        next(err);
+    }
+}
+
+export const modifyPost = async (req, res, next) => {
+    try {
+        let oPostModel = null;
+        let oRoleType = await db.find(RoleTypeModel)({})({});
+        if (req.body.aDel) {
+            req.body.aDel.forEach(async ele => {
+                let oImgModel = await db.update(imagesModel)({"_id": ele.id})({"$set": {idDel: true}});
+                oPostModel = await db.update(PostModel)({"_id": req.body.postId})({"$pull": {"tFileVos": {id: ele.id}}});
+            });
+        }
+        let ooPostModel = await db.update(PostModel)({"_id": req.body.postId})({"$set": {
+            type: oRoleType.find(ele => ele.id === req.body.typeCode).name,
+            typeCode: req.body.typeCode,
+            content: req.body.content,
+            title: req.body.title
+        }});
+        if (ooPostModel.ok) {
+            res.json({
+                success: true
+            })
+        } else {
+            res.json({
+                success: false
+            })
+        }
     } catch(err) {
         next(err);
     }

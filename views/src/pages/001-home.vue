@@ -110,33 +110,6 @@
                         </div>
                     </li>
 
-                    <li>
-                        <div class="card">
-                            <div class="card_in">
-                                <div class="card_info">
-                                    <img class="card_info_head head_icon_img" alt="" src="../../static/img/001.jpg"/>
-                                    <div class="card_info_texts">
-                                        <span class="card_info_name">
-                                            <span class="user_type">提示</span>
-                                        </span>
-                                        <span class="card_info_time">2018-03-09</span>
-                                    </div>
-                                    <span class="card_label">
-                                         <i class="icon ion-ios-pricetags-outline"></i>
-                                         <span style="font-size: 12px"></span>
-                                    </span>
-                                </div>
-                                <div class="card_title">
-                                    <p>特别提示</p>
-                                </div>
-                                <div class="card_texts">
-                                    <p>暂时后台接口还较少，可用的功能有：发帖、github登录、查看帖子详情、点赞、打赏、购买积分、多人聊天室</p>
-                                </div>
-                                
-                            </div>
-                        </div>
-                    </li>
-
                     <li v-for="item in aPostList" :id="'postLiId' + item.id">
                         <div class="card">
                             <div class="card_in">
@@ -231,14 +204,14 @@
             }
 
             window.onbeforeunload = (e) => {
-                var oHomeTabInfo = {};
+                let oHomeTabInfo = {};
                 oHomeTabInfo.tab = this.tab;
                 oHomeTabInfo.queryType = this.oQueryInfo.queryType;
                 localStorage.setItem('oHomeTabInfo', JSON.stringify(oHomeTabInfo));
             }
             //进入帖子详情页后后退，回到原来阅览位置，滚动部分在mounted钩子下
             if (localStorage.getItem('oCurPageOperateRecord')) {
-                var oCurPageOperateRecord = JSON.parse(localStorage.getItem('oCurPageOperateRecord'));
+                let oCurPageOperateRecord = JSON.parse(localStorage.getItem('oCurPageOperateRecord'));
                 this.sCurPostId = oCurPageOperateRecord.sCurPostId;
                 this.aPostList = oCurPageOperateRecord.aPostList;
                 this.iCurrentPage = oCurPageOperateRecord.iCurrentPage;
@@ -262,7 +235,7 @@
                     .catch(console.log)
             },
             fnGetPostList(bIsSearchButton) {
-                var postData = {};
+                let postData = {};
 
                 postData.pageSize = 5;
                 if (bIsSearchButton) {
@@ -326,7 +299,7 @@
                 });
             },
             fnChangeTab(index) {
-                for (var ele in this.tab) this.tab[ele] = false;
+                for (let ele in this.tab) this.tab[ele] = false;
                 this.tab[index] = true;
                 this.bIsMore = true;
                 this.aPostList = [];
@@ -339,7 +312,7 @@
                 this.fnGetPostList();
             },
             fnGoToCardPage(id, event) {
-                var oCurPageOperateRecord = {};
+                let oCurPageOperateRecord = {};
                 oCurPageOperateRecord.sCurPostId = 'postLiId' + id;
                 oCurPageOperateRecord.aPostList = this.aPostList;
                 oCurPageOperateRecord.iCurrentPage = this.iCurrentPage;
@@ -367,7 +340,7 @@
         updated() {
             //每次上传新图片后，调整图片高度，使其与宽度相同。
             this.$nextTick(() => {
-                var w = window.innerWidth;
+                let w = window.innerWidth;
                 //图片的宽度是通过CSS设置的
                 $('.card_img').css('height', w * 0.92 * 0.303333);
                 $('.card_talk_img').css('height', (w * 0.92 - 62) * 0.303333);
