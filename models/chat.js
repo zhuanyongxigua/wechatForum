@@ -6,7 +6,7 @@ let ChatSchema = new Schema({
     githubId: String,
     avatar: String,
     username: String,
-    isDel: String
+    isDel: Boolean
 }, {
     timestamps: true
 });

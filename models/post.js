@@ -17,7 +17,7 @@ let PostSchema = new Schema({
     avatar: String,
     username: String,
     githubId: String,
-    isDel: String,
+    isDel: Boolean,
     support: [SupportSchema]
 }, {
     timestamps: true

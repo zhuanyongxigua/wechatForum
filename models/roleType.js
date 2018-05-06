@@ -8,6 +8,7 @@ let RoleTypeSchema = new Schema({
     pcode: Object,
     status: Boolean,
     type: String,
+    isDel: Boolean
 }, {
     timestamps: true
 });

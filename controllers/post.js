@@ -19,12 +19,12 @@ export const addUserPost = async (req, res, next) => {
             ele.type = 1;
             return ele;
         });
-
         post.typeCode = req.body.typeCode;
         post.avatar = oUserModel[0].avatar;
         post.username = oUserModel[0].username;
         post.githubId = req.decoded.githubId;
         post.isDel = false;
+        
         post.save((err, doc) => {
             res.json({success: true})
         });

@@ -26,6 +26,9 @@ export const addRoleType = (req, res, next) => {
 
 export const getRoleType = async (req, res, next) => {
     try {
+        // RoleTypeModel.find({}, (err, doc) => {
+        //     console.log(doc);
+        // })
         let oRoleType = await db.find(RoleTypeModel)({})({});
         res.json(oRoleType);
     } catch(err) {

@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var imgSchema = new Schema({
     img: { data: Buffer, contentType: String },
-    isDel: false
+    isDel: Boolean
 });
 
 var imagesModel = mongoose.model('Image', imgSchema);
