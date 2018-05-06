@@ -14,7 +14,7 @@ export const addUserPost = async (req, res, next) => {
         post.content = req.body.content;
         post.type = req.body.type;
         post.tFileVos = req.body.tFileVos;
-        post = post.tFileVos.map(ele => {
+        post.tFileVos = post.tFileVos.map(ele => {
             ele.path = 'http://' + req.headers.host + '/api/getImage/' + ele.id;
             ele.type = 1;
             return ele;
@@ -24,7 +24,7 @@ export const addUserPost = async (req, res, next) => {
         post.username = oUserModel[0].username;
         post.githubId = req.decoded.githubId;
         post.isDel = false;
-        
+
         post.save((err, doc) => {
             res.json({success: true})
         });
