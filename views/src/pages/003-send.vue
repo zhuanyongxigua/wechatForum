@@ -97,7 +97,10 @@
         //加载组件时发出请求
         created: function() {
             this.fnGetType();
-            this.fnGetPostDetails();
+            if (this.$route.query.id) {
+                this.fnGetPostDetails();
+            }
+            
         },
         components: {
           'my-footer': footer
@@ -186,7 +189,8 @@
                     })
                     .catch(err => {
                         $.hideLoading();
-                        if (err.response.status === 403 || err.response.status === 401) {
+                        console.log(err);
+                        if ('status' in err.response && (err.response.status === 403 || err.response.status === 401)) {
                             $.alert("请登录之后再发帖");
                         } else {
                             $.alert("提交失败");
