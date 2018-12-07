@@ -74,13 +74,23 @@ const webpackConfig = merge(baseWebpackConfig, {
       name: 'vendor',
       minChunks: function (module) {
         // any required modules inside node_modules are extracted to vendor
-        return (
+        if (module.resource.indexOf('photoswipe') !== -1) {
+            console.log(module.resource);
+        }
+        if (module.resource.indexOf('photoswipe.js') !== -1) {
+            console.log(module.resource.indexOf('photoswipe.js'));
+        }
+        if (module.resource.indexOf('iscroll-probe') !== -1) {
+            console.log(module.resource);
+        }
+        
+        return ((
           module.resource &&
           /\.js$/.test(module.resource) &&
           module.resource.indexOf(
             path.join(__dirname, '../node_modules')
           ) === 0
-        )
+        ) || (module.resource.indexOf('photoswipe') !== -1) || (module.resource.indexOf('iscroll-probe') !== -1))
       }
     }),
     // extract webpack runtime and module manifest to its own file in order to

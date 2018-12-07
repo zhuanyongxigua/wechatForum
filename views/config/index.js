@@ -4,7 +4,6 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path')
-
 module.exports = {
   build: {
     env: require('./prod.env'),

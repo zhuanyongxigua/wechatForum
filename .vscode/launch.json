@@ -7,6 +7,12 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Launch Program",
+            "program": "${workspaceFolder}/views/build/build.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "nodemon",
             "runtimeExecutable": "nodemon",
             // "program": "${workspaceFolder}/bin/www",
