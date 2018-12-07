@@ -8,7 +8,10 @@
     "devback": "nodemon --inspect build/dev-server.js",
     "dev": "node build/dev-server.js",
     "start": "npm run dev",
-    "build": "node build/build.js"
+    "build": "set npm_config_report=true && node build/build.js",
+    "debug": "",
+    "prod": "npm run webpack -- --env.mode production",
+    "prod:analyze": "npm run prod -- --env.presets analyze"
   },
   "dependencies": {
     "axios": "^0.16.2",
@@ -38,6 +41,7 @@
     "babel-preset-stage-2": "^6.22.0",
     "babel-register": "^6.22.0",
     "chalk": "^2.0.1",
+    "compression-webpack-plugin": "^1.1.11",
     "connect-history-api-fallback": "^1.3.0",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.0",
