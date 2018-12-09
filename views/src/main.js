@@ -12,6 +12,7 @@ import '../static/css/style.css'
 import "expose-loader?$!jquery"
 import "expose-loader?R!ramda"
 import "expose-loader?axios!axios"
+// import 'expose-loader?PhotoSwipe!photoswipe'
 import '../node_modules/jquery-weui/dist/js/jquery-weui.js'
 
 R.trace = tag => x => {
