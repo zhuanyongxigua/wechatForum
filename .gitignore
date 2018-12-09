@@ -2,3 +2,4 @@ node_modules/
 mongodb/
 .idea/
 dist/
+views/dist/

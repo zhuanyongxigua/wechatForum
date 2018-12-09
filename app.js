@@ -9,6 +9,7 @@ import connectBusboy from 'connect-busboy';
 import session from 'express-session';
 import passport from 'passport';
 import passportGithub from 'passport-github';
+import compression from 'compression';
 const GitHubStrategy = passportGithub.Strategy;
 import config from './config';
 
@@ -29,6 +30,7 @@ app.all("*", (req, res, next) => {      //支持跨域调试
     else next();
 });
 
+app.use(compression()); // 支持gzip
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));

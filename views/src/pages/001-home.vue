@@ -160,7 +160,7 @@
     import {global} from '../../static/js/lib/global'
     //图片查看器，显示的部分在app.vue里面。
     import {initPhotoSwipeFromDOM} from '../../static/js/lib/PhotoSwipeDemo'
-    import IScroll from 'iscroll/build/iscroll-probe.js'
+    // import IScroll from 'iscroll/build/iscroll-probe.js'
     import footer from '../components/footer.vue'
     import homeSysNews from '../components/homeSysNews.vue'
 

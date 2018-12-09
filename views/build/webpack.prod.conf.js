@@ -32,13 +32,13 @@ const webpackConfig = merge(baseWebpackConfig, {
       'process.env': env
     }),
     // UglifyJs do not support ES6+, you can also use babel-minify for better treeshaking: https://github.com/babel/minify
-    // new webpack.optimize.UglifyJsPlugin({
-    //   compress: {
-    //     warnings: false
-    //   },
-    //   sourceMap: true
-    // }),
-    // new UglifyJSPlugin(),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false
+      },
+      sourceMap: true
+    }),
+    new UglifyJSPlugin(),
     // extract css into its own file
     new ExtractTextPlugin({
       filename: utils.assetsPath('css/[name].[contenthash].css')
@@ -74,23 +74,13 @@ const webpackConfig = merge(baseWebpackConfig, {
       name: 'vendor',
       minChunks: function (module) {
         // any required modules inside node_modules are extracted to vendor
-        if (module.resource.indexOf('photoswipe') !== -1) {
-            console.log(module.resource);
-        }
-        if (module.resource.indexOf('photoswipe.js') !== -1) {
-            console.log(module.resource.indexOf('photoswipe.js'));
-        }
-        if (module.resource.indexOf('iscroll-probe') !== -1) {
-            console.log(module.resource);
-        }
-        
         return ((
           module.resource &&
           /\.js$/.test(module.resource) &&
           module.resource.indexOf(
             path.join(__dirname, '../node_modules')
           ) === 0
-        ) || (module.resource.indexOf('photoswipe') !== -1) || (module.resource.indexOf('iscroll-probe') !== -1))
+        ) || (module.resource.indexOf('photoswipe.js') !== -1) || (module.resource.indexOf('iscroll-probe.js') !== -1))
       }
     }),
     // extract webpack runtime and module manifest to its own file in order to
@@ -100,13 +90,14 @@ const webpackConfig = merge(baseWebpackConfig, {
       chunks: ['vendor']
     }),
     // copy custom static assets
-    new CopyWebpackPlugin([
-      {
-        from: path.resolve(__dirname, '../static'),
-        to: config.build.assetsSubDirectory,
-        ignore: ['.*']
-      }
-    ])
+    // 20181209，这里暂时没有用，不需要全部复制过来。
+    // new CopyWebpackPlugin([
+    //   {
+    //     from: path.resolve(__dirname, '../static'),
+    //     to: config.build.assetsSubDirectory,
+    //     ignore: ['.*']
+    //   }
+    // ])
   ]
 })
 

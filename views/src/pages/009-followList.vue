@@ -90,7 +90,7 @@
 <script>
 import {global} from '../../static/js/lib/global'
 import {initPhotoSwipeFromDOM} from '../../static/js/lib/PhotoSwipeDemo'
-import IScroll from 'iscroll/build/iscroll-probe.js'
+// import IScroll from 'iscroll/build/iscroll-probe.js'
 var myScroll, pullUpFlag;
 function loaded() {
     myScroll = new IScroll('#wrapper', {
