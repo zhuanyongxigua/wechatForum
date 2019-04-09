@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "set NODE_ENV=production&& set PORT=8080&& babel-node ./bin/www",
+    "start:li": "NODE_ENV=production PORT=8080 babel-node ./bin/www",
     "dev": "nodemon --inspect --exec babel-node --presets env ./bin/www"
   },
   "dependencies": {
