@@ -26,7 +26,6 @@ R.security = f => val => val === null || val === undefined ? null : f(val);
 Vue.config.productionTip = false
 
 if (process.env.NODE_ENV === 'development') {
-
     axios.defaults.baseURL = 'http://localhost:3000/';
     // axios.defaults.baseURL = 'http://www.11wdkj.com/pavilion/';
     axios.defaults.withCredentials = true;

@@ -7,12 +7,12 @@ export default new Router({
     // mode: 'history',
   routes: [
     {
-      path: '/', redirect: '/001-home'
+        path: '/', redirect: '/001-home'
     },
     {
-      path: '/001-home',
-      name: 'home',
-      component: (resolve) => require(['../pages/001-home.vue'], resolve)
+        path: '/001-home',
+        name: 'home',
+        component: (resolve) => require(['../pages/001-home.vue'], resolve)
     },
     {
         path: '/002-score',
@@ -20,9 +20,9 @@ export default new Router({
         component: (resolve) => require(['../pages/002-score.vue'], resolve)
     },
     {
-      path: '/003-send',
-      name: 'send',
-      component: (resolve) => require(['../pages/003-send.vue'], resolve)
+        path: '/003-send',
+        name: 'send',
+        component: (resolve) => require(['../pages/003-send.vue'], resolve)
     },
     {
         path: '/004-my',
